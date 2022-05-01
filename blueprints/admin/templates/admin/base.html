@@ -53,17 +53,17 @@
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-success w-100" role="alert">
-                                {{ message }}
-                            </div><br>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-                <h1 class="h2">{{ title }}</h1>
+                <h1 class="h2">{{ title }}</h1><br>
             </div>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success w-100" role="alert">
+                            {{ message }}
+                        </div><br>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             {% block content %}{% endblock %}
 
         </main>

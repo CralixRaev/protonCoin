@@ -73,6 +73,18 @@ class UserQuery:
         return user, password
 
     @staticmethod
+    def update_user(user, name, surname, patronymic=None, email=None, is_admin=False) -> User:
+        db.session.rollback()
+        user.name = name
+        user.surname = surname
+        user.email = email
+        user.is_admin = is_admin
+        user.patronymic = patronymic
+
+        db.session.commit()
+        return user
+
+    @staticmethod
     def new_password(user_id) -> str:
         password = UserQuery._random_password()
         user = User.query.get(user_id)
@@ -80,3 +92,6 @@ class UserQuery:
         db.session.commit()
         return password
 
+    @staticmethod
+    def get_user_by_id(user_id) -> User:
+        return User.query.get(user_id)

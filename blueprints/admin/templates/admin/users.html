@@ -30,7 +30,10 @@
 
         <script>
             function detailFormatter(index, row) {
-                return "<a href=\"/admin/new_password/?id=" + row.id + "\" class=\"btn btn-primary\" role=\"button\" data-toggle=\"button\">Сгенерировать новый пароль</a>"
+                let html = []
+                html.push("<a href=\"/admin/new_password/?id=" + row.id + "\" class=\"btn btn-primary\" role=\"button\" data-toggle=\"button\">Сгенерировать новый пароль</a>")
+                html.push("<a href=\"/admin/edit_user/?id=" + row.id + "\" class=\"btn btn-primary\" role=\"button\" data-toggle=\"button\">Редактировать пользователя</a>")
+                return html
             }
         </script>
 {% endblock %}
