@@ -1,6 +1,7 @@
 import os
-from flask import Flask
+from flask import Flask, redirect, url_for
 from blueprints.admin.admin import admin
+from blueprints.landing.landing import landing
 from blueprints.login.login import login
 from db.database import db
 from flask_login import LoginManager
@@ -19,9 +20,12 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 app.register_blueprint(admin, url_prefix='/admin')
 app.register_blueprint(login, url_prefix='/login')
+app.register_blueprint(landing, url_prefix='/')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "login.index"
+login_manager.login_message = "Пожалуйста, войдите, что бы получить доступ к этой странице"
 
 
 @login_manager.user_loader
@@ -34,7 +38,7 @@ def main():
     from db import __all_models
 
     with app.app_context():
-        db.drop_all()
+        # db.drop_all()
         db.create_all()
 
     app.run(debug=True, host='127.0.0.1', port=5001)
