@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+    <form action="" method="POST">
+        {% if edit_message %}
+            <div class="alert alert-danger" role="alert">
+                {{ edit_message }}
+            </div>
+        {% endif %}
+        {{ form.hidden_tag() }}
+
+        <div class="form-floating">
+            {{ form.stage(class="form-control", placeholder="Surname") }}
+            {{ form.stage.label }}
+            <div class="invalid-feedback">
+                {% for error in form.stage.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
+            {{ form.letter(class="form-control", placeholder="Name") }}
+            {{ form.letter.label }}
+            <div class="invalid-feedback">
+                {% for error in form.letter.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        {{ form.submit(type="submit", class="w-100 btn btn-lg btn-primary") }}
+    </form>{% endblock %}
