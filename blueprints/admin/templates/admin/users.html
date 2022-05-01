@@ -1,12 +1,17 @@
 {% extends "admin/base.html" %}
 
 {% block content %}
+    <div class="d-flex justify-content-end">
+        <a href="{{ url_for("admin.create_user") }}" class="btn btn-primary" role="button" data-toggle="button">Создать
+            пользователя</a>
+    </div>
     <div class="table-responsive">
         <table class="table table-striped table-sm" data-toggle="table" data-pagination="true"
-               data-search="true" data-show-columns="true" data-locale="ru-RU">
+               data-search="true" data-show-columns="true" data-locale="ru-RU" data-show-refresh="true"
+               data-detail-view="true" data-detail-formatter="detailFormatter">
             <thead>
             <tr>
-                <th data-sortable="true">ID</th>
+                <th data-sortable="true" data-field="id">ID</th>
                 <th data-sortable="true">ФИО</th>
                 <th data-sortable="true">Класс</th>
             </tr>
@@ -22,4 +27,10 @@
 
             </tbody>
         </table>
+
+        <script>
+            function detailFormatter(index, row) {
+                return "<a href=\"/admin/new_password/?id=" + row.id + "\" class=\"btn btn-primary\" role=\"button\" data-toggle=\"button\">Сгенерировать новый пароль</a>"
+            }
+        </script>
 {% endblock %}

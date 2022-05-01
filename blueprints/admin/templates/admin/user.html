@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+    <form action="" method="POST">
+        {% if edit_message %}
+            <div class="alert alert-danger" role="alert">
+                {{ edit_message }}
+            </div>
+        {% endif %}
+        {{ form.hidden_tag() }}
+
+        <div class="form-floating">
+            {{ form.surname(class="form-control", placeholder="Surname") }}
+            {{ form.surname.label }}
+            <div class="invalid-feedback">
+                {% for error in form.surname.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
+            {{ form.name(class="form-control", placeholder="Name") }}
+            {{ form.name.label }}
+            <div class="invalid-feedback">
+                {% for error in form.name.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
+            {{ form.patronymic(class="form-control", placeholder="Patronymic") }}
+            {{ form.patronymic.label }}
+            <div class="invalid-feedback">
+                {% for error in form.patronymic.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
+            {{ form.email(class="form-control", placeholder="Email") }}
+            {{ form.email.label }}
+            <div class="invalid-feedback">
+                {% for error in form.email.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="checkbox mb-3">
+            {{ form.is_admin() }} {{ form.is_admin.label }}
+        </div>
+        {{ form.submit(type="submit", class="w-100 btn btn-lg btn-primary") }}
+    </form>{% endblock %}

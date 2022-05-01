@@ -12,3 +12,4 @@ Flask-SQLAlchemy==2.5.1
 flask-login==0.6.0
 python-dotenv==0.20.0
 WTForms==3.0.1
+transliterate==1.10.2
