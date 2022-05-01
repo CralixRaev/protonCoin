@@ -5,7 +5,7 @@ admin = Blueprint('admin', __name__, template_folder='templates', static_folder=
 
 @admin.route('/')
 def index():
-    return redirect(url_for('admin.login'))
+    return redirect(url_for('.login'))
 
 
 @admin.route('/login/')
