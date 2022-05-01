@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="d-flex justify-content-end">
-        <a href="{{ url_for("admin.create_user") }}" class="btn btn-primary" role="button" data-toggle="button">Создать
+        <a href="{{ url_for("admin.users.create_user") }}" class="btn btn-primary" role="button" data-toggle="button">Создать
             пользователя</a>
     </div>
     <div class="table-responsive">
@@ -31,8 +31,8 @@
         <script>
             function detailFormatter(index, row) {
                 let html = []
-                html.push("<a href=\"/admin/new_password/?id=" + row.id + "\" class=\"btn btn-primary\" role=\"button\" data-toggle=\"button\">Сгенерировать новый пароль</a>")
-                html.push("<a href=\"/admin/edit_user/?id=" + row.id + "\" class=\"btn btn-primary\" role=\"button\" data-toggle=\"button\">Редактировать пользователя</a>")
+                html.push("<a href=\"/admin/users/new_password/?id=" + row.id + "\" class=\"btn btn-primary\" role=\"button\" data-toggle=\"button\">Сгенерировать новый пароль</a>")
+                html.push("<a href=\"/admin/users/edit/?id=" + row.id + "\" class=\"btn btn-primary\" role=\"button\" data-toggle=\"button\">Редактировать пользователя</a>")
                 return html
             }
         </script>
