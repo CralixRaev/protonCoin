@@ -1,5 +1,7 @@
 import os
 from flask import Flask, redirect, url_for
+from flask_migrate import Migrate
+
 from blueprints.admin.admin import admin
 from blueprints.landing.landing import landing
 from blueprints.login.login import login
@@ -34,14 +36,12 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
+db.init_app(app)
+migrate = Migrate(app, db)
+from db import __all_models
+
+
 def main():
-    db.init_app(app)
-    from db import __all_models
-
-    with app.app_context():
-        # db.drop_all()
-        db.create_all()
-
     app.run(debug=True, host='127.0.0.1', port=5001)
 
 
