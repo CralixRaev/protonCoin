@@ -24,7 +24,7 @@ class User(db.Model, UserMixin):
     creation_date = db.Column(db.DateTime, default=datetime.now)
 
     group = db.relation("Group", back_populates='users')
-    balance = db.relation("Balance", back_populates='user', uselist=Falses)
+    balance = db.relation("Balance", back_populates='user', uselist=False)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
