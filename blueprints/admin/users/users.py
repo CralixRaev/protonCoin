@@ -26,14 +26,19 @@ def index():
 @login_required
 @admin_required
 def create_user():
+    groups = GroupQuery.get_all_groups()
+    group_list = [(-1, "Нет")] + [(group.id, group.name) for group in groups]
     form = UserForm()
+    form.group_id.choices = group_list
     context = {
         'title': 'Создать пользователя',
         'form': form
     }
     if form.validate_on_submit():
         user, password = UserQuery.create_user(form.name.data, form.surname.data,
-                                               form.patronymic.data, form.email.data)
+                                               form.patronymic.data, form.email.data,
+                                               form.is_admin.data,
+                                               form.group_id.data if form.group_id.data != -1 else None)
         flask.flash(f"Пользователь успешно создан. Его логин: {user.login}, пароль: {password}")
         return redirect(url_for('admin.users.index'))
     return render_template("users/user.html", **context)

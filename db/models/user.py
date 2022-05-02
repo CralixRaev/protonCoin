@@ -56,7 +56,7 @@ class UserQuery:
         return User.query.all()
 
     @staticmethod
-    def create_user(name, surname, patronymic=None, email=None, is_admin=False) -> (User, str):
+    def create_user(name, surname, patronymic=None, email=None, is_admin=False, group=None) -> (User, str):
         db.session.rollback()
         user = User()
         user.name = name
@@ -64,6 +64,7 @@ class UserQuery:
         user.email = email
         user.is_admin = is_admin
         user.patronymic = patronymic
+        user.group_id = group
 
         user.login = UserQuery._create_login(name, surname, patronymic)
         password = UserQuery._random_password()
