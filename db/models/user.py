@@ -1,5 +1,6 @@
 import secrets
 import string
+from datetime import datetime
 
 from flask_login import UserMixin
 from transliterate import translit
@@ -20,8 +21,10 @@ class User(db.Model, UserMixin):
     hashed_password = db.Column(db.String, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=True, index=True)
+    creation_date = db.Column(db.DateTime, default=datetime.now)
 
     group = db.relation("Group", back_populates='users')
+    balance = db.relation("Balance", back_populates='user', uselist=Falses)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
@@ -56,7 +59,8 @@ class UserQuery:
         return User.query.all()
 
     @staticmethod
-    def create_user(name, surname, patronymic=None, email=None, is_admin=False, group=None) -> (User, str):
+    def create_user(name, surname, patronymic=None, email=None, is_admin=False, group=None) -> (
+            User, str):
         db.session.rollback()
         user = User()
         user.name = name
@@ -75,7 +79,8 @@ class UserQuery:
         return user, password
 
     @staticmethod
-    def update_user(user, name, surname, patronymic=None, email=None, is_admin=False, group=None) -> User:
+    def update_user(user, name, surname, patronymic=None, email=None, is_admin=False,
+                    group=None) -> User:
         db.session.rollback()
         user.name = name
         user.surname = surname
