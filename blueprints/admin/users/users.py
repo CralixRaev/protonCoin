@@ -4,6 +4,7 @@ from flask_login import login_required
 from werkzeug.datastructures import MultiDict
 
 from blueprints.admin.users.forms.user import UserForm
+from db.models.group import GroupQuery
 from db.models.user import UserQuery
 from util import admin_required
 
@@ -43,18 +44,25 @@ def create_user():
 @admin_required
 def edit_user():
     user = UserQuery.get_user_by_id(request.args.get('id'))
+    groups = GroupQuery.get_all_groups()
+    group_list = [(-1, "Нет")] + [(group.id, group.name) for group in groups]
     form = UserForm()
+    form.group_id.choices = group_list
     context = {
         'title': 'Редактировать пользователя',
         'form': form
     }
     if form.validate_on_submit():
         UserQuery.update_user(user, form.name.data, form.surname.data,
-                                               form.patronymic.data, form.email.data)
-        print(form.name.data)
+                              form.patronymic.data, form.email.data, form.is_admin.data,
+                              form.group_id.data if form.group_id.data != -1 else None)
+        print(form.group_id.data)
         flask.flash(f"Пользователь успешно обновлен.")
         return redirect(url_for('admin.users.index'))
-    form = UserForm(MultiDict(user.__dict__.items()))
+    model_data = MultiDict(user.__dict__.items())
+    model_data['group_id'] = -1 if not model_data['group_id'] else model_data['group_id']
+    form = UserForm(model_data)
+    form.group_id.choices = group_list
     context['form'] = form
     return render_template("users/user.html", **context)
 

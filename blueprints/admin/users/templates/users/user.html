@@ -45,6 +45,15 @@
                 {% endfor %}
             </div>
         </div>
+        <div class="form-floating">
+            {{ form.group_id(class="form-control", placeholder="Group") }}
+            {{ form.group_id.label }}
+            <div class="invalid-feedback">
+                {% for error in form.group_id.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
         <div class="checkbox mb-3">
             {{ form.is_admin() }} {{ form.is_admin.label }}
         </div>

@@ -21,7 +21,13 @@
                 <tr>
                     <td>{{ user.id }}</td>
                     <td>{{ user.surname }} {{ user.name }} {{ user.patronymic }}</td>
-                    <td>pass</td>
+                    <td>
+                        {% if user.group.name %}
+                            {{ user.group.name }}
+                        {% else %}
+                            Нет
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
 

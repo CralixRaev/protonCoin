@@ -6,7 +6,11 @@ class Group(db.Model):
     stage = db.Column(db.Integer, nullable=False)
     letter = db.Column(db.String(8), nullable=False)
 
-    users = db.relationship('User', backref='groups', lazy=True)
+    users = db.relationship('User', back_populates='group')
+
+    @property
+    def name(self) -> str:
+        return f'{self.stage}{self.letter}'
 
 
 class GroupQuery:

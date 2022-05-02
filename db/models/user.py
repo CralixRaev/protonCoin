@@ -19,8 +19,9 @@ class User(db.Model, UserMixin):
     patronymic = db.Column(db.String(32), nullable=True)
     hashed_password = db.Column(db.String, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
-
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=True, index=True)
+
+    group = db.relation("Group", back_populates='users')
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
@@ -73,13 +74,14 @@ class UserQuery:
         return user, password
 
     @staticmethod
-    def update_user(user, name, surname, patronymic=None, email=None, is_admin=False) -> User:
+    def update_user(user, name, surname, patronymic=None, email=None, is_admin=False, group=None) -> User:
         db.session.rollback()
         user.name = name
         user.surname = surname
         user.email = email
         user.is_admin = is_admin
         user.patronymic = patronymic
+        user.group_id = group
 
         db.session.commit()
         return user
