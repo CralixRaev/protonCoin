@@ -27,6 +27,10 @@ class User(db.Model, UserMixin):
     group = db.relation("Group", back_populates='users')
     balance = db.relation("Balance", back_populates='user', uselist=False)
 
+    @property
+    def full_name(self) -> str:
+        return f"{self.surname} {self.name} {self.patronymic}"
+
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
 

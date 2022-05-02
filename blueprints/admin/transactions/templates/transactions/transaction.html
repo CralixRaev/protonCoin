@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+    <form action="" method="POST">
+        {% if edit_message %}
+            <div class="alert alert-danger" role="alert">
+                {{ edit_message }}
+            </div>
+        {% endif %}
+        {{ form.hidden_tag() }}
+
+        <div class="form-floating">
+            {{ form.from_balance_id(class="form-control", placeholder="From") }}
+            {{ form.from_balance_id.label }}
+            <div class="invalid-feedback">
+                {% for error in form.from_balance_id.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
+            {{ form.to_balance_id(class="form-control", placeholder="To") }}
+            {{ form.to_balance_id.label }}
+            <div class="invalid-feedback">
+                {% for error in form.to_balance_id.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
+            {{ form.amount(class="form-control", placeholder="Amount") }}
+            {{ form.amount.label }}
+            <div class="invalid-feedback">
+                {% for error in form.amount.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
+            {{ form.comment(class="form-control", placeholder="Group") }}
+            {{ form.comment.label }}
+            <div class="invalid-feedback">
+                {% for error in form.comment.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        {{ form.submit(type="submit", class="w-100 btn btn-lg btn-primary") }}
+    </form>{% endblock %}

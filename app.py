@@ -9,6 +9,7 @@ from db.database import db
 from flask_login import LoginManager
 from dotenv import load_dotenv
 
+from db.models.balances import Balance, BalanceQuery
 from db.models.user import User
 
 load_dotenv()
@@ -37,11 +38,14 @@ def load_user(user_id):
 
 
 db.init_app(app)
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, render_as_batch=True)
 from db import __all_models
 
 
 def main():
+    with app.app_context():
+        # ensure what default "bank" balance is present
+        BalanceQuery.ensure_bank_balance()
     app.run(debug=True, host='127.0.0.1', port=5001)
 
 
