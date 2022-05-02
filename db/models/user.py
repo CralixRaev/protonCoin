@@ -7,6 +7,7 @@ from transliterate import translit
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from db.database import db
+from db.models.balances import Balance, BalanceQuery
 
 ALPHABET = string.ascii_letters + string.digits
 
@@ -69,6 +70,8 @@ class UserQuery:
         user.is_admin = is_admin
         user.patronymic = patronymic
         user.group_id = group
+
+        user.balance = BalanceQuery.create_balance(user.id)
 
         user.login = UserQuery._create_login(name, surname, patronymic)
         password = UserQuery._random_password()

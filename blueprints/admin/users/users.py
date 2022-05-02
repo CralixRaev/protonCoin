@@ -10,7 +10,6 @@ from util import admin_required
 
 users = Blueprint('users', __name__, template_folder='templates')
 
-
 @users.route('/')
 @login_required
 @admin_required
