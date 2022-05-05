@@ -1,5 +1,5 @@
 # ignoring cause of venv setting what will be unique for everyone
 /venv/
 /.idea/
-/src/.env
+/.env
 /test.db
