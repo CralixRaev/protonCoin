@@ -7,13 +7,15 @@ import werkzeug
 from flask import Blueprint, render_template, redirect, request, url_for, Request, Response
 from flask_login import login_required
 from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.dimensions import DimensionHolder, ColumnDimension
 from werkzeug.datastructures import MultiDict
 
 from blueprints.admin.users.forms.import_user import UserImportForm
 from blueprints.admin.users.forms.user import UserForm
 from db.models.group import GroupQuery
 from db.models.user import UserQuery
-from util import admin_required
+from util import admin_required, as_text
 
 users = Blueprint('users', __name__, template_folder='templates')
 
@@ -78,6 +80,12 @@ def import_users():
             ws_write.cell(i, 1, user.full_name)
             ws_write.cell(i, 2, user.login)
             ws_write.cell(i, 3, password)
+        dim_holder = DimensionHolder(worksheet=ws_write)
+
+        for col in range(ws_write.min_column, ws_write.max_column + 1):
+            dim_holder[get_column_letter(col)] = ColumnDimension(ws_write, min=col, max=col, width=20)
+
+        ws_write.column_dimensions = dim_holder
         with NamedTemporaryFile() as tmp:
             wb_write.save(tmp.name)
             output = io.BytesIO(tmp.read())
