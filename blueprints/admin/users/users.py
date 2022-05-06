@@ -1,8 +1,15 @@
+import io
+from tempfile import NamedTemporaryFile
+
 import flask
-from flask import Blueprint, render_template, redirect, request, url_for
+import openpyxl
+import werkzeug
+from flask import Blueprint, render_template, redirect, request, url_for, Request, Response
 from flask_login import login_required
+from openpyxl import Workbook
 from werkzeug.datastructures import MultiDict
 
+from blueprints.admin.users.forms.import_user import UserImportForm
 from blueprints.admin.users.forms.user import UserForm
 from db.models.group import GroupQuery
 from db.models.user import UserQuery
@@ -42,6 +49,49 @@ def create_user():
         flask.flash(f"Пользователь успешно создан. Его логин: {user.login}, пароль: {password}")
         return redirect(url_for('admin.users.index'))
     return render_template("users/user.html", **context)
+
+
+@users.route('/import/', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def import_users():
+    groups = GroupQuery.get_all_groups()
+    group_list = [(-1, "Нет")] + [(group.id, group.name) for group in groups]
+    form = UserImportForm()
+    form.group_id.choices = group_list
+    context = {
+        'title': 'Импортировать пользователя',
+        'form': form
+    }
+    if form.validate_on_submit():
+        table = form.file.data
+        table = io.BytesIO(table.stream.read())
+        wb_read = openpyxl.load_workbook(table)
+        ws_read = wb_read.active
+        wb_write = Workbook()
+        ws_write = wb_write.active
+        [ws_write.cell(1, i + 1, name) for i, name in enumerate(['ФИО', 'Логин', 'Пароль'])]
+        for i, cells in enumerate(ws_read.iter_rows(2), start=2):
+            surname, name, patronymic = [i.value for i in cells]
+            user, password = UserQuery.create_user(name, surname, patronymic, None, False,
+                                                   form.group_id.data if form.group_id.data != -1 else None)
+            ws_write.cell(i, 1, user.full_name)
+            ws_write.cell(i, 2, user.login)
+            ws_write.cell(i, 3, password)
+        with NamedTemporaryFile() as tmp:
+            wb_write.save(tmp.name)
+            output = io.BytesIO(tmp.read())
+        flask.flash(f"Пользователи успешно созданы. Файл скачан к вам.")
+
+        # forgive me please, this is high-load like code, just trust me
+        def generate():
+            for i in output:
+                yield i
+
+        return Response(generate(),
+                        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    print(form.errors)
+    return render_template("users/import.html", **context)
 
 
 @users.route('/edit/', methods=['GET', 'POST'])
