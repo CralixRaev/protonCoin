@@ -15,7 +15,7 @@ from blueprints.admin.users.forms.import_user import UserImportForm
 from blueprints.admin.users.forms.user import UserForm
 from db.models.group import GroupQuery
 from db.models.user import UserQuery
-from util import admin_required, as_text
+from util import admin_required
 
 users = Blueprint('users', __name__, template_folder='templates')
 

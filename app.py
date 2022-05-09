@@ -1,8 +1,10 @@
 import os
 from flask import Flask, redirect, url_for
 from flask_migrate import Migrate
+from sqlalchemy import MetaData
 
 from blueprints.admin.admin import admin
+from blueprints.catalog.catalog import catalog
 from blueprints.landing.landing import landing
 from blueprints.login.login import login
 from db.database import db
@@ -25,6 +27,7 @@ app.config['COIN_UNIT'] = "ПротоКоин"
 app.register_blueprint(admin, url_prefix='/admin')
 app.register_blueprint(login, url_prefix='/login')
 app.register_blueprint(landing, url_prefix='/')
+app.register_blueprint(catalog, url_prefix='/catalog')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
