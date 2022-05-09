@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template
 from flask_login import login_required
 
+from blueprints.admin.gifts.gifts import gifts
 from blueprints.admin.groups.groups import groups
 from blueprints.admin.transactions.transactions import transactions
 from blueprints.admin.users.users import users
@@ -10,6 +11,7 @@ admin = Blueprint('admin', __name__, template_folder='templates', static_folder=
 admin.register_blueprint(users, url_prefix="/users/")
 admin.register_blueprint(groups, url_prefix="/groups/")
 admin.register_blueprint(transactions, url_prefix="/transactions/")
+admin.register_blueprint(gifts, url_prefix="/gifts/")
 
 
 @admin.route('/')

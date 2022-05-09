@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% if edit_message %}
+            <div class="alert alert-danger" role="alert">
+                {{ edit_message }}
+            </div>
+        {% endif %}
+        {{ form.hidden_tag() }}
+
+        <div class="form-floating">
+            {{ form.name(class="form-control", placeholder="Name") }}
+            {{ form.name.label }}
+            <div class="invalid-feedback">
+                {% for error in form.name.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
+            {{ form.description(class="form-control", placeholder="Description") }}
+            {{ form.description.label }}
+            <div class="invalid-feedback">
+                {% for error in form.description.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
+            {{ form.price(class="form-control", placeholder="Price") }}
+            {{ form.price.label }}
+            <div class="invalid-feedback">
+                {% for error in form.price.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
+            {{ form.image(class="form-control", placeholder="Image") }}
+            {{ form.image.label }}
+            <div class="invalid-feedback">
+                {% for error in form.image.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        {{ form.submit(type="submit", class="w-100 btn btn-lg btn-primary") }}
+    </form>{% endblock %}

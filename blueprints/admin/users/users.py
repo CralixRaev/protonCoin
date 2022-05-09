@@ -119,7 +119,6 @@ def edit_user():
         UserQuery.update_user(user, form.name.data, form.surname.data,
                               form.patronymic.data, form.email.data, form.is_admin.data,
                               form.group_id.data if form.group_id.data != -1 else None)
-        print(form.group_id.data)
         flask.flash(f"Пользователь успешно обновлен.")
         return redirect(url_for('admin.users.index'))
     model_data = MultiDict(user.__dict__.items())
