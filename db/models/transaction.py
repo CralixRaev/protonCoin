@@ -50,3 +50,8 @@ class TransactionQuery:
     def create_accrual(balance, amount, comment=None) -> Transaction:
         # user with id 1 will be bank. always. TRUST ME
         return TransactionQuery.create_transaction(1, balance.id, amount, comment=comment)
+
+    @staticmethod
+    def create_withdraw(balance, amount, comment=None) -> Transaction:
+        return TransactionQuery.create_transaction(balance.id, 1, amount, comment=comment)
+
