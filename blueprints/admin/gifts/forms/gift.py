@@ -4,6 +4,8 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Email
     TextAreaField, IntegerField
 from wtforms.validators import DataRequired
 
+from uploads import gift_images
+
 
 class GiftForm(FlaskForm):
     name = StringField("Фамилия", validators=[DataRequired()])
@@ -11,6 +13,6 @@ class GiftForm(FlaskForm):
     price = IntegerField('Цена', validators=[DataRequired()])
     image = FileField('Изображение', validators=[
         FileRequired(),
-        FileAllowed(['png'], 'Картинка в формате PNG')
+        FileAllowed(gift_images, 'Картинка')
     ])
     submit = SubmitField('Создать/Изменить')

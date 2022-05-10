@@ -10,6 +10,7 @@ from blueprints.admin.users.forms.user import UserForm
 from db.models.gift import GiftQuery
 from db.models.group import GroupQuery
 from db.models.user import UserQuery
+from uploads import gift_images
 from util import admin_required
 
 gifts = Blueprint('gifts', __name__, template_folder='templates')
@@ -36,10 +37,10 @@ def create_gift():
         'form': form
     }
     if form.validate_on_submit():
-        gift = GiftQuery.create_gift(form.name.data, form.description.data, form.price.data)
         image = form.image.data
-        image.save(os.path.join(flask.current_app.root_path, 'blueprints',
-                                url_for('catalog.static', filename=f'{gift.id}.png')[1:]))
+        filename = gift_images.save(image)
+        gift = GiftQuery.create_gift(form.name.data, form.description.data, form.price.data,
+                                     filename)
         flask.flash(f"Подарок успешно создан")
         return redirect(url_for('admin.gifts.index'))
     return render_template("gifts/gift.html", **context)
@@ -56,11 +57,10 @@ def edit_gift():
         'form': form
     }
     if form.validate_on_submit():
-        print('updating')
-        gift = GiftQuery.update_gift(gift, form.name.data, form.description.data, form.price.data)
         image = form.image.data
-        image.save(os.path.join(flask.current_app.root_path, 'blueprints',
-                                url_for('catalog.static', filename=f'{gift.id}.png')[1:]))
+        filename = gift_images.save(image)
+        gift = GiftQuery.update_gift(gift, form.name.data, form.description.data, form.price.data,
+                                     filename)
         flask.flash(f"Подарок успешно обновлен")
         return redirect(url_for('admin.gifts.index'))
     context['form'] = GiftForm(MultiDict(gift.__dict__.items()))

@@ -8,6 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from db.database import db
 from db.models.balances import Balance, BalanceQuery
+from uploads import avatars
 
 ALPHABET = string.ascii_letters + string.digits
 
@@ -23,6 +24,7 @@ class User(db.Model, UserMixin):
     is_admin = db.Column(db.Boolean, default=False)
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=True, index=True)
     creation_date = db.Column(db.DateTime, default=datetime.now)
+    avatar = db.Column(db.String(128), default="default.png")
 
     group = db.relation("Group", back_populates='users')
     balance = db.relation("Balance", back_populates='user', uselist=False)
@@ -31,10 +33,14 @@ class User(db.Model, UserMixin):
     def full_name(self) -> str:
         return f"{self.surname} {self.name} {self.patronymic}"
 
+    @property
+    def avatar_path(self) -> str:
+        return avatars.url(self.avatar if self.avatar else 'default.png')
+
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
 
-    def check_password(self, password):
+    def check_password(self, password) -> bool:
         return check_password_hash(self.hashed_password, password)
 
 
@@ -108,5 +114,20 @@ class UserQuery:
         return password
 
     @staticmethod
+    def update_password(user, password):
+        user.set_password(password)
+        db.session.commit()
+
+    @staticmethod
     def get_user_by_id(user_id) -> User:
         return User.query.get(user_id)
+
+    @staticmethod
+    def update_avatar(user, new_filename):
+        user.avatar = new_filename
+        db.session.commit()
+
+    @staticmethod
+    def update_email(user, email):
+        user.email = email
+        db.session.commit()

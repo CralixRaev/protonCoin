@@ -1,4 +1,5 @@
 from db.database import db
+from uploads import gift_images
 
 
 class Gift(db.Model):
@@ -6,10 +7,11 @@ class Gift(db.Model):
     name = db.Column(db.String(255))
     description = db.Column(db.Text)
     price = db.Column(db.Integer)
+    image = db.Column(db.String(255), default="default.jpeg")
 
     @property
     def image_file(self):
-        return f'{self.id}.png'
+        return gift_images.url(self.image if self.image else 'default.jpeg')
 
 
 class GiftQuery:
@@ -18,21 +20,23 @@ class GiftQuery:
         return Gift.query.all()
 
     @staticmethod
-    def create_gift(name, description, price) -> Gift:
+    def create_gift(name, description, price, image_path) -> Gift:
         gift = Gift()
         gift.name = name
         gift.description = description
         gift.price = price
+        gift.image = image_path
 
         db.session.add(gift)
         db.session.commit()
         return gift
 
     @staticmethod
-    def update_gift(gift, name, description, price) -> Gift:
+    def update_gift(gift, name, description, price, image_path) -> Gift:
         gift.name = name
         gift.description = description
         gift.price = price
+        gift.image = image_path
         db.session.commit()
         return gift
 
