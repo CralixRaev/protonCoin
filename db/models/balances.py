@@ -45,3 +45,8 @@ class BalanceQuery:
         if commit:
             db.session.commit()
         return balance
+
+    @staticmethod
+    def get_bank():
+        # TODO: cache this shit
+        return Balance.query.filter(Balance.user_id == None).first()

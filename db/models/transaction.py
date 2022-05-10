@@ -45,3 +45,8 @@ class TransactionQuery:
     @staticmethod
     def get_accruals(balance) -> list[Transaction]:
         return Transaction.query.filter(Transaction.to_balance_id == balance.id).all()
+
+    @staticmethod
+    def create_accrual(balance, amount, comment=None) -> Transaction:
+        # user with id 1 will be bank. always. TRUST ME
+        return TransactionQuery.create_transaction(1, balance.id, amount, comment=comment)

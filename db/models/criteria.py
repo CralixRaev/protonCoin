@@ -9,6 +9,11 @@ class Criteria(db.Model):
 
     basis = db.relation("Basis", back_populates='criteria')
 
+    def __str__(self) -> str:
+        return f"{self.name} - {self.cost}"
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 class CriteriaQuery:
     @staticmethod
@@ -24,3 +29,7 @@ class CriteriaQuery:
         db.session.add(criteria)
         db.session.commit()
         return criteria
+
+    @staticmethod
+    def get_criteria_by_id(criteria_id) -> Criteria:
+        return Criteria.query.get(criteria_id)

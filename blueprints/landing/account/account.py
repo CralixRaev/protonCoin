@@ -5,9 +5,13 @@ from flask import Blueprint, render_template, redirect, url_for
 from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 
+from blueprints.landing.account.forms import achievement
+from blueprints.landing.account.forms.achievement import AchievementForm
 from blueprints.landing.account.forms.avatar import AvatarForm
 from blueprints.landing.account.forms.main import UserForm
 from blueprints.landing.account.forms.password import PasswordForm
+from db.models.basis import BasisQuery
+from db.models.criteria import CriteriaQuery
 from db.models.transaction import TransactionQuery
 from db.models.user import UserQuery
 from uploads import avatars
@@ -58,7 +62,25 @@ def index():
 def transactions():
     context = {
         "title": "Транзакции",
-        'withdraws': TransactionQuery.get_withdraws(current_user.balance),
-        'accruals': TransactionQuery.get_accruals(current_user.balance)
+        'withdraws': reversed(TransactionQuery.get_withdraws(current_user.balance)),
+        'accruals': reversed(TransactionQuery.get_accruals(current_user.balance))
     }
     return render_template("account/transactions.html", **context)
+
+
+@account.route("/declare_achievement/", methods=["GET", "POST"])
+@login_required
+def declare_achievement():
+    form = AchievementForm()
+    basises = BasisQuery.get_all_basises()
+    form.criteria_id.choices = [(basis.name, [(criteria.id, criteria) for criteria in basis.criteria]) for basis in basises]
+    context = {
+        "title": "Заявить достижение",
+        "form": form
+    }
+    if form.validate_on_submit():
+        flask.flash("Ладно, поверим тебе наслово")
+        criteria = CriteriaQuery.get_criteria_by_id(form.criteria_id.data)
+        TransactionQuery.create_accrual(current_user.balance, criteria.cost, f"За критерий {criteria.name} - {criteria.basis.name}")
+        return redirect(url_for(".transactions"))
+    return render_template("account/declare_achievement.html", **context)
