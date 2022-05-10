@@ -8,6 +8,7 @@ from werkzeug.datastructures import MultiDict
 from blueprints.landing.account.forms.avatar import AvatarForm
 from blueprints.landing.account.forms.main import UserForm
 from blueprints.landing.account.forms.password import PasswordForm
+from db.models.transaction import TransactionQuery
 from db.models.user import UserQuery
 from uploads import avatars
 
@@ -50,3 +51,14 @@ def index():
         return redirect(url_for(".index"))
     context['form_main'] = UserForm(MultiDict(current_user.__dict__.items()))
     return render_template("account/account.html", **context)
+
+
+@account.route("/transactions/")
+@login_required
+def transactions():
+    context = {
+        "title": "Транзакции",
+        'withdraws': TransactionQuery.get_withdraws(current_user.balance),
+        'accruals': TransactionQuery.get_accruals(current_user.balance)
+    }
+    return render_template("account/transactions.html", **context)

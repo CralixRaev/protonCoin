@@ -27,7 +27,7 @@ class TransactionQuery:
         transaction.to_balance_id = to_balance_id
         transaction.amount = amount
         transaction.comment = comment
-        # TODO: commit once to ensure what transaction is completed
+        # TODO: commit once to ensure what transaction is completed successfully
         db.session.add(transaction)
         db.session.commit()
         if not transaction.from_balance.is_bank:
@@ -37,3 +37,11 @@ class TransactionQuery:
             transaction.to_balance.amount += amount
         db.session.commit()
         return transaction
+
+    @staticmethod
+    def get_withdraws(balance) -> list[Transaction]:
+        return Transaction.query.filter(Transaction.from_balance_id == balance.id).all()
+
+    @staticmethod
+    def get_accruals(balance) -> list[Transaction]:
+        return Transaction.query.filter(Transaction.to_balance_id == balance.id).all()

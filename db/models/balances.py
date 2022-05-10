@@ -1,4 +1,5 @@
 from db.database import db
+from db.models.transaction import Transaction
 
 
 class Balance(db.Model):
