@@ -2,7 +2,7 @@ import flask
 from flask import Blueprint, render_template, redirect, url_for
 from flask_login import login_required
 
-from blueprints.admin.forms.group import GroupForm
+from blueprints.admin.groups.forms.group import GroupForm
 from db.models.group import GroupQuery
 from util import admin_required
 

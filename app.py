@@ -43,6 +43,9 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
+from db.__all_models import *
+
+
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
 
