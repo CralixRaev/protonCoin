@@ -8,8 +8,8 @@ from uploads import gift_images
 
 
 class GiftForm(FlaskForm):
-    name = StringField("Фамилия", validators=[DataRequired()])
-    description = TextAreaField("Имя", validators=[DataRequired()])
+    name = StringField("Имя", validators=[DataRequired()])
+    description = TextAreaField("Описание", validators=[DataRequired()])
     price = IntegerField('Цена', validators=[DataRequired()])
     image = FileField('Изображение', validators=[
         FileRequired(),
