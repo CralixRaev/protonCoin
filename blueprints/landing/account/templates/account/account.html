@@ -18,7 +18,8 @@
                                         <div class="text-center text-sm-left mb-2 mb-sm-0">
                                             <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{ current_user.full_name }}</h4>
                                             <p class="mb-0">{{ current_user.login }}</p>
-                                            <div class="text-muted"><small>{{ current_user.balance.amount }} ПротонКоин
+                                            <div class="text-muted"><small>{{ current_user.balance.amount }}
+                                                {{ config.COIN_UNIT }}
                                                 на балансе</small></div>
                                             <form action="" method="POST" enctype="multipart/form-data"
                                                   id="avatar_form">

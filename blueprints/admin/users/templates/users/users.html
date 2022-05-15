@@ -34,7 +34,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        {{ user.balance.amount }} ПротоКоин
+                        {{ user.balance.amount }} {{ config.COIN_UNIT }}
                     </td>
                 </tr>
             {% endfor %}

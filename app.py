@@ -1,4 +1,6 @@
 import os
+
+import click
 from flask import Flask
 from flask_migrate import Migrate
 from flask_uploads import UploadSet, IMAGES, configure_uploads
@@ -23,7 +25,6 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db?check_same_thread=False'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-# TODO: use coin_unit config key everywhere !!!IMPORTANT!!!
 app.config['COIN_UNIT'] = "ПротоКоин"
 app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                                   'uploads')
@@ -46,6 +47,13 @@ def load_user(user_id):
 
 from db.__all_models import *
 
+
+@app.cli.command("create_admin")
+@click.argument("name")
+@click.argument("surname")
+@click.argument("patronymic")
+def create_admin(name, surname, patronymic):
+    click.echo(f"")
 
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)

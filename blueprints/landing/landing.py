@@ -9,5 +9,8 @@ landing.register_blueprint(account, url_prefix="/account")
 
 @landing.route("/")
 def index():
-    return render_template("landing/base.html")
+    context = {
+        'title': "Главная страница"
+    }
+    return render_template("landing/base.html", **context)
 
