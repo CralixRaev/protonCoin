@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 
 from blueprints.admin.admin import admin
+from blueprints.api.api import api_blueprint as api
 from blueprints.landing.catalog.catalog import catalog
 from blueprints.landing.landing import landing
 from blueprints.login.login import login
@@ -33,6 +34,7 @@ app.config['UPLOADS_AUTOSERVE'] = True
 app.register_blueprint(admin, url_prefix='/admin')
 app.register_blueprint(login, url_prefix='/login')
 app.register_blueprint(landing, url_prefix='/')
+app.register_blueprint(api, url_prefix='/api/v1/')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
