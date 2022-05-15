@@ -14,7 +14,7 @@ from flask_login import LoginManager
 from dotenv import load_dotenv
 
 from db.models.balances import BalanceQuery
-from db.models.user import User
+from db.models.user import User, UserQuery
 from uploads import avatars, gift_images
 
 load_dotenv()
@@ -53,7 +53,10 @@ from db.__all_models import *
 @click.argument("surname")
 @click.argument("patronymic")
 def create_admin(name, surname, patronymic):
-    click.echo(f"")
+    user_object, password = UserQuery.create_user(name, surname, patronymic, is_admin=True)
+
+    click.echo(f"Админ создан. Логин: {user_object.login}, пароль: {password}")
+
 
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
