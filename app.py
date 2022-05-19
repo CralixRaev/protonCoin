@@ -26,7 +26,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db?check_same_thread=False'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-app.config['COIN_UNIT'] = "ПротонКоин"
+app.config['COIN_UNIT'] = "ПРОtoКоин"
 app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                                   'uploads')
 app.config['UPLOADS_AUTOSERVE'] = True
