@@ -63,7 +63,7 @@ def create_admin(name, surname, patronymic):
 @app.cli.command("reset_password")
 @click.argument("login")
 def create_admin(login):
-    user_object, password = UserQuery.new_password(UserQuery.get_user_by_login(login).user_id)
+    user_object, password = UserQuery.new_password(UserQuery.get_user_by_login(login).id)
 
     click.echo(f"Пароль изменён. Новый пароль: {password}")
 
