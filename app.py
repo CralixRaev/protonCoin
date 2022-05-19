@@ -60,6 +60,14 @@ def create_admin(name, surname, patronymic):
     click.echo(f"Админ создан. Логин: {user_object.login}, пароль: {password}")
 
 
+@app.cli.command("reset_password")
+@click.argument("login")
+def create_admin(login):
+    user_object, password = UserQuery.new_password(UserQuery.get_user_by_login(login).user_id)
+
+    click.echo(f"Пароль изменён. Новый пароль: {password}")
+
+
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
 
@@ -71,7 +79,7 @@ def main():
     with app.app_context():
         # ensure what default "bank" balance is present
         BalanceQuery.ensure_bank_balance()
-    app.run(debug=True, host='127.0.0.1', port=5001)
+    app.run(debug=True, host='0.0.0.0', port=80)
 
 
 if __name__ == "__main__":
