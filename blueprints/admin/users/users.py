@@ -106,7 +106,7 @@ def import_users():
 @login_required
 @admin_required
 def edit_user():
-    user = UserQuery.get_user_by_id(x   )
+    user = UserQuery.get_user_by_id(request.args.get('id'))
     groups = GroupQuery.get_all_groups()
     group_list = [(-1, "Нет")] + [(group.id, group.name) for group in groups]
     form = UserForm()
