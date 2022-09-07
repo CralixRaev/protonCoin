@@ -117,7 +117,7 @@ def edit_user():
     }
     if form.validate_on_submit():
         UserQuery.update_user(user, form.name.data, form.surname.data,
-                              form.patronymic.data, form.email.data, form.is_admin.data,
+                              form.patronymic.data, form.email.data if form.email.data else None, form.is_admin.data,
                               form.group_id.data if form.group_id.data != -1 else None)
         flask.flash(f"Пользователь успешно обновлен.")
         return redirect(url_for('admin.users.index'))
