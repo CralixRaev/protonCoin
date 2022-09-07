@@ -21,7 +21,7 @@
                                         <div class="text-center text-sm-left mb-2 mb-sm-0">
                                             <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{ current_user.full_name }}</h4>
                                             <p class="mb-0">{{ current_user.login }}</p>
-                                            <div class="text-muted"><small>{{ current_user.balance.amount }} {{ config.COIN_UNIT }}
+                                            <div class="text-muted"><small>{{ current_user.balance.amount }}  <img src="/static/coin.png" style="height: 16px;"> {{ config.COIN_UNIT }}
                                                 на балансе</small></div>
                                         </div>
                                     </div>
@@ -30,7 +30,7 @@
                                     <li class="nav-item"><a href="{{ url_for(".index") }}"
                                                             class="nav-link">Настройки</a></li>
                                     <li class="nav-item"><a href="{{ url_for(".transactions") }}"
-                                                            class="active nav-link">Транзацкии</a></li>
+                                                            class="active nav-link">Транзакции</a></li>
                                 </ul>
                                 <div class="tab-content pt-3">
                                     <div class="tab-pane active">
