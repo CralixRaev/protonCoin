@@ -1,7 +1,7 @@
 import os
 
 import click
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_migrate import Migrate
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 
