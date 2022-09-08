@@ -25,10 +25,10 @@ def buy():
     gift = GiftQuery.get_gift_by_id(request.args.get('gift_id'))
     # TODO: gifts receiving
     if current_user.balance.amount - gift.price >= 0:
-        TransactionQuery.create_withdraw(current_user.balance, gift.price,
-                                         comment=f"Оплата за подарок {gift.name}")
         order = OrderQuery.create_order(gift.id, current_user.id)
-        flask.flash(f"Заказ на подарок создан, его номер {order.id}. Обратитесь к ... для получения")
+        TransactionQuery.create_withdraw(current_user.balance, gift.price,
+                                         comment=f"Оплата за заказ №{order.id} ({gift.name})")
+        flask.flash(f"Заказ на подарок создан, его номер №{order.id}. Обратитесь к ... для получения")
     else:
         flask.flash("Недостаточно средств")
     return redirect(url_for(".index"))

@@ -10,11 +10,12 @@ from blueprints.landing.account.forms.achievement import AchievementForm
 from blueprints.landing.account.forms.avatar import AvatarForm
 from blueprints.landing.account.forms.main import UserForm
 from blueprints.landing.account.forms.password import PasswordForm
+from db.models.achievement import AchievementQuery
 from db.models.basis import BasisQuery
 from db.models.criteria import CriteriaQuery
 from db.models.transaction import TransactionQuery
 from db.models.user import UserQuery
-from uploads import avatars
+from uploads import avatars, achievement_files
 
 account = Blueprint('account', __name__, template_folder='templates', static_folder='static')
 
@@ -79,7 +80,13 @@ def declare_achievement():
         "form": form
     }
     if form.validate_on_submit():
-        flask.flash("Достижение принято. Ожидайте одобрения администратором")
+        achievement_file = None
+        if form.file.data:
+            achievement_file = achievement_files.save(form.file.data)
+        AchievementQuery.create_achievement(form.criteria_id.data, current_user.id,
+                                            achievement_file if form.file.data else None,
+                                            form.comment.data)
+        flask.flash("Достижение принято. Ожидайте одобрения классным руководителем")
         # criteria = CriteriaQuery.get_criteria_by_id(form.criteria_id.data)
         # TransactionQuery.create_accrual(current_user.balance, criteria.cost,
         # f"За критерий {criteria.name} - {criteria.basis.name}")

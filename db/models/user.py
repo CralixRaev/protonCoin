@@ -22,6 +22,7 @@ class User(db.Model, UserMixin):
     patronymic = db.Column(db.String(32), nullable=True)
     hashed_password = db.Column(db.String, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    is_teacher = db.Column(db.Boolean, default=False)
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=True, index=True)
     creation_date = db.Column(db.DateTime, default=datetime.now)
     avatar = db.Column(db.String(128), default="default.png")
@@ -29,6 +30,7 @@ class User(db.Model, UserMixin):
     group = db.relation("Group", back_populates='users')
     balance = db.relation("Balance", back_populates='user', uselist=False)
     orders = db.relation("Order", back_populates='user')
+    achievements = db.relation("Achievement", back_populates='user')
 
     @property
     def full_name(self) -> str:
@@ -71,7 +73,8 @@ class UserQuery:
         return User.query.all()
 
     @staticmethod
-    def create_user(name, surname, patronymic=None, email=None, is_admin=False, group=None) -> (
+    def create_user(name, surname, patronymic=None, email=None, is_admin=False, is_teacher=False,
+                    group=None) -> (
             User, str):
         db.session.rollback()
         user = User()
@@ -79,6 +82,7 @@ class UserQuery:
         user.surname = surname
         user.email = email
         user.is_admin = is_admin
+        user.is_teacher = is_teacher
         user.patronymic = patronymic
         user.group_id = group
 
@@ -94,12 +98,14 @@ class UserQuery:
 
     @staticmethod
     def update_user(user, name, surname, patronymic=None, email=None, is_admin=False,
+                    is_teacher=False,
                     group=None) -> User:
         db.session.rollback()
         user.name = name
         user.surname = surname
         user.email = email
         user.is_admin = is_admin
+        user.is_teacher = is_teacher
         user.patronymic = patronymic
         user.group_id = group
 

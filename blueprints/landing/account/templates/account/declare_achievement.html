@@ -37,13 +37,21 @@
                                     <div class="tab-pane active">
                                         <div class="row">
                                             <div class="col">
-                                                <form action="" method="POST">
+                                                <form action="" method="POST" enctype="multipart/form-data">
                                                     {{ form.hidden_tag() }}
                                                     <div class="row">
                                                         <div class="col">
                                                             <div class="form-group">
                                                                 {{ form.criteria_id.label }}
                                                                 {{ form.criteria_id(class="form-control") }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                {{ form.comment.label }}
+                                                                {{ form.comment(class="form-control") }}
                                                             </div>
                                                         </div>
                                                     </div>

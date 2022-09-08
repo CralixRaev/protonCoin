@@ -57,5 +57,8 @@
         <div class="checkbox mb-3">
             {{ form.is_admin() }} {{ form.is_admin.label }}
         </div>
+        <div class="checkbox mb-3">
+            {{ form.is_teacher() }} {{ form.is_teacher.label }}
+        </div>
         {{ form.submit(type="submit", class="w-100 btn btn-lg btn-primary") }}
     </form>{% endblock %}

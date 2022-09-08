@@ -8,6 +8,7 @@ class Criteria(db.Model):
     cost = db.Column(db.Integer, nullable=False)
 
     basis = db.relation("Basis", back_populates='criteria')
+    achievements = db.relation("Achievement", back_populates='criteria')
 
     def __str__(self) -> str:
         return f"{self.name} - {self.cost}"

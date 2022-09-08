@@ -5,10 +5,12 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Email
 from wtforms.validators import DataRequired, Email
 from wtforms_components import SelectField
 
-from uploads import avatars
+from uploads import avatars, achievement_files
 
 
 class AchievementForm(FlaskForm):
     criteria_id = SelectField("Критерий", coerce=int)
-    file = FileField("Файл, подтверждающий достижение")
+    comment = TextAreaField("Комментарий")
+    file = FileField("Файл, подтверждающий достижение", validators=[
+        FileAllowed(achievement_files, 'Картинка или документ')])
     submit = SubmitField('Отправить')

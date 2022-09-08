@@ -1,7 +1,10 @@
 from datetime import datetime
 
+from sqlalchemy import select
+
 from db.database import db
-from uploads import gift_images
+from db.models.user import User
+from uploads import achievement_files
 
 
 class Achievement(db.Model):
@@ -14,6 +17,55 @@ class Achievement(db.Model):
     is_approved = db.Column(db.Boolean, default=False, nullable=False)
     is_disapproved = db.Column(db.Boolean, default=False, nullable=False)
 
+    user = db.relation("User", back_populates='achievements')
+    criteria = db.relation("Criteria", back_populates='achievements')
+
+    @property
+    def achievement_file_path(self) -> str | None:
+        if self.achievement_file:
+            return achievement_files.url(self.achievement_file)
+        return None
+    
+    @property
+    def status(self) -> str:
+        if self.is_approved:
+            return "Одобрено"
+        elif self.is_disapproved:
+            return "Отклонено"
+        else:
+            return "Ожидает обработки"
 
 class AchievementQuery:
-    pass
+    @staticmethod
+    def create_achievement(criteria_id: int, user_id: int, achievement_file: str, comment: str) -> Achievement:
+        db.session.rollback()
+
+        achievement = Achievement()
+        achievement.criteria_id = criteria_id
+        achievement.user_id = user_id
+        achievement.achievement_file = achievement_file
+        achievement.comment = comment
+
+        db.session.add(achievement)
+        db.session.commit()
+
+        return achievement
+
+    @staticmethod
+    def get_achievements_by_group(group) -> list[Achievement]:
+        users = db.session.query(User.id).filter(User.group_id==group.id).all()
+        return Achievement.query.filter(Achievement.user_id.in_([id for id, in users])).all()
+
+    @staticmethod
+    def get_achievement_by_id(achievement_id) -> Achievement:
+        return Achievement.query.get(achievement_id)
+
+    @staticmethod
+    def approve_achievement(achievement: Achievement):
+        achievement.is_approved = True
+        db.session.commit()
+
+    @staticmethod
+    def disapprove_achievement(achievement: Achievement):
+        achievement.is_disapproved = True
+        db.session.commit()

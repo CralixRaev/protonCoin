@@ -20,3 +20,13 @@ def admin_required(func):
         return func(*args, **kwargs)
 
     return decorated_view
+
+
+def teacher_required(func):
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        if not current_user.is_teacher:
+            return flask.abort(403)
+        return func(*args, **kwargs)
+
+    return decorated_view

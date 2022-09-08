@@ -7,6 +7,9 @@ class Basis(db.Model):
 
     criteria = db.relation("Criteria", back_populates='basis')
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class BasisQuery:
     @staticmethod

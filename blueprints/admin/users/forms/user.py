@@ -10,4 +10,5 @@ class UserForm(FlaskForm):
     group_id = SelectField("Класс", coerce=int)
     email = EmailField("Электронная почта")
     is_admin = BooleanField("Администратор")
+    is_teacher = BooleanField("Учитель")
     submit = SubmitField('Создать/Изменить')

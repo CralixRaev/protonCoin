@@ -10,13 +10,14 @@ from blueprints.api.api import api_blueprint as api
 from blueprints.landing.catalog.catalog import catalog
 from blueprints.landing.landing import landing
 from blueprints.login.login import login
+from blueprints.teacher.teacher import teacher
 from db.database import db
 from flask_login import LoginManager
 from dotenv import load_dotenv
 
 from db.models.balances import BalanceQuery
 from db.models.user import User, UserQuery
-from uploads import avatars, gift_images
+from uploads import avatars, gift_images, achievement_files
 
 load_dotenv()
 
@@ -32,6 +33,7 @@ app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(os.path.abspath(os.path.dirnam
 app.config['UPLOADS_AUTOSERVE'] = True
 
 app.register_blueprint(admin, url_prefix='/admin')
+app.register_blueprint(teacher, url_prefix='/teacher')
 app.register_blueprint(login, url_prefix='/login')
 app.register_blueprint(landing, url_prefix='/')
 app.register_blueprint(api, url_prefix='/api/v1/')
@@ -73,6 +75,7 @@ migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
 
 configure_uploads(app, avatars)
 configure_uploads(app, gift_images)
+configure_uploads(app, achievement_files)
 
 
 def main():
@@ -87,6 +90,7 @@ def main():
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                           'favicon.ico',mimetype='image/vnd.microsoft.icon')
+
 
 if __name__ == "__main__":
     main()
