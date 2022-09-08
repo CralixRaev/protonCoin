@@ -9,6 +9,8 @@ class Gift(db.Model):
     price = db.Column(db.Integer)
     image = db.Column(db.String(1024), default="default.jpeg")
 
+    orders = db.relation("Order", back_populates='gift')
+
     @property
     def image_file(self):
         return gift_images.url(self.image if self.image else 'default.jpeg')

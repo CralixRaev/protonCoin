@@ -5,6 +5,7 @@ from blueprints.admin.basises.basises import basises
 from blueprints.admin.criterias.criterias import criterias
 from blueprints.admin.gifts.gifts import gifts
 from blueprints.admin.groups.groups import groups
+from blueprints.admin.orders.orders import orders
 from blueprints.admin.transactions.transactions import transactions
 from blueprints.admin.users.users import users
 from util import admin_required
@@ -16,6 +17,7 @@ admin.register_blueprint(transactions, url_prefix="/transactions/")
 admin.register_blueprint(gifts, url_prefix="/gifts/")
 admin.register_blueprint(basises, url_prefix="/basises/")
 admin.register_blueprint(criterias, url_prefix="/criterias/")
+admin.register_blueprint(orders, url_prefix="/orders/")
 
 
 @admin.route('/')
