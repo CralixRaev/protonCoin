@@ -69,7 +69,7 @@ def create_admin(login):
 
 
 db.init_app(app)
-migrate = Migrate(app, db, render_as_batch=True)
+migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
 
 configure_uploads(app, avatars)
 configure_uploads(app, gift_images)

@@ -7,7 +7,7 @@ class Gift(db.Model):
     name = db.Column(db.String(255))
     description = db.Column(db.Text)
     price = db.Column(db.Integer)
-    image = db.Column(db.String(255), default="default.jpeg")
+    image = db.Column(db.String(1024), default="default.jpeg")
 
     @property
     def image_file(self):
