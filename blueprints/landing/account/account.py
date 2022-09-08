@@ -79,8 +79,9 @@ def declare_achievement():
         "form": form
     }
     if form.validate_on_submit():
-        # flask.flash("Ладно, поверим тебе наслово")
+        flask.flash("Достижение принято. Ожидайте одобрения администратором")
         # criteria = CriteriaQuery.get_criteria_by_id(form.criteria_id.data)
-        # TransactionQuery.create_accrual(current_user.balance, criteria.cost, f"За критерий {criteria.name} - {criteria.basis.name}")
+        # TransactionQuery.create_accrual(current_user.balance, criteria.cost,
+        # f"За критерий {criteria.name} - {criteria.basis.name}")
         return redirect(url_for(".transactions"))
     return render_template("account/declare_achievement.html", **context)
