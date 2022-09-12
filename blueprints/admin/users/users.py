@@ -78,9 +78,9 @@ def import_users():
         for i, cells in enumerate(ws_read.iter_rows(2), start=2):
             full_name = [i.value for i in cells][0]
             try:
-                name, surname, patronymic = full_name.split()
+                surname, name, patronymic = full_name.split()
             except ValueError:
-                name, surname = full_name.split()
+                surname, name = full_name.split()
                 patronymic = None
             user, password = UserQuery.create_user(name, surname, patronymic, None, False,
                                                    False,
