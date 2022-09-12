@@ -1,7 +1,9 @@
+import logging
 import secrets
 import string
 from datetime import datetime
 
+import sqlalchemy.exc
 from flask_login import UserMixin
 from transliterate import translit
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -89,13 +91,18 @@ class UserQuery:
         user.balance = BalanceQuery.create_balance(user.id)
 
         user.login = UserQuery._create_login(name, surname, patronymic)
-        if UserQuery.get_user_by_login(user.login):
-            user.login = user.login + '1'
+
         password = UserQuery._random_password()
         user.set_password(password)
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError:
+            db.session.rollback()
 
-        db.session.add(user)
-        db.session.commit()
+            user.login += '1'
+
+            db.session.commit()
         return user, password
 
     @staticmethod
