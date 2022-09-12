@@ -83,6 +83,7 @@ def import_users():
                 name, surname = full_name.split()
                 patronymic = None
             user, password = UserQuery.create_user(name, surname, patronymic, None, False,
+                                                   False,
                                                    form.group_id.data if form.group_id.data != -1 else None)
             ws_write.cell(i, 1, user.full_name)
             ws_write.cell(i, 2, user.login)
@@ -90,7 +91,8 @@ def import_users():
         dim_holder = DimensionHolder(worksheet=ws_write)
 
         for col in range(ws_write.min_column, ws_write.max_column + 1):
-            dim_holder[get_column_letter(col)] = ColumnDimension(ws_write, min=col, max=col, width=20)
+            dim_holder[get_column_letter(col)] = ColumnDimension(ws_write, min=col, max=col,
+                                                                 width=20)
 
         ws_write.column_dimensions = dim_holder
         with NamedTemporaryFile() as tmp:
