@@ -18,6 +18,7 @@ from dotenv import load_dotenv
 from db.models.balances import BalanceQuery
 from db.models.user import User, UserQuery
 from uploads import avatars, gift_images, achievement_files
+import logging
 
 load_dotenv()
 
@@ -76,6 +77,12 @@ migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
 configure_uploads(app, avatars)
 configure_uploads(app, gift_images)
 configure_uploads(app, achievement_files)
+
+# log only in production mode.
+if not app.debug:
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.ERROR)
+    app.logger.addHandler(stream_handler)
 
 
 def main():
