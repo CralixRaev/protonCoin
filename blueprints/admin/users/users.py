@@ -77,7 +77,11 @@ def import_users():
         [ws_write.cell(1, i + 1, name) for i, name in enumerate(['ФИО', 'Логин', 'Пароль'])]
         for i, cells in enumerate(ws_read.iter_rows(2), start=2):
             full_name = [i.value for i in cells][0]
-            name, surname, patronymic = full_name.split()
+            try:
+                name, surname, patronymic = full_name.split()
+            except ValueError:
+                name, surname = full_name.split()
+                patronymic = None
             user, password = UserQuery.create_user(name, surname, patronymic, None, False,
                                                    form.group_id.data if form.group_id.data != -1 else None)
             ws_write.cell(i, 1, user.full_name)
