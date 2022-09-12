@@ -89,6 +89,8 @@ class UserQuery:
         user.balance = BalanceQuery.create_balance(user.id)
 
         user.login = UserQuery._create_login(name, surname, patronymic)
+        if not UserQuery.get_user_by_login(user.login) is None:
+            user.login = user.login + '1'
         password = UserQuery._random_password()
         user.set_password(password)
 
