@@ -4,6 +4,7 @@ import flask
 from flask import Blueprint, render_template, redirect, url_for
 from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
+from werkzeug.utils import secure_filename
 
 from blueprints.landing.account.forms import achievement
 from blueprints.landing.account.forms.achievement import AchievementForm
@@ -16,6 +17,7 @@ from db.models.criteria import CriteriaQuery
 from db.models.transaction import TransactionQuery
 from db.models.user import UserQuery
 from uploads import avatars, achievement_files
+from transliterate import translit
 
 account = Blueprint('account', __name__, template_folder='templates', static_folder='static')
 
@@ -82,6 +84,7 @@ def declare_achievement():
     if form.validate_on_submit():
         achievement_file = None
         if form.file.data:
+            form.file.data.filename = secure_filename(translit(form.file.data.filename, 'ru', True))
             achievement_file = achievement_files.save(form.file.data)
         AchievementQuery.create_achievement(form.criteria_id.data, current_user.id,
                                             achievement_file if form.file.data else None,
