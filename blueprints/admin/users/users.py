@@ -65,6 +65,7 @@ def delete_user():
     flask.flash(f"Пользователь ID: {user.id} - {user.full_name} успешно удалён")
     return redirect(url_for('admin.users.index'))
 
+
 @users.route('/import/', methods=['GET', 'POST'])
 @login_required
 @admin_required

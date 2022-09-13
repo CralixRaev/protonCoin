@@ -27,3 +27,22 @@ class GroupQuery:
         db.session.add(group)
         db.session.commit()
         return group
+
+    @staticmethod
+    def get_group_by_id(group_id) -> Group:
+        return Group.query.get(group_id)
+
+    @staticmethod
+    def update_group(group: Group, stage: int, letter: str) -> Group:
+        db.session.rollback()
+
+        group.stage = stage
+        group.letter = letter
+
+        db.session.commit()
+        return group
+
+    @staticmethod
+    def delete_group(group_id: Group):
+        Group.query.filter(Group.id == group_id.id).delete()
+        db.session.commit()
