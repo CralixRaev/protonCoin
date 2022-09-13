@@ -1,3 +1,5 @@
+from flask import current_app
+
 from db.database import db
 from db.models.transaction import Transaction
 
@@ -33,6 +35,7 @@ class BalanceQuery:
     @staticmethod
     def ensure_bank_balance():
         if not Balance.query.filter(Balance.user_id == None).first():
+            current_app.logger.error("Default balance was not present, creating a new one")
             balance = Balance()
             db.session.add(balance)
             db.session.commit()
