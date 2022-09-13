@@ -25,7 +25,7 @@
             {% for user in users %}
                 <tr>
                     <td>{{ user.id }}</td>
-                    <td>{{ user.full_name }}</td>
+                    <td>{{ user.full_name }} ({{ user.login }})</td>
                     <td>
                         {% if user.group.name %}
                             {{ user.group.name }}
