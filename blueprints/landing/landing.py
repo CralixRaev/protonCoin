@@ -7,10 +7,10 @@ landing = Blueprint('landing', __name__, template_folder='templates', static_fol
 landing.register_blueprint(catalog, url_prefix="/catalog")
 landing.register_blueprint(account, url_prefix="/account")
 
+
 @landing.route("/")
 def index():
     context = {
         'title': "Главная страница"
     }
     return render_template("landing/base.html", **context)
-

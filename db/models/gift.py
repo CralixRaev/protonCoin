@@ -18,8 +18,9 @@ class Gift(db.Model):
 
 class GiftQuery:
     @staticmethod
-    def get_all_gifts() -> list[Gift]:
-        return Gift.query.order_by(Gift.price.desc()).all()
+    def get_all_gifts(order_by=Gift.price.desc()) -> list[Gift]:
+        print()
+        return Gift.query.order_by(order_by).all()
 
     @staticmethod
     def create_gift(name, description, price, image_path) -> Gift:
