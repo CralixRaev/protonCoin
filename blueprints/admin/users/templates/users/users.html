@@ -45,8 +45,9 @@
         <script>
             function detailFormatter(index, row) {
                 let html = []
-                html.push("<a href=\"/admin/users/new_password/?id=" + row.id + "\" class=\"btn btn-primary btn-sm\" role=\"button\" data-toggle=\"button\">Сгенерировать новый пароль</a>")
-                html.push("<a href=\"/admin/users/edit/?id=" + row.id + "\" class=\"btn btn-primary btn-sm\" role=\"button\" data-toggle=\"button\">Редактировать пользователя</a>")
+                html.push("<a href=\"/admin/users/new_password/?id=" + row.id + "\" class=\"btn btn-primary btn-sm me-1\" role=\"button\" data-toggle=\"button\">Сгенерировать новый пароль</a>")
+                html.push("<a href=\"/admin/users/edit/?id=" + row.id + "\" class=\"btn btn-primary btn-sm me-1\" role=\"button\" data-toggle=\"button\">Редактировать пользователя</a>")
+                html.push("<a href=\"/admin/users/delete/?id=" + row.id + "\" class=\"btn btn-danger btn-sm me-1\" role=\"button\" data-toggle=\"button\">Удалить пользователя</a>")
                 return html
             }
         </script>

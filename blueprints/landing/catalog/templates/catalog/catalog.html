@@ -47,8 +47,8 @@
 
     <script>
         $("#orderBySelect").change(function () {
-            var optionValue = $(this).val();
-            var url = window.location.href.split("?")[0];
+            let optionValue = $(this).val();
+            let url = window.location.href.split("?")[0];
             if (window.location.href.indexOf("?") > 0) {
                 window.location = url + "?order_by=" + optionValue;
             } else {

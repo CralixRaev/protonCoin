@@ -147,3 +147,8 @@ class UserQuery:
     def update_email(user, email):
         user.email = email
         db.session.commit()
+
+    @staticmethod
+    def delete_user(user: User):
+        User.query.filter(User.id == user.id).delete()
+        db.session.commit()

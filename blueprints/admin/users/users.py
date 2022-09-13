@@ -55,6 +55,16 @@ def create_user():
     return render_template("users/user.html", **context)
 
 
+@users.route('/delete/')
+@login_required
+@admin_required
+def delete_user():
+    user_id = request.args.get("id")
+    user = UserQuery.get_user_by_id(user_id)
+    UserQuery.delete_user(user)
+    flask.flash(f"Пользователь ID: {user.id} - {user.full_name} успешно удалён")
+    return redirect(url_for('admin.users.index'))
+
 @users.route('/import/', methods=['GET', 'POST'])
 @login_required
 @admin_required
