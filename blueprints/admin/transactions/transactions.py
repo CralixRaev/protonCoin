@@ -27,7 +27,7 @@ def index():
 @admin_required
 def create():
     balances = BalanceQuery.get_all_balances()
-    users_list = [(balance.id, balance) for balance in sorted(balances, key=lambda x: x.user.full_name)]
+    users_list = [(balance.id, balance) for balance in sorted(balances, key=lambda x: x.user.full_name if x.user else "0")]
     form = TransactionForm()
     form.from_balance_id.choices = users_list
     form.to_balance_id.choices = users_list
