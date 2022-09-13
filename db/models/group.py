@@ -43,6 +43,6 @@ class GroupQuery:
         return group
 
     @staticmethod
-    def delete_group(group_id: Group):
-        Group.query.filter(Group.id == group_id.id).delete()
+    def delete_group(group: Group):
+        Group.query.filter(Group.id == group.id).delete()
         db.session.commit()

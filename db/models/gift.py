@@ -46,3 +46,8 @@ class GiftQuery:
     @staticmethod
     def get_gift_by_id(gift_id) -> Gift:
         return Gift.query.get(gift_id)
+
+    @staticmethod
+    def delete_gift(gift: Gift):
+        Gift.query.filter(Gift.id == gift.id).delete()
+        db.session.commit()

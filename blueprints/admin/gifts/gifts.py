@@ -65,3 +65,15 @@ def edit_gift():
         return redirect(url_for('admin.gifts.index'))
     context['form'] = GiftForm(MultiDict(gift.__dict__.items()))
     return render_template("gifts/gift.html", **context)
+
+
+@gifts.route('/delete/')
+@login_required
+@admin_required
+def delete_user():
+    gift_id = request.args.get("id")
+    gift = GiftQuery.get_gift_by_id(gift_id)
+    GiftQuery.delete_gift(gift)
+    flask.flash(f"Подарок ID: {gift.id} - {gift.name} успешно удалён")
+    return redirect(url_for('admin.gifts.index'))
+
