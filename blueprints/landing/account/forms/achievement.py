@@ -9,8 +9,8 @@ from uploads import avatars, achievement_files
 
 
 class AchievementForm(FlaskForm):
-    criteria_id = SelectField("Критерий", coerce=int)
+    criteria_id = SelectField("Критерий *", coerce=int, validators=[DataRequired()])
     comment = TextAreaField("Комментарий")
-    file = FileField("Файл, подтверждающий достижение", validators=[
-        FileAllowed(achievement_files, 'Картинка или документ')])
+    file = FileField("Файл, подтверждающий достижение *", validators=[
+        FileAllowed(achievement_files, 'Картинка или документ'), FileRequired()])
     submit = SubmitField('Отправить')
