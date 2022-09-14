@@ -54,7 +54,9 @@ class AchievementQuery:
     @staticmethod
     def get_achievements_by_group(group) -> list[Achievement]:
         users = db.session.query(User.id).filter(User.group_id==group.id).all()
-        return Achievement.query.filter(Achievement.user_id.in_([id for id, in users])).all()
+        return Achievement.query.filter(Achievement.user_id.in_([id for id, in users]),
+                                        Achievement.is_approved==False,
+                                        Achievement.is_disapproved==False).all()
 
     @staticmethod
     def get_achievement_by_id(achievement_id) -> Achievement:

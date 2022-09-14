@@ -35,7 +35,8 @@ def approve():
     TransactionQuery.create_accrual(achievement.user.balance, achievement.criteria.cost,
                                     comment=f"За достижение ({achievement.criteria.basis})"
                                             f" {achievement.criteria} (ID: {achievement.id})")
-    flask.flash(f"Достижение одобрено")
+    flask.flash(f"Достижение одобрено. Ученику {achievement.user.full_name} выдан"
+                f" {achievement.criteria.cost} {current_app.config['COIN_UNIT']}")
     return redirect(url_for('teacher.achievements.index'))
 
 
