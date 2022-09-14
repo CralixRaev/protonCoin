@@ -19,6 +19,8 @@ from db.models.user import UserQuery
 from uploads import avatars, achievement_files
 from transliterate import translit
 
+from util import password_check
+
 account = Blueprint('account', __name__, template_folder='templates', static_folder='static')
 
 
@@ -48,6 +50,9 @@ def index():
             return redirect(url_for(".index"))
         if form_password.password.data != form_password.confirm.data:
             flask.flash("Пароли не совпадают")
+            return redirect(url_for(".index"))
+        if not password_check(form_password.password.data)['password_ok']:
+            flask.flash("Пароль не соответствует требованиям безопасности")
             return redirect(url_for(".index"))
         UserQuery.update_password(current_user, form_password.password.data)
         flask.flash("Пароль успешно обновлен")
