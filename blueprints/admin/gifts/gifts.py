@@ -70,7 +70,7 @@ def edit_gift():
 @gifts.route('/delete/')
 @login_required
 @admin_required
-def delete_user():
+def delete_gift():
     gift_id = request.args.get("id")
     gift = GiftQuery.get_gift_by_id(gift_id)
     GiftQuery.delete_gift(gift)

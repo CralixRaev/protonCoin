@@ -2,12 +2,14 @@
 
 {% block content %}
     <div class="d-flex justify-content-end">
-        <a href="{{ url_for("admin.criterias.create_criteria") }}" class="btn btn-primary" role="button" data-toggle="button">Создать
+        <a href="{{ url_for("admin.criterias.create_criteria") }}" class="btn btn-primary" role="button"
+           data-toggle="button">Создать
             критерию</a>
     </div>
     <div class="table-responsive">
         <table class="table table-striped table-sm" data-toggle="table" data-pagination="true"
-               data-search="true" data-show-columns="true" data-locale="ru-RU" data-show-refresh="true">
+               data-search="true" data-show-columns="true" data-locale="ru-RU" data-show-refresh="true"
+               data-detail-view="true" data-detail-formatter="detailFormatter">
             <thead>
             <tr>
                 <th data-sortable="true" data-field="id">ID</th>
@@ -28,4 +30,13 @@
 
             </tbody>
         </table>
+
+        <script>
+            function detailFormatter(index, row) {
+                let html = []
+                html.push("<a href=\"/admin/criterias/edit/?id=" + row.id + "\" class=\"btn btn-primary btn-sm me-1\" role=\"button\" data-toggle=\"button\">Редактировать критерию</a>")
+                html.push("<a href=\"/admin/criterias/delete/?id=" + row.id + "\" class=\"btn btn-danger btn-sm me-1\" role=\"button\" data-toggle=\"button\">Удалить критерию</a>")
+                return html
+            }
+        </script>
 {% endblock %}

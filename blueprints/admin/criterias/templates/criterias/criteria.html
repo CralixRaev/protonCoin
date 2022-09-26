@@ -36,5 +36,8 @@
                 {% endfor %}
             </div>
         </div>
+        <div class="checkbox mb-3">
+            {{ form.is_user_achievable() }} {{ form.is_user_achievable.label }}
+        </div>
         {{ form.submit(type="submit", class="w-100 btn btn-lg btn-primary") }}
     </form>{% endblock %}

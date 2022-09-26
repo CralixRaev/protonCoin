@@ -87,16 +87,20 @@ def declare_achievement():
         "form": form
     }
     if form.validate_on_submit():
-        achievement_file = None
-        if form.file.data:
-            form.file.data.filename = secure_filename(translit(form.file.data.filename, 'ru', True))
-            achievement_file = achievement_files.save(form.file.data)
-        AchievementQuery.create_achievement(form.criteria_id.data, current_user.id,
-                                            achievement_file if form.file.data else None,
-                                            form.comment.data)
-        flask.flash("Достижение принято. Ожидайте одобрения классным руководителем")
-        # criteria = CriteriaQuery.get_criteria_by_id(form.criteria_id.data)
-        # TransactionQuery.create_accrual(current_user.balance, criteria.cost,
-        # f"За критерий {criteria.name} - {criteria.basis.name}")
-        return redirect(url_for(".transactions"))
+        print(CriteriaQuery.get_criteria_by_id(form.criteria_id.data).is_user_achievable)
+        if not CriteriaQuery.get_criteria_by_id(form.criteria_id.data).is_user_achievable:
+            flask.flash("Упс... Это начислят автоматически - без твоего участия! ✨🔮")
+        else:
+            achievement_file = None
+            if form.file.data:
+                form.file.data.filename = secure_filename(translit(form.file.data.filename, 'ru', True))
+                achievement_file = achievement_files.save(form.file.data)
+            AchievementQuery.create_achievement(form.criteria_id.data, current_user.id,
+                                                achievement_file if form.file.data else None,
+                                                form.comment.data)
+            flask.flash("Достижение принято. Жди одобрения классным руководителем ⌛")
+            # criteria = CriteriaQuery.get_criteria_by_id(form.criteria_id.data)
+            # TransactionQuery.create_accrual(current_user.balance, criteria.cost,
+            # f"За критерий {criteria.name} - {criteria.basis.name}")
+            return redirect(url_for(".transactions"))
     return render_template("account/declare_achievement.html", **context)
