@@ -1,0 +1,31 @@
+{% extends "landing/base.html" %}
+
+{% block content %}
+    <div class="album py-2 rounded bg-light">
+        <div class="container">
+            <h1 class="text-center">Топ 10 самых богатых людей Протона</h1>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Место</th>
+                    <th>ФИО</th>
+                    <th>Количество {{ config.COIN_UNIT }}ов</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i, balance in top_balances %}
+                    {% if i <= 3 %}
+                        <tr style="background-color: {{ colors[i - 1] }}; color: #ffffff">
+                    {% else %}
+                        <tr>
+                    {% endif %} 
+                        <td>{{ i }}.</td>
+                        <td>{{ balance.user.full_name }}</td>
+                        <td>{{ balance.amount }} <img src="/static/coin.png" style="height: 16px;"> {{ config.COIN_UNIT }}ов</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

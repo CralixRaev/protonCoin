@@ -53,3 +53,7 @@ class BalanceQuery:
     def get_bank():
         # TODO: cache this shit
         return Balance.query.filter(Balance.user_id == None).first()
+
+    @staticmethod
+    def top_balances(number: int = 10) -> list[Balance]:
+        return Balance.query.filter(Balance.amount > 0).order_by(Balance.amount.desc()).limit(number).all()
