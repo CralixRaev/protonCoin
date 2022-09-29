@@ -7,7 +7,7 @@
                data-detail-view="true" data-detail-formatter="detailFormatter">
             <thead>
             <tr>
-{#                <th data-sortable="true" data-field="id">ID</th>#}
+                <th data-sortable="true" data-field="id">ID</th>
                 <th data-sortable="true">ФИО</th>
                 <th data-sortable="true">Критерий</th>
                 <th data-sortable="true">Файл</th>
@@ -18,7 +18,7 @@
             <tbody>
             {% for achievement in achievements %}
                 <tr>
-{#                    <td>{{ achievement.id }}</td>#}
+                    <td>{{ achievement.id }}</td>
                     <td>{{ achievement.user.full_name }}</td>
                     <td>
                         ({{ achievement.criteria.basis }}) {{ achievement.criteria }}
