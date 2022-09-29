@@ -1,7 +1,6 @@
 from flask import current_app
 
 from db.database import db
-from db.models.transaction import Transaction
 
 
 class Balance(db.Model):
@@ -31,6 +30,10 @@ class BalanceQuery:
     @staticmethod
     def get_all_balances() -> list[Balance]:
         return Balance.query.all()
+
+    @staticmethod
+    def get_balance_by_id(balance_id: int) -> Balance:
+        return Balance.query.filter(Balance.id == balance_id).first()
 
     @staticmethod
     def ensure_bank_balance():

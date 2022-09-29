@@ -1,6 +1,9 @@
 from datetime import datetime
 
+import flask
+
 from db.database import db
+from db.models.balances import BalanceQuery
 
 
 class Transaction(db.Model):
@@ -22,21 +25,28 @@ class TransactionQuery:
 
     @staticmethod
     def create_transaction(from_balance_id, to_balance_id, amount, comment=None) -> Transaction:
-        transaction = Transaction()
-        transaction.from_balance_id = from_balance_id
-        transaction.to_balance_id = to_balance_id
-        transaction.amount = amount
-        transaction.comment = comment
-        # TODO: commit once to ensure what transaction is completed successfully
-        db.session.add(transaction)
-        db.session.commit()
-        if not transaction.from_balance.is_bank:
-            transaction.from_balance.amount -= amount
+        try:
+            transaction = Transaction()
+            transaction.from_balance_id = from_balance_id
+            transaction.to_balance_id = to_balance_id
+            transaction.amount = amount
+            transaction.comment = comment
+            db.session.add(transaction)
+            print(from_balance_id)
+            from_balance = BalanceQuery.get_balance_by_id(from_balance_id)
+            to_balance = BalanceQuery.get_balance_by_id(to_balance_id)
+            print(from_balance)
+            if not from_balance.is_bank:
+                transaction.from_balance.amount -= amount
 
-        if not transaction.to_balance.is_bank:
-            transaction.to_balance.amount += amount
-        db.session.commit()
-        return transaction
+            if not to_balance.is_bank:
+                transaction.to_balance.amount += amount
+            db.session.commit()
+            return transaction
+        except Exception as e:
+            db.session.rollback()
+            flask.current_app.logger.error("Error while creating transaction", e)
+            flask.abort(500)
 
     @staticmethod
     def get_withdraws(balance) -> list[Transaction]:

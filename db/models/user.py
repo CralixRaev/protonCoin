@@ -152,3 +152,11 @@ class UserQuery:
     def delete_user(user: User):
         User.query.filter(User.id == user.id).delete()
         db.session.commit()
+
+    @staticmethod
+    def find_user(surname, name, patronymic, number, letter) -> User | None:
+        return User.query.join(User.group, aliased=True).filter(letter == letter,
+                                                                number == number,
+                                                                User.surname == surname,
+                                                                User.name == name,
+                                                                User.patronymic == patronymic).first()
