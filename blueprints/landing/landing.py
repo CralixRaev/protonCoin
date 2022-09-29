@@ -14,6 +14,6 @@ def index():
     context = {
         'title': "Главная страница",
         'top_balances': enumerate(BalanceQuery.top_balances(10), start=1),
-        'colors': ["#AF9500", '#B4B4B4', "#6A3805"]
+        'colors': ["#8BA7CF"]
     }
     return render_template("landing/top.html", **context)
