@@ -60,7 +60,7 @@
     </nav>
 
 </header>
-<main class="container mt-5">
+<main class="container mt-5" style="min-height: 100vh;">
     <script
             src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
@@ -76,6 +76,13 @@
     {% endwith %}
     {% block content %}{% endblock %}
 </main>
+<footer class="bg-light text-center text-lg-start">
+    <div class="text-center p-3">
+         © 2022 Разработано Раевым Анатолием.
+    <a href="https://github.com/CralixRaev/protonCoin"><img height="32px"
+                                                            src="/static/github.svg"></a>
+    </div>
+</footer>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
