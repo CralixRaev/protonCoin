@@ -19,7 +19,8 @@
                                             <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{ current_user.full_name }}</h4>
                                             <p class="mb-0">{{ current_user.login }}</p>
                                             <div class="text-muted"><small>{{ current_user.balance.amount }}
-                                                 <img src="/static/coin.png" style="height: 16px;"> {{ config.COIN_UNIT }}
+                                                <img src="/static/coin.png"
+                                                     style="height: 16px;"> {{ config.COIN_UNIT }}
                                                 на балансе</small></div>
                                             <form action="" method="POST" enctype="multipart/form-data"
                                                   id="avatar_form">
@@ -36,84 +37,17 @@
                                     </div>
                                 </div>
                                 <ul class="nav nav-tabs">
-                                    <li class="nav-item"><a href="{{ url_for(".index") }}" class="active nav-link">Настройки</a></li>
-                                    <li class="nav-item"><a href="{{ url_for(".transactions") }}" class="nav-link">Транзакции</a></li>
+                                    <li class="nav-item"><a href="{{ url_for(".index") }}"
+                                                            class="nav-link{% if url_for(request.endpoint) == url_for(".index") %} active{% endif %}">Настройки</a>
+                                    </li>
+                                    <li class="nav-item"><a href="{{ url_for(".transactions") }}"
+                                                            class="nav-link{% if url_for(request.endpoint) == url_for(".transactions") %} active{% endif %}">Транзакции</a>
+                                    </li>
                                 </ul>
+
                                 <div class="tab-content pt-3">
                                     <div class="tab-pane active">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <div class="form-group">
-                                                            <label>Полное имя</label>
-                                                            <input class="form-control" type="text" name="name"
-                                                                   readonly value="{{ current_user.full_name }}">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="form-group">
-                                                            <label>Логин</label>
-                                                            <input class="form-control" type="text" name="username"
-                                                                   readonly value="{{ current_user.login }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <form action="" method="POST">
-                                                    {{ form_main.hidden_tag() }}
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <div class="form-group">
-                                                                {{ form_main.email.label }}
-                                                                {{ form_main.email(class="form-control", type="email") }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mt-1">
-                                                        <div class="col d-flex justify-content-end">
-                                                            {{ form_main.submit(type="submit", class="btn btn-primary") }}
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col">
-                                                <form action="" method="POST">
-                                                    {{ form_password.hidden_tag() }}
-                                                    <div class="mb-2"><b>Смена пароля</b></div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <div class="form-group">
-                                                                {{ form_password.old_password.label }}
-                                                                {{ form_password.old_password(class="form-control", type="password", placeholder="••••••") }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <div class="form-group">
-                                                                {{ form_password.password.label }}
-                                                                {{ form_password.password(class="form-control", type="password", placeholder="••••••") }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <div class="form-group">
-                                                                {{ form_password.confirm.label }}
-                                                                {{ form_password.confirm(class="form-control", type="password", placeholder="••••••") }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mt-1">
-                                                        <div class="col d-flex justify-content-end">
-                                                            {{ form_password.submit(class="btn btn-primary", type="submit") }}
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
+                                        {% block account_tab %}{% endblock %}
                                     </div>
                                 </div>
                             </div>

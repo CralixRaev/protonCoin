@@ -5,6 +5,15 @@ from urllib.parse import urlparse, urljoin
 import flask
 from flask import request
 from flask_login import current_user
+from flask_uploads import UploadSet
+from transliterate import translit
+from werkzeug.datastructures import FileStorage
+from werkzeug.utils import secure_filename
+
+
+def save_upload(file: FileStorage, upload_set: UploadSet) -> str:
+    file.filename = secure_filename(translit(file.filename, 'ru', True))
+    return upload_set.save(file)
 
 
 def is_safe_url(target):

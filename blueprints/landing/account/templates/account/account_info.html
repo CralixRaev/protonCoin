@@ -1,0 +1,76 @@
+{% extends "account/account.html" %}
+{% block account_tab %}
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Полное имя</label>
+                        <input class="form-control" type="text" name="name"
+                               readonly value="{{ current_user.full_name }}">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Логин</label>
+                        <input class="form-control" type="text" name="username"
+                               readonly value="{{ current_user.login }}">
+                    </div>
+                </div>
+            </div>
+            <form action="" method="POST">
+                {{ form_main.hidden_tag() }}
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_main.email.label }}
+                            {{ form_main.email(class="form-control", type="email") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col d-flex justify-content-end">
+                        {{ form_main.submit(type="submit", class="btn btn-primary") }}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col">
+            <form action="" method="POST">
+                {{ form_password.hidden_tag() }}
+                <div class="mb-2"><b>Смена пароля</b></div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_password.old_password.label }}
+                            {{ form_password.old_password(class="form-control", type="password", placeholder="••••••") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_password.password.label }}
+                            {{ form_password.password(class="form-control", type="password", placeholder="••••••") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_password.confirm.label }}
+                            {{ form_password.confirm(class="form-control", type="password", placeholder="••••••") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col d-flex justify-content-end">
+                        {{ form_password.submit(class="btn btn-primary", type="submit") }}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
