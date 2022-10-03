@@ -87,6 +87,20 @@ def transactions():
     return render_template("account/account_transactions.html", **context)
 
 
+@account.route("/achievements/", methods=['GET', 'POST'])
+@login_required
+def achievements():
+    form_avatar = AvatarForm()
+    context = {
+        "title": "Достижения",
+        'form_avatar': form_avatar,
+        'achievements': AchievementQuery.get_achievements_by_user(current_user)
+    }
+    if form_avatar.validate_on_submit():
+        _avatar_form_handler(form_avatar)
+    return render_template("account/account_achievements.html", **context)
+
+
 @account.route("/declare_achievement/", methods=["GET", "POST"])
 @login_required
 def declare_achievement():

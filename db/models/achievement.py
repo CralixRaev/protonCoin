@@ -78,6 +78,11 @@ class AchievementQuery:
         return Achievement.query.get(achievement_id)
 
     @staticmethod
+    def get_achievements_by_user(user: User) -> Achievement:
+        return Achievement.query.filter(Achievement.user_id == user.id).order_by(
+            Achievement.id.desc()).all()
+
+    @staticmethod
     def approve_achievement(achievement: Achievement):
         achievement.is_approved = True
         db.session.commit()

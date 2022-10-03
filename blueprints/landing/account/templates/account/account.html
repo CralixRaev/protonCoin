@@ -43,6 +43,9 @@
                                     <li class="nav-item"><a href="{{ url_for(".transactions") }}"
                                                             class="nav-link{% if url_for(request.endpoint) == url_for(".transactions") %} active{% endif %}">Транзакции</a>
                                     </li>
+                                    <li class="nav-item"><a href="{{ url_for(".achievements") }}"
+                                                            class="nav-link{% if url_for(request.endpoint) == url_for(".achievements") %} active{% endif %}">Достижения</a>
+                                    </li>
                                 </ul>
 
                                 <div class="tab-content pt-3">
