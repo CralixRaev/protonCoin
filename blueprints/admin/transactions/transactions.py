@@ -73,7 +73,6 @@ def import_achievements():
             surname, name, patronymic, number, letter = cells
             user = UserQuery.find_user(surname.value, name.value,
                                        patronymic.value, number.value, letter.value)
-            print(user.group.letter)
             if user:
                 TransactionQuery.create_accrual(user.balance, criteria.cost, f"За критерий ({criteria.basis.name}) {criteria.name} (начислено автоматически)")
             else:

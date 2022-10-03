@@ -32,10 +32,8 @@ class TransactionQuery:
             transaction.amount = amount
             transaction.comment = comment
             db.session.add(transaction)
-            print(from_balance_id)
             from_balance = BalanceQuery.get_balance_by_id(from_balance_id)
             to_balance = BalanceQuery.get_balance_by_id(to_balance_id)
-            print(from_balance)
             if not from_balance.is_bank:
                 transaction.from_balance.amount -= amount
 

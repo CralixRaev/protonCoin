@@ -115,7 +115,6 @@ def import_users():
 
         return Response(generate(),
                         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    print(form.errors)
     return render_template("users/import.html", **context)
 
 
