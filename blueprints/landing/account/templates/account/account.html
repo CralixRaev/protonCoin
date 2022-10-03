@@ -26,7 +26,7 @@
                                                   id="avatar_form">
                                                 {{ form_avatar.hidden_tag() }}
                                                 <div class="mt-2">
-                                                    <button class="btn btn-primary" type="button" , id="btnupload">
+                                                    <button class="btn btn-primary" type="button", id="btnupload">
                                                         <i class="fa fa-fw fa-camera"></i>
                                                         <span>Сменить фотографию профиля</span>
                                                     </button>
@@ -38,13 +38,13 @@
                                 </div>
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item"><a href="{{ url_for(".index") }}"
-                                                            class="nav-link{% if url_for(request.endpoint) == url_for(".index") %} active{% endif %}">Настройки</a>
+                                                            class="nav-link{% if url_for(request.endpoint) == url_for(".index") %} active{% endif %}"><span data-feather="settings" class="me-2"></span>Настройки</a>
                                     </li>
                                     <li class="nav-item"><a href="{{ url_for(".transactions") }}"
-                                                            class="nav-link{% if url_for(request.endpoint) == url_for(".transactions") %} active{% endif %}">Транзакции</a>
+                                                            class="nav-link{% if url_for(request.endpoint) == url_for(".transactions") %} active{% endif %}"><span data-feather="dollar-sign" class="me-2"></span>Транзакции</a>
                                     </li>
                                     <li class="nav-item"><a href="{{ url_for(".achievements") }}"
-                                                            class="nav-link{% if url_for(request.endpoint) == url_for(".achievements") %} active{% endif %}">Достижения</a>
+                                                            class="nav-link{% if url_for(request.endpoint) == url_for(".achievements") %} active{% endif %}"><span data-feather="award" class="me-2"></span>Достижения</a>
                                     </li>
                                 </ul>
 

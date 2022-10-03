@@ -2,10 +2,7 @@
 {% block account_tab %}
     <h5>Достижения</h5>
     <div class="table-responsive">
-        <table class="table table-striped table-sm" data-toggle="table"
-               data-pagination="true"
-               data-search="true" data-show-columns="true" data-locale="ru-RU"
-               data-show-refresh="true" data-sortable="true">
+        <table class="table table-striped table-sm" data-toggle="table" data-pagination="true" data-locale="ru-RU">
             <thead>
             <tr>
                 <th data-sortable="true">(Основание) Критерий</th>
@@ -15,7 +12,8 @@
             <tbody>
             {% for achievement in achievements %}
                 <tr>
-                    <td>({{ achievement.criteria.basis.name }}) {{ achievement.criteria.name }} - {{ achievement.criteria.cost }}</td>
+                    <td>({{ achievement.criteria.basis.name }}) {{ achievement.criteria.name }}
+                        - {{ achievement.criteria.cost }}</td>
                     <td>{{ achievement.status }}</td>
                 </tr>
             {% endfor %}
