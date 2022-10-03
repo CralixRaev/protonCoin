@@ -57,7 +57,7 @@ def index():
         _avatar_form_handler(form_avatar)
     elif form_password.validate_on_submit():
         error = _check_password(form_password.old_password.data,
-                                form_password.data, form_password.confirm)
+                                form_password.password.data, form_password.confirm.data)
         if error:
             flask.flash(error)
         else:
