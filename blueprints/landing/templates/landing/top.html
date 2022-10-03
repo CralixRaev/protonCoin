@@ -20,7 +20,7 @@
                         <tr>
                     {% endif %} 
                         <td>{{ i }}.</td>
-                        <td>{{ balance.user.full_name }}</td>
+                        <td><img src="{{ balance.user.avatar_path }}" height="32" class="rounded-circle me-3">{{ balance.user.full_name }}</td>
                         <td>{{ balance.amount }} <img src="/static/coin.png" style="height: 16px;"> {{ config.COIN_UNIT }}ов</td>
                     </tr>
                 {% endfor %}
