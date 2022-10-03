@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template
 from flask_login import login_required
 
+from blueprints.admin.achievements.achievements import achievements
 from blueprints.admin.basises.basises import basises
 from blueprints.admin.criterias.criterias import criterias
 from blueprints.admin.gifts.gifts import gifts
@@ -18,6 +19,7 @@ admin.register_blueprint(gifts, url_prefix="/gifts/")
 admin.register_blueprint(basises, url_prefix="/basises/")
 admin.register_blueprint(criterias, url_prefix="/criterias/")
 admin.register_blueprint(orders, url_prefix="/orders/")
+admin.register_blueprint(achievements, url_prefix="/achievements/")
 
 
 @admin.route('/')
