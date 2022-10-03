@@ -24,7 +24,6 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# TODO: use postgresql DB
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_STRING") or 'sqlite:///test.db?check_same_thread=False'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
@@ -90,13 +89,6 @@ def main():
         # ensure what default "bank" balance is present
         BalanceQuery.ensure_bank_balance()
     app.run(debug=True, host='0.0.0.0', port=80)
-
-
-# TODO: Serve other sizes and webmanifest
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 if __name__ == "__main__":
