@@ -34,6 +34,15 @@ class Achievement(db.Model):
         else:
             return "Ожидает обработки"
 
+    @property
+    def status_color_class(self) -> str:
+        if self.is_approved:
+            return "text-success fw-bold"
+        elif self.is_disapproved:
+            return "text-danger"
+        else:
+            return ""
+
 
 class AchievementQuery:
     @staticmethod

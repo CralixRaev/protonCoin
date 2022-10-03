@@ -14,7 +14,7 @@
                 <tr>
                     <td>({{ achievement.criteria.basis.name }}) {{ achievement.criteria.name }}
                         - {{ achievement.criteria.cost }}</td>
-                    <td>{{ achievement.status }}</td>
+                    <td class="{{ achievement.status_color_class }}">{{ achievement.status }}</td>
                 </tr>
             {% endfor %}
 
