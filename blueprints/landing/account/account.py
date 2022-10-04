@@ -15,7 +15,7 @@ from db.models.transaction import TransactionQuery
 from db.models.user import UserQuery
 from uploads import avatars, achievement_files
 
-from util import password_check, save_upload
+from util import password_check, save_upload, upload_avatar
 
 account = Blueprint('account', __name__, template_folder='templates', static_folder='static')
 
@@ -26,7 +26,7 @@ def _avatar_form_handler(form: AvatarForm):
             os.remove(avatars.path(current_user.avatar))
         except FileNotFoundError:
             current_app.logger.warning("Could not remove avatar!")
-    UserQuery.update_avatar(current_user, save_upload(form.image.data, avatars))
+    UserQuery.update_avatar(current_user, upload_avatar(form.image.data))
     flask.flash("Аватар успешно обновлен", "success")
     return redirect(url_for(request.endpoint))
 
