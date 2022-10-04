@@ -25,7 +25,10 @@
             {% for user in users %}
                 <tr>
                     <td>{{ user.id }}</td>
-                    <td>{{ user.full_name }} ({{ user.login }})</td>
+                    <td>
+                        <img src="{{ user.avatar_path }}" height="32px" width="32px" class="rounded-circle me-2">
+                        {{ user.full_name }} ({{ user.login }})
+                    </td>
                     <td>
                         {% if user.group.name %}
                             {{ user.group.name }}
@@ -34,7 +37,8 @@
                         {% endif %}
                     </td>
                     <td>
-                        {{ user.balance.amount }}  <img src="/static/coin.webp" style="height: 16px;"> {{ config.COIN_UNIT }}
+                        {{ user.balance.amount }} <img src="/static/coin.webp"
+                                                       style="height: 16px;"> {{ config.COIN_UNIT }}
                     </td>
                 </tr>
             {% endfor %}
