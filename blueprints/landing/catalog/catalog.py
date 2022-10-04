@@ -22,7 +22,6 @@ def index():
     order_by_type = request.args.get('order_by', 'price_desc')
     order_by = ORDER_TYPES[order_by_type]
     context = {
-        # CHANGEME
         'title': "Подарки",
         'order_by_current': order_by_type,
         'order_by': ORDER_TYPES,

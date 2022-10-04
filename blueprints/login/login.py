@@ -22,7 +22,7 @@ def index():
         user = UserQuery.get_user_by_login(form.login.data)
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            flask.flash('Успешный вход')
+            flask.flash('Успешный вход', "success")
             next_path = flask.request.args.get('next')
             if not is_safe_url(next_path):
                 return flask.abort(400)

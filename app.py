@@ -1,37 +1,53 @@
+import logging
 import os
+from typing import Any
 
 import click
-from flask import Flask, send_from_directory
+from dotenv import load_dotenv
+from flask import Flask, abort, send_from_directory, Blueprint
+from flask_login import LoginManager, login_required
 from flask_migrate import Migrate
-from flask_uploads import UploadSet, IMAGES, configure_uploads
+from flask_uploads import configure_uploads, UploadSet
 
 from blueprints.admin.admin import admin
 from blueprints.api.api import api_blueprint as api
-from blueprints.landing.catalog.catalog import catalog
 from blueprints.landing.landing import landing
 from blueprints.login.login import login
 from blueprints.teacher.teacher import teacher
 from db.database import db
-from flask_login import LoginManager
-from dotenv import load_dotenv
-
 from db.models.balances import BalanceQuery
 from db.models.user import User, UserQuery
 from uploads import avatars, gift_images, achievement_files
-import logging
+from util import admin_required
 
 load_dotenv()
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_STRING") or 'sqlite:///test.db?check_same_thread=False'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_STRING") or \
+                                        'sqlite:///test.db?check_same_thread=False'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['COIN_UNIT'] = "ПРОтоКоин"
 app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                                   'uploads')
-app.config['UPLOADS_AUTOSERVE'] = True
+app.config['UPLOADS_AUTOSERVE'] = False
 
+_uploads = Blueprint("_uploads", "_uploads")
+
+
+# require admin for all not-proxied uploads
+@_uploads.route('/<setname>/<path:filename>')
+@login_required
+@admin_required
+def uploaded_file(setname: UploadSet, filename: str) -> Any:
+    config = app.upload_set_config.get(setname)  # type: ignore
+    if config is None:
+        abort(404)
+    return send_from_directory(config.destination, filename)
+
+
+app.register_blueprint(_uploads, url_prefix="/uploads")
 app.register_blueprint(admin, url_prefix='/admin')
 app.register_blueprint(teacher, url_prefix='/teacher')
 app.register_blueprint(login, url_prefix='/login')
@@ -47,9 +63,6 @@ login_manager.login_message = "Пожалуйста, войдите, что бы
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
-
-
-from db.__all_models import *
 
 
 @app.cli.command("create_admin")
