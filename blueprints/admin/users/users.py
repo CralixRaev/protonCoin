@@ -1,4 +1,5 @@
 import io
+import json
 from tempfile import NamedTemporaryFile
 
 import flask
@@ -31,6 +32,26 @@ def index():
     return render_template("users/users.html", **context)
 
 
+@users.route('/_data/')
+@login_required
+@admin_required
+def data():
+    # TODO: REFACTOR NEEDED !!!
+    is_filtered = False
+    if request.args.get("search[value]", None):
+        is_filtered = True
+        users, count = UserQuery.search_by_name(request.args.get("search[value]"))
+    else:
+        users = UserQuery.get_offset_limit_users(request.args.get("start"), request.args.get("length"))
+    answer = {"recordsTotal": UserQuery.user_count(),
+              "recordsFiltered": UserQuery.user_count() if not is_filtered else count, 'data': [
+            {"id": str(i.id), "full_name": f"<img src=\"{ i.avatar_path }\" height=\"32px\" width=\"32px\" class=\"rounded-circle me-2\">{i.full_name} ({i.login})",
+             "group_name": i.group.name if i.group else "Нет",
+             "balance_amount": str(i.balance.amount)} for i in users],
+              "draw": int(request.args.get("draw"))}
+    return json.dumps(answer)
+
+
 @users.route('/create/', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -50,7 +71,8 @@ def create_user():
                                                form.is_admin.data, form.is_teacher.data,
                                                form.group_id.data
                                                if form.group_id.data != -1 else None)
-        flask.flash(f"Пользователь успешно создан. Его логин: {user.login}, пароль: {password}", "success")
+        flask.flash(f"Пользователь успешно создан. Его логин: {user.login}, пароль: {password}",
+                    "success")
         return redirect(url_for('admin.users.index'))
     return render_template("users/user.html", **context)
 

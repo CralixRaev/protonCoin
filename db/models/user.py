@@ -5,6 +5,7 @@ from datetime import datetime
 
 import sqlalchemy.exc
 from flask_login import UserMixin
+from sqlalchemy import func
 from transliterate import translit
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -73,6 +74,21 @@ class UserQuery:
     @staticmethod
     def get_all_users() -> list[User]:
         return User.query.all()
+
+    @staticmethod
+    def search_by_name(full_name, offset=0, limit=10) -> tuple[list[User], int]:
+        searched = User.query.filter(
+            (User.surname + ' ' + User.name + ' ' + User.patronymic).like(
+                f"%{full_name}%"))
+        return searched.offset(offset).limit(limit).all(), searched.count()
+
+    @staticmethod
+    def user_count() -> int:
+        return User.query.count()
+
+    @staticmethod
+    def get_offset_limit_users(offset=0, limit=10) -> list[User]:
+        return User.query.offset(offset).limit(limit).all()
 
     @staticmethod
     def create_user(name, surname, patronymic=None, email=None, is_admin=False, is_teacher=False,
