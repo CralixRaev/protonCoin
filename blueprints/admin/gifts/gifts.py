@@ -41,7 +41,7 @@ def create_gift():
         filename = gift_images.save(image)
         gift = GiftQuery.create_gift(form.name.data, form.description.data, form.price.data,
                                      filename)
-        flask.flash(f"Подарок успешно создан")
+        flask.flash(f"Подарок успешно создан", "success", "success")
         return redirect(url_for('admin.gifts.index'))
     return render_template("gifts/gift.html", **context)
 
@@ -61,7 +61,7 @@ def edit_gift():
         filename = gift_images.save(image)
         gift = GiftQuery.update_gift(gift, form.name.data, form.description.data, form.price.data,
                                      filename)
-        flask.flash(f"Подарок успешно обновлен")
+        flask.flash(f"Подарок успешно обновлен", "success")
         return redirect(url_for('admin.gifts.index'))
     context['form'] = GiftForm(MultiDict(gift.__dict__.items()))
     return render_template("gifts/gift.html", **context)
@@ -74,6 +74,6 @@ def delete_gift():
     gift_id = request.args.get("id")
     gift = GiftQuery.get_gift_by_id(gift_id)
     GiftQuery.delete_gift(gift)
-    flask.flash(f"Подарок ID: {gift.id} - {gift.name} успешно удалён")
+    flask.flash(f"Подарок ID: {gift.id} - {gift.name} успешно удалён", "success")
     return redirect(url_for('admin.gifts.index'))
 

@@ -36,7 +36,7 @@ def create_criteria():
     }
     if form.validate_on_submit():
         CriteriaQuery.create_criteria(form.name.data, form.basis_id.data, form.cost.data)
-        flask.flash(f"Критерий успешно создан.")
+        flask.flash(f"Критерий успешно создан.", "success")
         return redirect(url_for('admin.criterias.index'))
     return render_template("criterias/criteria.html", **context)
 
@@ -56,7 +56,7 @@ def edit_criteria():
     if form.validate_on_submit():
         CriteriaQuery.update_criteria(criteria, form.name.data,
                                                  form.basis_id.data, form.cost.data, form.is_user_achievable.data)
-        flask.flash(f"Критерия успешно обновлена")
+        flask.flash(f"Критерия успешно обновлена", "success")
         return redirect(url_for('.index'))
     context['form'] = CriteriaForm(MultiDict(criteria.__dict__.items()))
     context['form'].basis_id.choices = [(basis.id, basis.name) for basis in basises]
@@ -69,7 +69,7 @@ def edit_criteria():
 def delete_criteria():
     criteria_id = request.args.get("id")
     criteria = CriteriaQuery.get_criteria_by_id(criteria_id)
-    flask.flash(f"Критерия ID: {criteria.id} - ({criteria.basis.name}) {criteria.name} успешно удалёна")
+    flask.flash(f"Критерия ID: {criteria.id} - ({criteria.basis.name}) {criteria.name} успешно удалёна", "success")
     CriteriaQuery.delete_criteria(criteria)
     return redirect(url_for('.index'))
 

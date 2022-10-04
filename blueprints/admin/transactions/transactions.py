@@ -46,7 +46,7 @@ def create():
     if form.validate_on_submit():
         TransactionQuery.create_transaction(form.from_balance_id.data, form.to_balance_id.data,
                                             form.amount.data, form.comment.data)
-        flask.flash(f"Транзакция осуществлена.")
+        flask.flash(f"Транзакция осуществлена.", "success")
         return redirect(url_for('admin.transactions.index'))
     return render_template("transactions/transaction.html", **context)
 
@@ -78,6 +78,6 @@ def import_achievements():
             else:
                 not_found_users.append((surname.value, name.value, patronymic.value))
         not_found_users = ',\n'.join([' '.join(i) for i in not_found_users])
-        flask.flash(f"Начисления успешно созданы.\nНе найденные пользователи: {not_found_users}")
+        flask.flash(f"Начисления успешно созданы.\nНе найденные пользователи: {not_found_users}", "success")
         return redirect(url_for(".index"))
     return render_template("transactions/import.html", **context)

@@ -32,7 +32,7 @@ def issue():
     order_id = int(request.args.get('id'))
     order = OrderQuery.get_order_by_id(order_id)
     OrderQuery.issue_order(order)
-    flask.flash(f"Заказ успешно выдан")
+    flask.flash(f"Заказ успешно выдан", "success")
     return redirect(url_for('admin.orders.index'))
 
 
@@ -47,5 +47,5 @@ def order_return():
     OrderQuery.return_order(order)
     flask.flash(f"Заказ отменён,"
                 f" {order.gift.price}"
-                f" {current_app.config['COIN_UNIT']} возвращены на счет покупателя")
+                f" {current_app.config['COIN_UNIT']} возвращены на счет покупателя", "success")
     return redirect(url_for('admin.orders.index'))

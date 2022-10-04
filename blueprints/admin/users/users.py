@@ -50,20 +50,20 @@ def create_user():
                                                form.is_admin.data, form.is_teacher.data,
                                                form.group_id.data
                                                if form.group_id.data != -1 else None)
-        flask.flash(f"Пользователь успешно создан. Его логин: {user.login}, пароль: {password}")
+        flask.flash(f"Пользователь успешно создан. Его логин: {user.login}, пароль: {password}", "success")
         return redirect(url_for('admin.users.index'))
     return render_template("users/user.html", **context)
 
 
-    @users.route('/delete/')
-    @login_required
-    @admin_required
-    def delete_user():
-        user_id = request.args.get("id")
-        user = UserQuery.get_user_by_id(user_id)
-        UserQuery.delete_user(user)
-        flask.flash(f"Пользователь ID: {user.id} - {user.full_name} успешно удалён")
-        return redirect(url_for('admin.users.index'))
+@users.route('/delete/')
+@login_required
+@admin_required
+def delete_user():
+    user_id = request.args.get("id")
+    user = UserQuery.get_user_by_id(user_id)
+    UserQuery.delete_user(user)
+    flask.flash(f"Пользователь ID: {user.id} - {user.full_name} успешно удалён", "success")
+    return redirect(url_for('admin.users.index'))
 
 
 @users.route('/import/', methods=['GET', 'POST'])
@@ -106,7 +106,7 @@ def import_users():
         with NamedTemporaryFile() as tmp:
             wb_write.save(tmp.name)
             output = io.BytesIO(tmp.read())
-        flask.flash(f"Пользователи успешно созданы. Файл скачан к вам.")
+        flask.flash(f"Пользователи успешно созданы. Файл скачан к вам.", "success")
 
         # forgive me please, this is high-load like code, just trust me
         def generate():
@@ -136,7 +136,7 @@ def edit_user():
                               form.patronymic.data, form.email.data if form.email.data else None,
                               form.is_admin.data, form.is_teacher.data,
                               form.group_id.data if form.group_id.data != -1 else None)
-        flask.flash(f"Пользователь успешно обновлен.")
+        flask.flash(f"Пользователь успешно обновлен.", "success")
         return redirect(url_for('admin.users.index'))
     model_data = MultiDict(user.__dict__.items())
     model_data['group_id'] = -1 if not model_data['group_id'] else model_data['group_id']
@@ -151,5 +151,5 @@ def edit_user():
 @admin_required
 def new_password():
     password = UserQuery.new_password(request.args.get('id'))
-    flask.flash(f"Новый пароль для пользователя: {password}")
+    flask.flash(f"Новый пароль для пользователя: {password}", "success")
     return redirect(url_for('admin.users.index'))

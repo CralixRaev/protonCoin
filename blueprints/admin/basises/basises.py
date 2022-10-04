@@ -31,6 +31,6 @@ def create_basis():
     }
     if form.validate_on_submit():
         BasisQuery.create_basis(form.name.data)
-        flask.flash(f"Основание успешно создано.")
+        flask.flash(f"Основание успешно создано.", "success")
         return redirect(url_for('admin.basises.index'))
     return render_template("basises/basis.html", **context)
