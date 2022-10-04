@@ -110,7 +110,7 @@ def declare_achievement():
     form.criteria_id.choices = [
         (basis.name, [(criteria.id, criteria) for criteria in basis.criteria]) for basis in basises]
     context = {
-        "title": "Заявить достижение",
+        "title": "Заявить о достижении",
         'form_avatar': form_avatar,
         "form": form
     }

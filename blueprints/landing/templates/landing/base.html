@@ -69,43 +69,6 @@
 </style>
 <body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-
-{#<header>#}
-{#    <nav class="navbar navbar-expand-lg navbar-light bg-light">#}
-{#        <div class="container">#}
-{#            <a class="navbar-brand" href="{{ url_for("landing.index") }}"> <img src="/static/coin.webp"#}
-{#                                                                                style="height: 64px; margin-right: 12px">{{ config.COIN_UNIT }}#}
-{#            </a>#}
-{#                <ul class="navbar-nav mr-auto mb-2 mb-lg-0">#}
-{#                    <li class="nav-item">#}
-{#                        <a class="nav-link" href="{{ url_for("landing.catalog.index") }}">Витрина подарков</a>#}
-{#                    </li>#}
-{#                    <li class="nav-item">#}
-{#                        <a class="nav-link" href="{{ url_for("landing.account.index") }}">Ваш аккаунт</a>#}
-{#                    </li>#}
-{#                </ul>#}
-{#            </div>#}
-{#            <ul class="justify-content-end navbar-nav mr-auto mb-3 mb-lg-0">#}
-{#                {% if current_user.is_authenticated %}#}
-{#                    <li class="nav-item mb-3" style="margin-right: 1rem">#}
-{#                        <a class="btn btn-outline-secondary" href="{{ url_for("landing.account.index") }}"#}
-{#                           role="button">{{ current_user.full_name }} - </a>#}
-{#                    </li>#}
-{#                    <li class="nav-item">#}
-{#                        <a class="btn btn-secondary" href="{{ url_for("login.logout") }}"#}
-{#                           role="button">Выйти</a>#}
-{#                    </li>#}
-{#                {% else %}#}
-{#                    <li class="nav-item">#}
-{#                        <a class="btn btn-secondary" href="{{ url_for("login.index") }}"#}
-{#                           role="button">Войти</a>#}
-{#                    </li>#}
-{#                {% endif %}#}
-{#            </ul>#}
-{#        </div>#}
-{#    </nav>#}
-{##}
-{#</header>#}
 <header class="navbar-light bg-light">
     <nav class="p-3 mb-3 border-bottom navbar-expand-lg">
         <div class="container">
@@ -113,7 +76,8 @@
                 <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark navbar-brand">
                     <img src="/static/coin.webp" style="height: 64px; margin-right: 12px">{{ config.COIN_UNIT }}
                 </a>
-                <button class="navbar-toggler me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <button class="navbar-toggler me-3" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -121,8 +85,6 @@
                         <li class="nav-item">
                             <a class="nav-link px-2" href="{{ url_for("landing.catalog.index") }}">Витрина подарков</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-2" href="{{ url_for("landing.account.index") }}">Ваш аккаунт</a></li>
                     </ul>
                 </div>
 
@@ -137,10 +99,13 @@
                             <li>
                                 <div class="dropdown-item disabled">На вашем счету {{ current_user.balance.amount }}
                                     <img
-                                            src="/static/coin.webp" height="16px" width="16px" class="ms-1"> {{ config.COIN_UNIT }}</div>
+                                            src="/static/coin.webp" height="16px" width="16px"
+                                            class="ms-1"> {{ config.COIN_UNIT }}</div>
                             </li>
-                            <li><a class="dropdown-item" href="{{ url_for("landing.account.index") }}">Ваш аккаунт</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for("landing.account.declare_achievement") }}">Заявить о достижении</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for("landing.account.index") }}">Ваш аккаунт</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{{ url_for("landing.account.declare_achievement") }}">Заявить
+                                о достижении</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -167,6 +132,11 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
+<div class="card mb-3">
+  <div class="card-body">
+      <h1 class="h4 mb-0">{{ title }}</h1>
+  </div>
+</div>
     {% block content %}{% endblock %}
 </main>
 <footer class="bg-light text-center text-lg-start mt-5">
