@@ -27,7 +27,7 @@ def _avatar_form_handler(form: AvatarForm):
         except FileNotFoundError:
             current_app.logger.warning("Could not remove avatar!")
     UserQuery.update_avatar(current_user, save_upload(form.image.data, avatars))
-    flask.flash("Аватар успешно обновлен")
+    flask.flash("Аватар успешно обновлен", "success")
     return redirect(url_for(request.endpoint))
 
 
@@ -59,14 +59,14 @@ def index():
         error = _check_password(form_password.old_password.data,
                                 form_password.password.data, form_password.confirm.data)
         if error:
-            flask.flash(error)
+            flask.flash(error, "danger")
         else:
             UserQuery.update_password(current_user, form_password.password.data)
-            flask.flash("Пароль успешно обновлен")
+            flask.flash("Пароль успешно обновлен", "success")
         return redirect(url_for(".index"))
     elif form_main.validate_on_submit():
         UserQuery.update_email(current_user, form_main.email.data)
-        flask.flash("Почта успешно обновлена")
+        flask.flash("Почта успешно обновлена", "success")
         return redirect(url_for(".index"))
     context['form_main'] = UserForm(MultiDict(current_user.__dict__.items()))
     return render_template("account/account_info.html", **context)
@@ -118,7 +118,7 @@ def declare_achievement():
         _avatar_form_handler(form_avatar)
     if form.validate_on_submit():
         if not CriteriaQuery.get_criteria_by_id(form.criteria_id.data).is_user_achievable:
-            flask.flash("Упс... Это начислят автоматически - без твоего участия! ✨🔮")
+            flask.flash("Упс... Это начислят автоматически - без твоего участия! ✨🔮", "warning")
         else:
             achievement_file = None
             if form.file.data:
@@ -126,6 +126,6 @@ def declare_achievement():
             AchievementQuery.create_achievement(form.criteria_id.data, current_user.id,
                                                 achievement_file if form.file.data else None,
                                                 form.comment.data)
-            flask.flash("Достижение принято. Жди одобрения классным руководителем ⌛")
+            flask.flash("Достижение принято. Жди одобрения классным руководителем ⌛", "success")
             return redirect(url_for(".transactions"))
     return render_template("account/account_declare_achievement.html", **context)

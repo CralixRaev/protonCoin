@@ -9,7 +9,6 @@ from uploads import gift_images
 
 catalog = Blueprint('catalog', __name__, template_folder='templates', static_folder='static')
 
-
 ORDER_TYPES = {
     'price_desc': ("Цена ↑ (дорогое наверх)", Gift.price.desc()),
     'price_asc': ("Цена ↓ (дешевое наверх)", Gift.price),
@@ -40,7 +39,9 @@ def buy():
         order = OrderQuery.create_order(gift.id, current_user.id)
         TransactionQuery.create_withdraw(current_user.balance, gift.price,
                                          comment=f"Оплата за заказ №{order.id} ({gift.name})")
-        flask.flash(f"Заказ на подарок создан, его номер №{order.id}. Обратитесь к ... для получения")
+        flask.flash(
+            f"Заказ на подарок создан, его номер №{order.id}",
+            "success")
     else:
-        flask.flash("Недостаточно средств")
+        flask.flash("Недостаточно средств", "danger")
     return redirect(url_for(".index"))
