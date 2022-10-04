@@ -10,7 +10,7 @@
                         {% for key, value in order_by.items() %}
                             {% if key == order_by_current %}
                                 <option selected value="{{ key }}">{{ value[0] }}</option>
-                                {% else %}
+                            {% else %}
                                 <option value="{{ key }}">{{ value[0] }}</option>
                             {% endif %}
                         {% endfor %}
@@ -33,8 +33,8 @@
                                         <a class="btn btn-sm btn-primary" href="{{ url_for(".buy", gift_id=gift.id) }}"
                                            role="button">Купить</a>
                                     </div>
-                                    <small class="text-right">{{ gift.price }} <img src="/static/coin.webp"
-                                                                                    style="height: 16px;"> {{ config.COIN_UNIT }}
+                                    <small class="text-right">{{ gift.price }}
+                                        <img src="/static/coin.webp" width="16px" height="16px"> {{ config.COIN_UNIT }}
                                     </small>
                                 </div>
                             </div>
