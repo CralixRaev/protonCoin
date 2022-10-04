@@ -11,7 +11,7 @@ from db.models.gift import GiftQuery
 from db.models.group import GroupQuery
 from db.models.user import UserQuery
 from uploads import gift_images
-from util import admin_required
+from util import admin_required, save_upload
 
 gifts = Blueprint('gifts', __name__, template_folder='templates')
 
@@ -38,7 +38,7 @@ def create_gift():
     }
     if form.validate_on_submit():
         image = form.image.data
-        filename = gift_images.save(image)
+        filename = save_upload(image, gift_images)
         gift = GiftQuery.create_gift(form.name.data, form.description.data, form.price.data,
                                      filename)
         flask.flash(f"Подарок успешно создан", "success", "success")
@@ -58,7 +58,7 @@ def edit_gift():
     }
     if form.validate_on_submit():
         image = form.image.data
-        filename = gift_images.save(image)
+        filename = save_upload(image, gift_images)
         gift = GiftQuery.update_gift(gift, form.name.data, form.description.data, form.price.data,
                                      filename)
         flask.flash(f"Подарок успешно обновлен", "success")
@@ -76,4 +76,3 @@ def delete_gift():
     GiftQuery.delete_gift(gift)
     flask.flash(f"Подарок ID: {gift.id} - {gift.name} успешно удалён", "success")
     return redirect(url_for('admin.gifts.index'))
-
