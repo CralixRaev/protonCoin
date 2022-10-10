@@ -110,14 +110,15 @@ def import_users():
         [ws_write.cell(1, i + 1, name) for i, name in enumerate(['ФИО', 'Логин', 'Пароль'])]
         for i, cells in enumerate(ws_read.iter_rows(2), start=2):
             full_name = [i.value for i in cells][0]
-            split_name = full_name.split()
-            surname, name, patronymic = split_name[0], split_name[1], ' '.join(split_name[2:])
-            user, password = UserQuery.create_user(name, surname, patronymic if patronymic else None,
-                                                   None, False, False,
-                                                   form.group_id.data if form.group_id.data != -1 else None)
-            ws_write.cell(i, 1, user.full_name)
-            ws_write.cell(i, 2, user.login)
-            ws_write.cell(i, 3, password)
+            if full_name:
+                split_name = full_name.split()
+                surname, name, patronymic = split_name[0], split_name[1], ' '.join(split_name[2:])
+                user, password = UserQuery.create_user(name, surname, patronymic if patronymic else None,
+                                                       None, False, False,
+                                                       form.group_id.data if form.group_id.data != -1 else None)
+                ws_write.cell(i, 1, user.full_name)
+                ws_write.cell(i, 2, user.login)
+                ws_write.cell(i, 3, password)
         dim_holder = DimensionHolder(worksheet=ws_write)
 
         for col in range(ws_write.min_column, ws_write.max_column + 1):
