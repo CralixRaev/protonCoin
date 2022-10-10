@@ -60,7 +60,7 @@ class UserQuery:
         login = surname + name[0]
         if patronymic:
             login += patronymic[0]
-        return login.lower()
+        return login.replace("'", "").lower()
 
     @staticmethod
     def _random_password():
