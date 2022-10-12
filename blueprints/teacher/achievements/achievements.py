@@ -22,7 +22,7 @@ def index():
         'title': f'Достижения',
         'achievements': AchievementQuery.get_achievements_by_group(current_user.group)
     }
-    return render_template("achievements/achievements.html", **context)
+    return render_template("achievements/achievements_teacher.html", **context)
 
 
 @achievements.route('/approve/')

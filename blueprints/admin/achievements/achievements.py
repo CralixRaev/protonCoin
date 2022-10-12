@@ -16,7 +16,7 @@ achievements = Blueprint('achievements', __name__, template_folder='templates')
 
 @achievements.route('/')
 @login_required
-@teacher_required
+@admin_required
 def index():
     context = {
         'title': f'Достижения',
@@ -28,7 +28,7 @@ def index():
 
 @achievements.route('/approve/')
 @login_required
-@teacher_required
+@admin_required
 def approve():
     achievement_id = int(request.args.get('id'))
     achievement = AchievementQuery.get_achievement_by_id(achievement_id)
@@ -43,7 +43,7 @@ def approve():
 
 @achievements.route('/disapprove/')
 @login_required
-@teacher_required
+@admin_required
 def disapprove():
     achievement_id = int(request.args.get('id'))
     achievement = AchievementQuery.get_achievement_by_id(achievement_id)
