@@ -30,7 +30,12 @@ class GroupQuery:
 
     @staticmethod
     def get_group_by_id(group_id) -> Group:
-        return Group.query.get(group_id)
+        return Group.query.get(group_id)\
+
+
+    @staticmethod
+    def get_group_by_stage_letter(stage, letter) -> Group:
+        return Group.query.filter(Group.stage == stage, Group.letter == letter).first()
 
     @staticmethod
     def update_group(group: Group, stage: int, letter: str) -> Group:
