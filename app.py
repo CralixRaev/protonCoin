@@ -83,6 +83,7 @@ def create_admin(login):
 
     click.echo(f"Пароль изменён. Новый пароль: {password}") @ app.cli.command("reset_password")
 
+
 @app.cli.command("import_folders")
 @click.argument("folder")
 def import_folders(folder):
@@ -97,7 +98,8 @@ def import_folders(folder):
         if groupname:
             print(groupname)
             stage, letter = groupname[0], groupname[1]
-            wb_read = openpyxl.load_workbook(os.path.join(folder, "for_import", group), read_only=True, data_only=True)
+            wb_read = openpyxl.load_workbook(os.path.join(folder, "for_import", group),
+                                             read_only=True, data_only=True)
             ws_read = wb_read.active
             wb_write = openpyxl.Workbook()
             ws_write = wb_write.active
@@ -106,23 +108,63 @@ def import_folders(folder):
                 full_name = row[0].value
                 if full_name:
                     split_name = full_name.split()
-                    surname, name, patronymic = split_name[0], split_name[1], ' '.join(split_name[2:])
+                    surname, name, patronymic = split_name[0], split_name[1], ' '.join(
+                        split_name[2:])
                     user, password = UserQuery.create_user(name, surname,
                                                            patronymic if patronymic else None,
                                                            None, False, False,
-                                                           GroupQuery.get_group_by_stage_letter(stage,
-                                                                                                letter))
+                                                           GroupQuery.get_group_by_stage_letter(
+                                                               stage,
+                                                               letter))
                     ws_write.append((user.full_name, user.login, password))
             dim_holder = DimensionHolder(worksheet=ws_write)
 
             for col in range(ws_write.min_column, ws_write.max_column + 1):
-
                 dim_holder[get_column_letter(col)] = ColumnDimension(ws_write, min=col,
-                                                                                       max=col,
-                                                                                       width=20)
+                                                                     max=col,
+                                                                     width=20)
             ws_write.column_dimensions = dim_holder
 
             wb_write.save(os.path.join(folder, "imported", f"{groupname}-imported.xlsx"))
+    click.echo("Ну, вроде импортировали!")
+
+
+@app.cli.command("import_teachers")
+@click.argument("file")
+def import_teachers(file):
+    from openpyxl.worksheet.dimensions import DimensionHolder
+    from openpyxl.utils import get_column_letter
+    from openpyxl.worksheet.dimensions import ColumnDimension
+    import openpyxl
+    wb_read = openpyxl.load_workbook(file, read_only=True, data_only=True)
+    ws_read = wb_read.active
+    wb_write = openpyxl.Workbook()
+    ws_write = wb_write.active
+    [ws_write.cell(1, i + 1, name) for i, name in enumerate(['ФИО', 'Логин', 'Пароль'])]
+    for row in ws_read.iter_rows(min_row=2):
+        full_name = row[1].value
+        if full_name:
+            split_name = full_name.split()
+            stage, letter = row[0].value[0], row[0].value[1]
+            print(stage, letter)
+            print(GroupQuery.get_group_by_stage_letter(stage,
+                                                 letter))
+            surname, name, patronymic = split_name[0], split_name[1], ' '.join(split_name[2:])
+            user, password = UserQuery.create_user(name, surname,
+                                                   patronymic if patronymic else None,
+                                                   None, False, True,
+                                                   GroupQuery.get_group_by_stage_letter(stage,
+                                                                                        letter))
+            ws_write.append((user.full_name, user.login, password))
+    dim_holder = DimensionHolder(worksheet=ws_write)
+
+    for col in range(ws_write.min_column, ws_write.max_column + 1):
+        dim_holder[get_column_letter(col)] = ColumnDimension(ws_write, min=col,
+                                                             max=col,
+                                                             width=20)
+    ws_write.column_dimensions = dim_holder
+
+    wb_write.save("teachers.xlsx")
     click.echo("Ну, вроде импортировали!")
 
 
