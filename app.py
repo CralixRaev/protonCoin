@@ -145,7 +145,10 @@ def import_teachers(file):
         full_name = row[1].value
         if full_name:
             split_name = full_name.split()
-            stage, letter = row[0].value[0], row[0].value[1]
+            if len(row[0].value) == 2:
+                stage, letter = row[0].value[0], row[0].value[1]
+            else:
+                stage, letter = row[0].value[0:2], row[0].value[2]
             print(stage, letter)
             print(GroupQuery.get_group_by_stage_letter(stage,
                                                  letter))
