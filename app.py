@@ -115,7 +115,7 @@ def import_folders(folder):
                                                            None, False, False,
                                                            GroupQuery.get_group_by_stage_letter(
                                                                stage,
-                                                               letter))
+                                                               letter).id)
                     ws_write.append((user.full_name, user.login, password))
             dim_holder = DimensionHolder(worksheet=ws_write)
 
@@ -154,7 +154,7 @@ def import_teachers(file):
                                                    patronymic if patronymic else None,
                                                    None, False, True,
                                                    GroupQuery.get_group_by_stage_letter(stage,
-                                                                                        letter))
+                                                                                        letter).id)
             ws_write.append((user.full_name, user.login, password))
     dim_holder = DimensionHolder(worksheet=ws_write)
 
