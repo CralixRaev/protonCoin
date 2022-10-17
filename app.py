@@ -168,7 +168,7 @@ def import_teachers(file):
     ws_write.column_dimensions = dim_holder
 
     wb_write.save("teachers.xlsx")
-    click.echo("Ну, вроде импортировали!")
+    click.echo("Ну, вро де импортировали!")
 
 
 db.init_app(app)

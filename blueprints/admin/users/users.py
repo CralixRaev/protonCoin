@@ -27,7 +27,7 @@ users = Blueprint('users', __name__, template_folder='templates')
 def index():
     context = {
         'title': 'Пользователи',
-        'users': UserQuery.get_all_users()
+        # 'users': UserQuery.get_all_users()
     }
     return render_template("users/users.html", **context)
 

@@ -1,4 +1,5 @@
 from db.database import db
+from db.models.user import User
 
 
 class Group(db.Model):
@@ -6,7 +7,7 @@ class Group(db.Model):
     stage = db.Column(db.Integer, nullable=False)
     letter = db.Column(db.String(8), nullable=False)
 
-    users = db.relationship('User', back_populates='group')
+    users = db.relationship('User', back_populates='group', order_by=User.surname)
 
     @property
     def name(self) -> str:

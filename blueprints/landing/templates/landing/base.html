@@ -85,6 +85,16 @@
                         <li class="nav-item">
                             <a class="nav-link px-2" href="{{ url_for("landing.catalog.index") }}">Витрина подарков</a>
                         </li>
+                        {% if current_user.is_teacher %}
+                            <li class="nav-item">
+                                <a class="nav-link px-2" href="{{ url_for("teacher.index") }}">Панель учителя</a>
+                            </li>
+                        {% endif %}
+                        {% if current_user.is_admin %}
+                            <li class="nav-item">
+                                <a class="nav-link px-2" href="{{ url_for("teacher.index") }}">Панель администратора</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
 
@@ -132,11 +142,11 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-<div class="card mb-3">
-  <div class="card-body">
-      <h1 class="h4 mb-0">{{ title }}</h1>
-  </div>
-</div>
+    <div class="card mb-3">
+        <div class="card-body">
+            <h1 class="h4 mb-0">{{ title }}</h1>
+        </div>
+    </div>
     {% block content %}{% endblock %}
 </main>
 <footer class="bg-light text-center text-lg-start mt-5">
