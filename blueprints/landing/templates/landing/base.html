@@ -119,12 +119,15 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="{{ url_for("login.logout") }}">Выйти</a></li>
+                            <li>
+                                <form action="{{ url_for("login.logout") }}" method="POST"><input class="dropdown-item"
+                                                                                                  type="submit"
+                                                                                                  value="Выйти"></form>
                         </ul>
                     </div>
                 {% else %}
                     <div class="text-end">
-                        <a class="btn btn-secondary" href="{{ url_for("login.index") }}"
+                        <a class="btn btn-secondary" href="{{ url_for("login.login") }}"
                            role="button">Войти</a>
                     </div>
                 {% endif %}

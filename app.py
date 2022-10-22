@@ -1,18 +1,22 @@
+import json
 import logging
 import os
-from typing import Any
+from dataclasses import dataclass
+from typing import Any, Mapping
 
 import click
 from dotenv import load_dotenv
-from flask import Flask, abort, send_from_directory, Blueprint
-from flask_login import LoginManager, login_required
+from flask import Flask, abort, send_from_directory, Blueprint, url_for, current_app
+from flask_login import LoginManager, login_required, UserMixin, login_user
 from flask_migrate import Migrate
+from flask_saml2.sp import ServiceProvider
+from flask_saml2.utils import certificate_from_file, private_key_from_file
 from flask_uploads import configure_uploads, UploadSet
 
 from blueprints.admin.admin import admin
 from blueprints.api.api import api_blueprint as api
 from blueprints.landing.landing import landing
-from blueprints.login.login import login
+# from blueprints.login.login import login
 from blueprints.teacher.teacher import teacher
 from db.database import db
 from db.models.balances import BalanceQuery
@@ -20,6 +24,11 @@ from db.models.group import GroupQuery
 from db.models.user import User, UserQuery
 from uploads import avatars, gift_images, achievement_files
 from util import admin_required
+from flask_redis import Redis
+
+SP_CERTIFICATE = certificate_from_file("sp_certificate.pem")
+SP_PRIVATE_KEY = private_key_from_file("sp_private-key.pem")
+IDP_CERTIFICATE = certificate_from_file("idp_certificate.pem")
 
 load_dotenv()
 
@@ -27,12 +36,31 @@ app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_STRING") or \
                                         'sqlite:///test.db?check_same_thread=False'
+app.config['SAML2_SP'] = {
+    'certificate': SP_CERTIFICATE,
+    'private_key': SP_PRIVATE_KEY,
+}
+app.config['SERVER_NAME'] = 'localhost'
+app.config['SAML2_IDENTITY_PROVIDERS'] = [
+    {
+        'CLASS': 'flask_saml2.sp.idphandler.IdPHandler',
+        'OPTIONS': {
+            'display_name': 'ProtonSAML_IDP',
+            'entity_id': 'http://localhost:9000/saml/metadata.xml',
+            'sso_url': 'http://localhost:9000/saml/login/',
+            'slo_url': 'http://localhost:9000/saml/logout/',
+            'certificate': IDP_CERTIFICATE,
+        },
+    },
+]
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['COIN_UNIT'] = "ПРОтоКоин"
 app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                                   'uploads')
 app.config['UPLOADS_AUTOSERVE'] = False
+app.config['REDIS_HOST'] = "localhost"
+app.config['REDIS_PORT'] = "6379"
 
 _uploads = Blueprint("_uploads", "_uploads")
 
@@ -48,22 +76,86 @@ def uploaded_file(setname: UploadSet, filename: str) -> Any:
     return send_from_directory(config.destination, filename)
 
 
-app.register_blueprint(_uploads, url_prefix="/uploads")
-app.register_blueprint(admin, url_prefix='/admin')
-app.register_blueprint(teacher, url_prefix='/teacher')
-app.register_blueprint(login, url_prefix='/login')
-app.register_blueprint(landing, url_prefix='/')
-app.register_blueprint(api, url_prefix='/api/v1/')
-
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "login.index"
+login_manager.login_view = "login.login"
 login_manager.login_message = "Пожалуйста, войдите, что бы получить доступ к этой странице"
+
+redis_client = Redis(app)
+
+
+@dataclass(init=False)
+class User(UserMixin):
+    id: int
+    name: str
+    surname: str
+    login: str
+    is_teacher: bool
+    is_admin: bool
+    patronymic: str | None
+    email: str | None
+    group_id: int | None
+    avatar: str | None
+
+    @property
+    def balance(self) -> str:
+        return BalanceQuery.get_balance_by_user_id(self.id)
+
+    @property
+    def group(self) -> str:
+        return GroupQuery.get_group_by_id(self.group_id)
+
+    @property
+    def full_name(self) -> str:
+        return f"{self.surname} {self.name} {self.patronymic}"
+
+    @property
+    def avatar_path(self) -> str:
+        return avatars.url(self.avatar if self.avatar else 'default.png')
+
+    def __init__(self, user_id: str, user_object: Mapping[str, str] | None = None):
+        self.id = int(user_id)
+        if not user_object:
+            user_object = json.loads(current_app.extensions['redis']['REDIS'].get(f"user:{user_id}"))
+        if user_object:
+            # todo: user mashumaro for parsing jsons into dataclass
+            self.name = user_object['name']
+            self.surname = user_object['surname']
+            self.login = user_object['login']
+            self.is_teacher = bool(user_object['is_teacher'])
+            self.is_admin = bool(user_object['is_admin'])
+            self.patronymic = user_object['patronymic']
+            self.email = user_object['email']
+            self.group_id = int(user_object['group.id'])
+            self.avatar = user_object['avatar']
+
+
+class ProtonServiceProvider(ServiceProvider):
+    blueprint_name = "login"
+
+    def get_logout_return_url(self):
+        return url_for('landing.index', _external=False)
+
+    def get_default_login_return_url(self):
+        print('default')
+        return url_for('landing.index', _external=False)
+
+    def login_successful(self, auth_data, relay_state):
+        attributes = auth_data.attributes
+        print(attributes)
+        user = User(attributes['id'], attributes)
+        login_user(user)
+        current_app.extensions['redis']['REDIS'].set(f"user:{attributes['id']}",
+                                                     json.dumps(attributes))
+        return super().login_successful(auth_data, relay_state)
+
+
+sp = ProtonServiceProvider()
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(user_id)
+    return User(user_id)
 
 
 @app.cli.command("create_admin")
@@ -78,10 +170,10 @@ def create_admin(name, surname, patronymic):
 
 @app.cli.command("reset_password")
 @click.argument("login")
-def create_admin(login):
+def reset_password(login):
     password = UserQuery.new_password(UserQuery.get_user_by_login(login).id)
 
-    click.echo(f"Пароль изменён. Новый пароль: {password}") @ app.cli.command("reset_password")
+    click.echo(f"Пароль изменён. Новый пароль: {password}")
 
 
 @app.cli.command("import_folders")
@@ -151,7 +243,7 @@ def import_teachers(file):
                 stage, letter = row[0].value[0:2], row[0].value[2]
             print(stage, letter)
             print(GroupQuery.get_group_by_stage_letter(stage,
-                                                 letter))
+                                                       letter))
             surname, name, patronymic = split_name[0], split_name[1], ' '.join(split_name[2:])
             user, password = UserQuery.create_user(name, surname,
                                                    patronymic if patronymic else None,
@@ -183,6 +275,14 @@ if not app.debug:
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.ERROR)
     app.logger.addHandler(stream_handler)
+
+app.register_blueprint(_uploads, url_prefix="/uploads")
+app.register_blueprint(admin, url_prefix='/admin')
+app.register_blueprint(teacher, url_prefix='/teacher')
+# app.register_blueprint(login, url_prefix='/login')
+app.register_blueprint(landing, url_prefix='/')
+# app.register_blueprint(api, url_prefix='/api/v1/')
+app.register_blueprint(sp.create_blueprint(), url_prefix='/saml/')
 
 
 def main():

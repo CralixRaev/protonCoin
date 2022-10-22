@@ -38,6 +38,10 @@ class BalanceQuery:
         return Balance.query.filter(Balance.id == balance_id).first()
 
     @staticmethod
+    def get_balance_by_user_id(user_id: int) -> Balance:
+        return Balance.query.filter(Balance.user_id == user_id).first()
+
+    @staticmethod
     def ensure_bank_balance():
         if not Balance.query.filter(Balance.user_id == None).first():
             current_app.logger.error("Default balance was not present, creating a new one")
