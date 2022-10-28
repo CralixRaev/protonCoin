@@ -57,7 +57,8 @@ def create():
 def import_achievements():
     form = AchievementImportForm()
     basises = BasisQuery.get_all_basises()
-    form.criteria.choices = [(basis.name, [(criteria.id, criteria) for criteria in basis.criteria]) for basis in basises]
+    form.criteria.choices = [(basis.name, [(criteria.id, criteria) for criteria in basis.criteria])
+                             for basis in basises]
     context = {
         'title': 'Импортировать достижения',
         'form': form
@@ -71,13 +72,17 @@ def import_achievements():
         ws_read = wb_read.active
         for i, cells in enumerate(ws_read.iter_rows(2), start=2):
             surname, name, patronymic, number, letter = cells
-            user = UserQuery.find_user(surname.value.lower(), name.value.lower(),
-                                       patronymic.value.lower() if patronymic.value else None)
+            user = UserQuery.find_user(surname.value.capitalize().strip(),
+                                       name.value.capitalize().strip(),
+                                       patronymic.value.capitalize().strip() if patronymic.value else None)
             if user:
-                TransactionQuery.create_accrual(user.balance, criteria.cost, f"За критерий ({criteria.basis.name}) {criteria.name} (начислено автоматически)")
+                TransactionQuery.create_accrual(user.balance, criteria.cost,
+                                                f"За критерий ({criteria.basis.name}) {criteria.name} (начислено автоматически)")
             else:
-                not_found_users.append((surname.value, name.value, patronymic.value))
+                not_found_users.append(
+                    (surname.value, name.value, patronymic.value if patronymic.value else ""))
         not_found_users = ',\n'.join([' '.join(i) for i in not_found_users])
-        flask.flash(f"Начисления успешно созданы.\nНе найденные пользователи: {not_found_users}", "success")
+        flask.flash(f"Начисления успешно созданы.\nНе найденные пользователи: {not_found_users}",
+                    "success")
         return redirect(url_for(".index"))
     return render_template("transactions/import.html", **context)

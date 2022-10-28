@@ -77,9 +77,10 @@ class UserQuery:
 
     @staticmethod
     def search_by_name(full_name, offset=0, limit=10) -> tuple[list[User], int]:
+        # с кирилицей ilike и lower не работает!!!
         searched = User.query.filter(
             (User.surname + ' ' + User.name + ' ' + User.patronymic).ilike(
-                f"%{full_name}%"))
+                f"%{full_name.capitalize()}%"))
         return searched.offset(offset).limit(limit).all(), searched.count()
 
     @staticmethod
@@ -172,13 +173,17 @@ class UserQuery:
 
     @staticmethod
     def find_user(surname, name, patronymic: str | None = None) -> User | None:
+        print(surname, name, patronymic)
         if patronymic:
-            user = User.query.join(User.group, aliased=True).filter(User.surname == surname,
-                                                                    User.name == name,
-                                                                    User.patronymic == patronymic)
+            user = User.query.filter(
+                User.surname == surname,
+                User.name == name,
+                User.patronymic == patronymic)
         else:
-            user = User.query.join(User.group, aliased=True).filter(User.surname == surname,
-                                                                    User.name == name)
+            user = User.query.filter(
+                User.surname == surname,
+                User.name == name)
+        print(user)
         if user.count() > 1:
             return None
         else:
