@@ -88,7 +88,8 @@ class UserQuery:
 
     @staticmethod
     def get_offset_limit_users(offset=0, limit=10) -> list[User]:
-        return User.query.order_by(User.group_id).order_by(User.surname).offset(offset).limit(limit).all()
+        return User.query.order_by(User.group_id).order_by(User.surname).offset(offset).limit(
+            limit).all()
 
     @staticmethod
     def create_user(name, surname, patronymic=None, email=None, is_admin=False, is_teacher=False,
@@ -170,9 +171,15 @@ class UserQuery:
         db.session.commit()
 
     @staticmethod
-    def find_user(surname, name, patronymic, number, letter) -> User | None:
-        return User.query.join(User.group, aliased=True).filter(letter == letter,
-                                                                number == number,
-                                                                User.surname == surname,
-                                                                User.name == name,
-                                                                User.patronymic == patronymic).first()
+    def find_user(surname, name, patronymic: str | None = None) -> User | None:
+        if patronymic:
+            user = User.query.join(User.group, aliased=True).filter(User.surname == surname,
+                                                                    User.name == name,
+                                                                    User.patronymic == patronymic)
+        else:
+            user = User.query.join(User.group, aliased=True).filter(User.surname == surname,
+                                                                    User.name == name)
+        if user.count() > 1:
+            return None
+        else:
+            return user.first()
