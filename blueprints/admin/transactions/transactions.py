@@ -72,10 +72,9 @@ def import_achievements():
         ws_read = wb_read.active
         for i, cells in enumerate(ws_read.iter_rows(2), start=2):
             surname, name, patronymic, number, letter = cells
-            # насколько я понимаю, в базе контигента ОУ все фамилии и имена с е вместо ё
-            user = UserQuery.find_user(surname.value.replace("ё", "е").capitalize().strip(),
-                                       name.value.replace("ё", "е").capitalize().strip(),
-                                       patronymic.value.replace("ё", "е").capitalize().strip() if patronymic.value else None)
+            user = UserQuery.find_user(surname.value.capitalize().strip(),
+                                       name.value.capitalize().strip(),
+                                       patronymic.value.capitalize().strip() if patronymic.value else None)
             if user:
                 TransactionQuery.create_accrual(user.balance, criteria.cost,
                                                 f"За критерий ({criteria.basis.name}) {criteria.name} (начислено автоматически)")
