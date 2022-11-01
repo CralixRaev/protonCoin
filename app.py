@@ -84,52 +84,6 @@ login_manager.login_message = "Пожалуйста, войдите, что бы
 redis_client = Redis(app)
 
 
-@dataclass(init=False)
-class User(UserMixin):
-    id: int
-    name: str
-    surname: str
-    login: str
-    is_teacher: bool
-    is_admin: bool
-    patronymic: str | None
-    email: str | None
-    group_id: int | None
-    avatar: str | None
-
-    @property
-    def balance(self) -> str:
-        return BalanceQuery.get_balance_by_user_id(self.id)
-
-    @property
-    def group(self) -> str:
-        return GroupQuery.get_group_by_id(self.group_id)
-
-    @property
-    def full_name(self) -> str:
-        return f"{self.surname} {self.name} {self.patronymic}"
-
-    @property
-    def avatar_path(self) -> str:
-        return avatars.url(self.avatar if self.avatar else 'default.png')
-
-    def __init__(self, user_id: str, user_object: Mapping[str, str] | None = None):
-        self.id = int(user_id)
-        if not user_object:
-            user_object = json.loads(current_app.extensions['redis']['REDIS'].get(f"user:{user_id}"))
-        if user_object:
-            # todo: user mashumaro for parsing jsons into dataclass
-            self.name = user_object['name']
-            self.surname = user_object['surname']
-            self.login = user_object['login']
-            self.is_teacher = bool(user_object['is_teacher'])
-            self.is_admin = bool(user_object['is_admin'])
-            self.patronymic = user_object['patronymic']
-            self.email = user_object['email']
-            self.group_id = int(user_object['group.id'])
-            self.avatar = user_object['avatar']
-
-
 class ProtonServiceProvider(ServiceProvider):
     blueprint_name = "login"
 
@@ -142,11 +96,8 @@ class ProtonServiceProvider(ServiceProvider):
 
     def login_successful(self, auth_data, relay_state):
         attributes = auth_data.attributes
-        print(attributes)
-        user = User(attributes['id'], attributes)
+        user = UserQuery.create_or_update(attributes)
         login_user(user)
-        current_app.extensions['redis']['REDIS'].set(f"user:{attributes['id']}",
-                                                     json.dumps(attributes))
         return super().login_successful(auth_data, relay_state)
 
 
@@ -155,7 +106,7 @@ sp = ProtonServiceProvider()
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User(user_id)
+    return UserQuery.get_user_by_id(user_id)
 
 
 @app.cli.command("create_admin")

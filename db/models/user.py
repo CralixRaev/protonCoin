@@ -2,6 +2,7 @@ import logging
 import secrets
 import string
 from datetime import datetime
+from typing import Mapping
 
 import sqlalchemy.exc
 from flask_login import UserMixin
@@ -17,18 +18,17 @@ ALPHABET = string.ascii_letters + string.digits
 
 
 class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
-    login = db.Column(db.String(32), nullable=False, unique=True, index=True)
-    email = db.Column(db.String(64), nullable=True, unique=True, index=True)
-    name = db.Column(db.String(32), nullable=False)
-    surname = db.Column(db.String(32), nullable=False)
-    patronymic = db.Column(db.String(32), nullable=True)
-    hashed_password = db.Column(db.String, nullable=False)
-    is_admin = db.Column(db.Boolean, default=False)
-    is_teacher = db.Column(db.Boolean, default=False)
-    group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=True, index=True)
-    creation_date = db.Column(db.DateTime, default=datetime.now)
-    avatar = db.Column(db.String(128), default="default.png")
+    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
+    login: str = db.Column(db.String(32), nullable=False, unique=True, index=True)
+    email: str = db.Column(db.String(64), nullable=True, unique=True, index=True)
+    name: str = db.Column(db.String(32), nullable=False)
+    surname: str = db.Column(db.String(32), nullable=False)
+    patronymic: str = db.Column(db.String(32), nullable=True)
+    is_admin: bool = db.Column(db.Boolean, default=False)
+    is_teacher: bool = db.Column(db.Boolean, default=False)
+    group_id: int = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=True, index=True)
+    creation_date: datetime = db.Column(db.DateTime, default=datetime.now)
+    avatar: str = db.Column(db.String(128), default="default.png")
 
     group = db.relation("Group", back_populates='users')
     balance = db.relation("Balance", back_populates='user', uselist=False)
@@ -91,48 +91,34 @@ class UserQuery:
         return User.query.order_by(User.group_id).order_by(User.surname).offset(offset).limit(limit).all()
 
     @staticmethod
-    def create_user(name, surname, patronymic=None, email=None, is_admin=False, is_teacher=False,
-                    group=None) -> (
-            User, str):
-        db.session.rollback()
-        user = User()
-        user.name = name
-        user.surname = surname
-        user.email = email
-        user.is_admin = is_admin
-        user.is_teacher = is_teacher
-        user.patronymic = patronymic
-        user.group_id = group
-
-        user.balance = BalanceQuery.create_balance(user.id)
-
-        user.login = UserQuery._create_login(name, surname, patronymic)
-
-        password = UserQuery._random_password()
-        user.set_password(password)
-        try:
-            db.session.add(user)
-            db.session.commit()
-        except sqlalchemy.exc.IntegrityError:
-            db.session.rollback()
-
-            user.login += '1'
-
-            db.session.commit()
-        return user, password
+    def _fill_from_attributes(attributes: Mapping[str, str], user: User):
+        types = User.__annotations__
+        for k, v in attributes.items():
+            if hasattr(user, k):
+                setattr(user, k, types.get(k, str)(v))
 
     @staticmethod
-    def update_user(user, name, surname, patronymic=None, email=None, is_admin=False,
-                    is_teacher=False,
-                    group=None) -> User:
+    def create_user(attributes: Mapping[str, str]) -> User:
         db.session.rollback()
-        user.name = name
-        user.surname = surname
-        user.email = email
-        user.is_admin = is_admin
-        user.is_teacher = is_teacher
-        user.patronymic = patronymic
-        user.group_id = group
+        user = User()
+        UserQuery._fill_from_attributes(attributes, user)
+        db.session.add(user)
+        db.session.commit()
+        return user
+
+    @staticmethod
+    def create_or_update(attributes: Mapping[str, str]) -> User:
+        user_query = User.query.filter(User.id == attributes['id'])
+        if user_query.count() > 0:
+            return UserQuery.update_user(user_query.first(), attributes)
+        else:
+            return UserQuery.create_user(attributes)
+
+    @staticmethod
+    def update_user(user: User, attributes: Mapping[str, str]) -> User:
+        db.session.rollback()
+
+        UserQuery._fill_from_attributes(attributes, user)
 
         db.session.commit()
         return user
