@@ -120,9 +120,8 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <form action="{{ url_for("login.logout") }}" method="POST"><input class="dropdown-item"
-                                                                                                  type="submit"
-                                                                                                  value="Выйти"></form>
+                                <a class="dropdown-item" href="{{ url_for("logout") }}">Выйти</a>
+                            </li>
                         </ul>
                     </div>
                 {% else %}

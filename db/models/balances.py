@@ -1,4 +1,5 @@
 from functools import cache
+from typing import Mapping
 
 from flask import current_app
 

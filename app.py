@@ -6,8 +6,8 @@ from typing import Any, Mapping
 
 import click
 from dotenv import load_dotenv
-from flask import Flask, abort, send_from_directory, Blueprint, url_for, current_app
-from flask_login import LoginManager, login_required, UserMixin, login_user
+from flask import Flask, abort, send_from_directory, Blueprint, url_for, current_app, redirect
+from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user
 from flask_migrate import Migrate
 from flask_saml2.sp import ServiceProvider
 from flask_saml2.utils import certificate_from_file, private_key_from_file
@@ -96,7 +96,9 @@ class ProtonServiceProvider(ServiceProvider):
 
     def login_successful(self, auth_data, relay_state):
         attributes = auth_data.attributes
+        print(attributes)
         user = UserQuery.create_or_update(attributes)
+        GroupQuery.create_or_update(attributes)
         login_user(user)
         return super().login_successful(auth_data, relay_state)
 
@@ -212,6 +214,13 @@ def import_teachers(file):
 
     wb_write.save("teachers.xlsx")
     click.echo("Ну, вро де импортировали!")
+
+
+@app.route("/logout")
+def logout():
+    sp.logout()
+    logout_user()
+    return redirect(url_for("landing.index"))
 
 
 db.init_app(app)

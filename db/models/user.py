@@ -43,12 +43,6 @@ class User(db.Model, UserMixin):
     def avatar_path(self) -> str:
         return avatars.url(self.avatar if self.avatar else 'default.png')
 
-    def set_password(self, password):
-        self.hashed_password = generate_password_hash(password)
-
-    def check_password(self, password) -> bool:
-        return check_password_hash(self.hashed_password, password)
-
 
 class UserQuery:
     @staticmethod
@@ -96,6 +90,7 @@ class UserQuery:
         for k, v in attributes.items():
             if hasattr(user, k):
                 setattr(user, k, types.get(k, str)(v))
+        user.group_id = attributes['group.id']
 
     @staticmethod
     def create_user(attributes: Mapping[str, str]) -> User:
@@ -103,6 +98,7 @@ class UserQuery:
         user = User()
         UserQuery._fill_from_attributes(attributes, user)
         db.session.add(user)
+        BalanceQuery.create_balance(user.id)
         db.session.commit()
         return user
 
