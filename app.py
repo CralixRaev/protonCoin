@@ -22,8 +22,8 @@ from db.database import db
 from db.models.balances import BalanceQuery
 from db.models.group import GroupQuery
 from db.models.user import User, UserQuery
-from uploads import avatars, gift_images, achievement_files
 from util import admin_required
+from uploads import gift_images, achievement_files
 from flask_redis import Redis
 
 SP_CERTIFICATE = certificate_from_file("sp_certificate.pem")
@@ -226,7 +226,6 @@ def logout():
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
 
-configure_uploads(app, avatars)
 configure_uploads(app, gift_images)
 configure_uploads(app, achievement_files)
 

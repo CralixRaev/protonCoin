@@ -12,7 +12,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from db.database import db
 from db.models.balances import Balance, BalanceQuery
-from uploads import avatars
 
 ALPHABET = string.ascii_letters + string.digits
 
@@ -41,7 +40,7 @@ class User(db.Model, UserMixin):
 
     @property
     def avatar_path(self) -> str:
-        return avatars.url(self.avatar if self.avatar else 'default.png')
+        return self.avatar
 
 
 class UserQuery:

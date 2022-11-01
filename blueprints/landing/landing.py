@@ -6,7 +6,7 @@ from db.models.balances import BalanceQuery
 
 landing = Blueprint('landing', __name__, template_folder='templates', static_folder='static')
 landing.register_blueprint(catalog, url_prefix="/catalog")
-landing.register_blueprint(account, url_prefix="/account")
+# landing.register_blueprint(account, url_prefix="/account")
 
 
 @landing.route("/")

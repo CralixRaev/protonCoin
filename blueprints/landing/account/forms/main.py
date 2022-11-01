@@ -5,7 +5,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Email
 from wtforms.validators import DataRequired
 from wtforms_components import Email
 
-from uploads import avatars
+# from uploads import avatars
 
 
 class UserForm(FlaskForm):

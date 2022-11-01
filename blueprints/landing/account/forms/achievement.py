@@ -5,7 +5,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Email
 from wtforms.validators import DataRequired, Email
 from wtforms_components import SelectField
 
-from uploads import avatars, achievement_files
+from uploads import achievement_files
 
 
 class AchievementForm(FlaskForm):
