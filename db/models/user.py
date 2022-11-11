@@ -49,6 +49,7 @@ class User(db.Model, UserMixin):
         return avatars.url(self.avatar if self.avatar else 'default.png')
 
     def set_password(self, password):
+        self.alternative_id = str(uuid4())
         self.hashed_password = generate_password_hash(password)
 
     def check_password(self, password) -> bool:
@@ -148,7 +149,6 @@ class UserQuery:
     def new_password(user_id) -> str:
         password = UserQuery._random_password()
         user = User.query.get(user_id)
-        user.alternative_id = str(uuid4())
         user.set_password(password)
         db.session.commit()
         return password
