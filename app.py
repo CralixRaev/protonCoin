@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import uuid
 from dataclasses import dataclass
 from typing import Any, Mapping
 
@@ -10,6 +11,7 @@ from flask import Flask, abort, send_from_directory, Blueprint, url_for, current
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user
 from flask_migrate import Migrate
 from flask_saml2.sp import ServiceProvider
+from flask_saml2.sp.views import SAML2View
 from flask_saml2.utils import certificate_from_file, private_key_from_file
 from flask_uploads import configure_uploads, UploadSet
 
@@ -53,6 +55,7 @@ app.config['SAML2_IDENTITY_PROVIDERS'] = [
         },
     },
 ]
+app.config['SAML_IDP_BASE_URL'] = "http://localhost:9000/"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['COIN_UNIT'] = "ПРОтоКоин"
@@ -84,23 +87,32 @@ login_manager.login_message = "Пожалуйста, войдите, что бы
 redis_client = Redis(app)
 
 
+class Manage(SAML2View):
+    def get(self):
+        return redirect(current_app.config[
+                            "SAML_IDP_BASE_URL"] +
+                        f"manage/?next={self.sp.get_account_manage_return_url()}")
+
+
 class ProtonServiceProvider(ServiceProvider):
     blueprint_name = "login"
 
     def get_logout_return_url(self):
-        return url_for('landing.index', _external=False)
+        return url_for('landing.index', _external=True)
 
     def get_default_login_return_url(self):
-        print('default')
-        return url_for('landing.index', _external=False)
+        return url_for('landing.index', _external=True)
 
     def login_successful(self, auth_data, relay_state):
         attributes = auth_data.attributes
         print(attributes)
         user = UserQuery.create_or_update(attributes)
         GroupQuery.create_or_update(attributes)
-        login_user(user)
+        login_user(user, remember=True)
         return super().login_successful(auth_data, relay_state)
+
+    def get_account_manage_return_url(self) -> str:
+        return url_for('landing.index', _external=True)
 
 
 sp = ProtonServiceProvider()
@@ -110,117 +122,6 @@ sp = ProtonServiceProvider()
 def load_user(user_id):
     return UserQuery.get_user_by_id(user_id)
 
-
-@app.cli.command("create_admin")
-@click.argument("name")
-@click.argument("surname")
-@click.argument("patronymic")
-def create_admin(name, surname, patronymic):
-    user_object, password = UserQuery.create_user(name, surname, patronymic, is_admin=True)
-
-    click.echo(f"Админ создан. Логин: {user_object.login}, пароль: {password}")
-
-
-@app.cli.command("reset_password")
-@click.argument("login")
-def reset_password(login):
-    password = UserQuery.new_password(UserQuery.get_user_by_login(login).id)
-
-    click.echo(f"Пароль изменён. Новый пароль: {password}")
-
-
-@app.cli.command("import_folders")
-@click.argument("folder")
-def import_folders(folder):
-    from openpyxl.worksheet.dimensions import DimensionHolder
-    from openpyxl.utils import get_column_letter
-    from openpyxl.worksheet.dimensions import ColumnDimension
-    import openpyxl
-
-    groups = os.listdir(os.path.join(folder, "for_import"))
-    for group in groups:
-        groupname = os.path.basename(group).split(".")[0]
-        if groupname:
-            print(groupname)
-            stage, letter = groupname[0], groupname[1]
-            wb_read = openpyxl.load_workbook(os.path.join(folder, "for_import", group),
-                                             read_only=True, data_only=True)
-            ws_read = wb_read.active
-            wb_write = openpyxl.Workbook()
-            ws_write = wb_write.active
-            [ws_write.cell(1, i + 1, name) for i, name in enumerate(['ФИО', 'Логин', 'Пароль'])]
-            for row in ws_read.iter_rows(min_row=2):
-                full_name = row[0].value
-                if full_name:
-                    split_name = full_name.split()
-                    surname, name, patronymic = split_name[0], split_name[1], ' '.join(
-                        split_name[2:])
-                    user, password = UserQuery.create_user(name, surname,
-                                                           patronymic if patronymic else None,
-                                                           None, False, False,
-                                                           GroupQuery.get_group_by_stage_letter(
-                                                               stage,
-                                                               letter).id)
-                    ws_write.append((user.full_name, user.login, password))
-            dim_holder = DimensionHolder(worksheet=ws_write)
-
-            for col in range(ws_write.min_column, ws_write.max_column + 1):
-                dim_holder[get_column_letter(col)] = ColumnDimension(ws_write, min=col,
-                                                                     max=col,
-                                                                     width=20)
-            ws_write.column_dimensions = dim_holder
-
-            wb_write.save(os.path.join(folder, "imported", f"{groupname}-imported.xlsx"))
-    click.echo("Ну, вроде импортировали!")
-
-
-@app.cli.command("import_teachers")
-@click.argument("file")
-def import_teachers(file):
-    from openpyxl.worksheet.dimensions import DimensionHolder
-    from openpyxl.utils import get_column_letter
-    from openpyxl.worksheet.dimensions import ColumnDimension
-    import openpyxl
-    wb_read = openpyxl.load_workbook(file, read_only=True, data_only=True)
-    ws_read = wb_read.active
-    wb_write = openpyxl.Workbook()
-    ws_write = wb_write.active
-    [ws_write.cell(1, i + 1, name) for i, name in enumerate(['ФИО', 'Логин', 'Пароль'])]
-    for row in ws_read.iter_rows(min_row=2):
-        full_name = row[1].value
-        if full_name:
-            split_name = full_name.split()
-            if len(row[0].value) == 2:
-                stage, letter = row[0].value[0], row[0].value[1]
-            else:
-                stage, letter = row[0].value[0:2], row[0].value[2]
-            print(stage, letter)
-            print(GroupQuery.get_group_by_stage_letter(stage,
-                                                       letter))
-            surname, name, patronymic = split_name[0], split_name[1], ' '.join(split_name[2:])
-            user, password = UserQuery.create_user(name, surname,
-                                                   patronymic if patronymic else None,
-                                                   None, False, True,
-                                                   GroupQuery.get_group_by_stage_letter(stage,
-                                                                                        letter).id)
-            ws_write.append((user.full_name, user.login, password))
-    dim_holder = DimensionHolder(worksheet=ws_write)
-
-    for col in range(ws_write.min_column, ws_write.max_column + 1):
-        dim_holder[get_column_letter(col)] = ColumnDimension(ws_write, min=col,
-                                                             max=col,
-                                                             width=20)
-    ws_write.column_dimensions = dim_holder
-
-    wb_write.save("teachers.xlsx")
-    click.echo("Ну, вро де импортировали!")
-
-
-@app.route("/logout")
-def logout():
-    sp.logout()
-    logout_user()
-    return redirect(url_for("landing.index"))
 
 
 db.init_app(app)
@@ -241,7 +142,9 @@ app.register_blueprint(teacher, url_prefix='/teacher')
 # app.register_blueprint(login, url_prefix='/login')
 app.register_blueprint(landing, url_prefix='/')
 # app.register_blueprint(api, url_prefix='/api/v1/')
-app.register_blueprint(sp.create_blueprint(), url_prefix='/saml/')
+sp_bp = sp.create_blueprint()
+sp_bp.add_url_rule("/manage/", view_func=Manage.as_view('manage', sp=sp))
+app.register_blueprint(sp_bp, url_prefix='/saml/')
 
 
 def main():

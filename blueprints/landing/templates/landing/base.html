@@ -112,15 +112,17 @@
                                             src="/static/coin.webp" height="16px" width="16px"
                                             class="ms-1"> {{ config.COIN_UNIT }}</div>
                             </li>
-{#                            <li><a class="dropdown-item" href="{{ url_for("landing.account.index") }}">Ваш аккаунт</a>#}
-{#                            </li>#}
+                            <li><a class="dropdown-item" href="{{ url_for("login.manage") }}">Ваш аккаунт</a>
+                            </li>
 {#                            <li><a class="dropdown-item" href="{{ url_for("landing.account.declare_achievement") }}">Заявить#}
 {#                                о достижении</a></li>#}
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <a class="dropdown-item" href="{{ url_for("logout") }}">Выйти</a>
+                                <form method="POST" action="{{ url_for("login.logout") }}">
+                                    <input class="dropdown-item" type="submit" value="Выйти">
+                                </form>
                             </li>
                         </ul>
                     </div>
