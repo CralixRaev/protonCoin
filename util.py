@@ -67,6 +67,16 @@ def teacher_required(func):
     return decorated_view
 
 
+def teacher_or_admin_required(func):
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        if not (current_user.is_teacher or current_user.is_admin):
+            return flask.abort(403)
+        return func(*args, **kwargs)
+
+    return decorated_view
+
+
 def password_check(password):
     """
     Verify the strength of 'password'
