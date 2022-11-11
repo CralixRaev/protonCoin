@@ -45,10 +45,19 @@
         </table>
 
         <script>
+            function approve(row_id) {
+                window.location.href = "{{ url_for("admin.achievements.approve") }}" + "?id=" + row_id
+            }
+
+            function disapprove(row_id) {
+                let reason = window.prompt("Введите причину отказа")
+                window.location.href = "{{ url_for("admin.achievements.disapprove") }}" + "?id=" + row_id + "&reason=" + reason
+            }
+
             function detailFormatter(index, row) {
                 let html = []
-                html.push("<a href=\"/admin/achievements/approve/?id=" + row.id + "\" class=\"btn btn-success btn-sm me-1\" role=\"button\" data-toggle=\"button\">Подтвердить</a>")
-                html.push("<a href=\"/admin/achievements/disapprove/?id=" + row.id + "\" class=\"btn btn-danger btn-sm me-1\" role=\"button\" data-toggle=\"button\">Отклонить</a>")
+                html.push("<button type=\"button\" class=\"btn btn-success me-2\" onclick=\"approve(" + row.id + ")\">Одобрить</button>")
+                html.push("<button type=\"button\" class=\"btn btn-danger\" onclick=\"disapprove(" + row.id + ")\">Отклонить</button>")
                 return html
             }
         </script>
@@ -66,6 +75,8 @@
                 <th data-sortable="true">Файл</th>
                 <th data-sortable="true">Комментарий</th>
                 <th data-sortable="true">Статус</th>
+                <th data-sortable="true">Причина отклонения, если отклонено</th>
+                <th data-sortable="true">Отклонено/подтверждено кем</th>
             </tr>
             </thead>
             <tbody>
@@ -88,6 +99,12 @@
                     </td>
                     <td>
                         {{ achievement.status }}
+                    </td>
+                    <td>
+                        {{ achievement.disapproval_reason }}
+                    </td>
+                    <td>
+                        {{ achievement.approved_disapproved_user.full_name }}
                     </td>
                 </tr>
             {% endfor %}

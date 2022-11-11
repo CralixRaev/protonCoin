@@ -1,6 +1,9 @@
 from datetime import datetime
 
+from flask_login import current_user
 from sqlalchemy import or_, and_
+from sqlalchemy.orm import backref
+
 from db.database import db
 from db.models.user import User
 from uploads import achievement_files
@@ -13,10 +16,15 @@ class Achievement(db.Model):
     achievement_file = db.Column(db.String(1024), nullable=True)
     comment = db.Column(db.String(4096), nullable=True)
     creation_date = db.Column(db.DateTime, default=datetime.now)
+    edit_date = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     is_approved = db.Column(db.Boolean, default=False, nullable=False)
     is_disapproved = db.Column(db.Boolean, default=False, nullable=False)
+    disapproval_reason = db.Column(db.String(4096), nullable=True, default=None)
+    approved_disapproved_by = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True,
+                                        default=None)
 
-    user = db.relation("User", back_populates='achievements')
+    user = db.relation("User", foreign_keys=[user_id], backref=backref('achievements', order_by=id))
+    approved_disapproved_user = db.relation("User", foreign_keys=[approved_disapproved_by])
     criteria = db.relation("Criteria", back_populates='achievements')
 
     @property
@@ -93,10 +101,13 @@ class AchievementQuery:
 
     @staticmethod
     def approve_achievement(achievement: Achievement):
+        achievement.approved_disapproved_by = current_user.id
         achievement.is_approved = True
         db.session.commit()
 
     @staticmethod
-    def disapprove_achievement(achievement: Achievement):
+    def disapprove_achievement(achievement: Achievement, reason: str):
+        achievement.approved_disapproved_by = current_user.id
         achievement.is_disapproved = True
+        achievement.disapproval_reason = reason
         db.session.commit()

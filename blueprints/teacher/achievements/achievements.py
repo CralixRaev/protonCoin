@@ -36,7 +36,7 @@ def approve():
                                     comment=f"За достижение ({achievement.criteria.basis})"
                                             f" {achievement.criteria} (ID: {achievement.id})")
     flask.flash(f"Достижение одобрено. Ученику {achievement.user.full_name} выдан"
-                f" {achievement.criteria.cost} {current_app.config['COIN_UNIT']}")
+                f" {achievement.criteria.cost} {current_app.config['COIN_UNIT']}", "success")
     return redirect(url_for('teacher.achievements.index'))
 
 
@@ -45,7 +45,8 @@ def approve():
 @teacher_required
 def disapprove():
     achievement_id = int(request.args.get('id'))
+    reason = request.args.get('reason')
     achievement = AchievementQuery.get_achievement_by_id(achievement_id)
-    AchievementQuery.disapprove_achievement(achievement)
-    flask.flash(f"Достижение отклонено")
+    AchievementQuery.disapprove_achievement(achievement, reason)
+    flask.flash(f"Достижение отклонено", "danger")
     return redirect(url_for('teacher.achievements.index'))

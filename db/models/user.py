@@ -33,7 +33,6 @@ class User(db.Model, UserMixin):
     group = db.relation("Group", back_populates='users')
     balance = db.relation("Balance", back_populates='user', uselist=False)
     orders = db.relation("Order", back_populates='user')
-    achievements = db.relation("Achievement", back_populates='user')
 
     @property
     def full_name(self) -> str:

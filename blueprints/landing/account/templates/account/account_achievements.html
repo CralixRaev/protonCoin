@@ -7,6 +7,7 @@
             <tr>
                 <th data-sortable="true">(Основание) Критерий</th>
                 <th data-sortable="true">Статус</th>
+                <th data-sortable="true">Причина отклонения (если отклонено)</th>
             </tr>
             </thead>
             <tbody>
@@ -15,6 +16,7 @@
                     <td>({{ achievement.criteria.basis.name }}) {{ achievement.criteria.name }}
                         - {{ achievement.criteria.cost }}</td>
                     <td class="{{ achievement.status_color_class }}">{{ achievement.status }}</td>
+                    <td>{% if achievement.disapproval_reason %}{{ achievement.disapproval_reason }}{% endif %}</td>
                 </tr>
             {% endfor %}
 

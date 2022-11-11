@@ -46,7 +46,8 @@ def approve():
 @admin_required
 def disapprove():
     achievement_id = int(request.args.get('id'))
+    reason = request.args.get('reason')
     achievement = AchievementQuery.get_achievement_by_id(achievement_id)
-    AchievementQuery.disapprove_achievement(achievement)
+    AchievementQuery.disapprove_achievement(achievement, reason)
     flask.flash(f"Достижение отклонено", "danger")
     return redirect(url_for('admin.achievements.index'))
