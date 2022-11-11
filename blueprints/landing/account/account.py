@@ -127,5 +127,9 @@ def declare_achievement():
                                                 achievement_file if form.file.data else None,
                                                 form.comment.data)
             flask.flash("Достижение принято. Жди одобрения классным руководителем ⌛", "success")
+        if form.do_not_redirect.data == "True":
+            return redirect(url_for(".declare_achievement"))
+        else:
             return redirect(url_for(".transactions"))
     return render_template("account/account_declare_achievement.html", **context)
+

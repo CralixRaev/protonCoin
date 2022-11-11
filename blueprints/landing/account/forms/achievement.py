@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, EmailField,\
-    TextAreaField, IntegerField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, EmailField, \
+    TextAreaField, IntegerField, HiddenField
 from wtforms.validators import DataRequired, Email
 from wtforms_components import SelectField
 
@@ -13,4 +13,5 @@ class AchievementForm(FlaskForm):
     comment = TextAreaField("Комментарий")
     file = FileField("Файл, подтверждающий достижение *", validators=[
         FileAllowed(achievement_files, 'Картинка или документ'), FileRequired()])
-    submit = SubmitField('Отправить')
+    do_not_redirect = HiddenField("Не перенаправлять на index, а дать отправить ещё одно достижение", default="False")
+    submit_button = SubmitField('Отправить')
