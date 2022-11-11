@@ -52,7 +52,11 @@
 
             function disapprove(row_id) {
                 let reason = window.prompt("Введите причину отказа")
-                window.location.href = "{{ url_for("admin.achievements.disapprove") }}" + "?id=" + row_id + "&reason=" + reason
+                if (reason) {
+                    window.location.href = "{{ url_for("admin.achievements.disapprove") }}" + "?id=" + row_id + "&reason=" + reason
+                } else {
+                    window.alert("К сожалению, причину отказа надо указать :(")
+                }
             }
 
             function detailFormatter(index, row) {
@@ -118,7 +122,11 @@
         <script>
             function disapprove_existing(row_id) {
                 let reason = window.prompt("Введите причину отклонения существующего достижения")
-                window.location.href = "{{ url_for("admin.achievements.disapprove_existing") }}" + "?id=" + row_id + "&reason=" + reason
+                if (reason) {
+                    window.location.href = "{{ url_for("admin.achievements.disapprove_existing") }}" + "?id=" + row_id + "&reason=" + reason
+                } else {
+                    window.alert("К сожалению, причину отклонения надо указать :(")
+                }
             }
 
             function historyDetailFormatter(index, row) {

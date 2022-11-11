@@ -25,7 +25,9 @@
                     </td>
                     <td>
                         {% if achievement.achievement_file_path %}
-                            <a target="_blank" rel="noopener noreferrer" href="{{ url_for("webp_viewer") }}?path={{ achievement.achievement_file_path }}">Ссылка на файл</a>
+                            <a target="_blank" rel="noopener noreferrer"
+                               href="{{ url_for("webp_viewer") }}?path={{ achievement.achievement_file_path }}">Ссылка
+                                на файл</a>
                         {% endif %}
                     </td>
                     <td>
@@ -47,7 +49,11 @@
 
             function disapprove(row_id) {
                 let reason = window.prompt("Введите причину отказа")
-                window.location.href = "{{ url_for("teacher.achievements.disapprove") }}" + "?id=" + row_id + "&reason=" + reason
+                if (reason) {
+                    window.location.href = "{{ url_for("teacher.achievements.disapprove") }}" + "?id=" + row_id + "&reason=" + reason
+                } else {
+                    window.alert("К сожалению, причину отказа надо указать :(")
+                }
             }
 
             function detailFormatter(index, row) {
