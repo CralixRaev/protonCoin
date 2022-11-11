@@ -24,9 +24,10 @@ def index():
             login_user(user, remember=form.remember_me.data)
             flask.flash('Успешный вход', "success")
             next_path = flask.request.args.get('next')
-            if not is_safe_url(next_path):
-                return flask.abort(400)
-            return redirect(next_path or url_for("landing.index"))
+            if is_safe_url(next_path):
+                return redirect(next_path or url_for("landing.index"))
+            else:
+                flask.abort(400)
         return render_template('login/login.html', login_message="Неправильный логин или пароль",
                                **context)
     return render_template("login/login.html", **context)
