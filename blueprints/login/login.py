@@ -22,6 +22,7 @@ def index():
         user = UserQuery.get_user_by_login(form.login.data)
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
+            UserQuery.update_auth_time(user)
             flask.flash('Успешный вход', "success")
             next_path = flask.request.args.get('next')
             if is_safe_url(next_path):

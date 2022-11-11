@@ -71,7 +71,7 @@ login_manager.login_message = "Пожалуйста, войдите, что бы
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(user_id)
+    return User.query.filter(User.alternative_id == user_id).first()
 
 
 @app.cli.command("create_admin")

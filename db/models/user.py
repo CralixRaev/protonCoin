@@ -2,6 +2,7 @@ import logging
 import secrets
 import string
 from datetime import datetime
+from uuid import UUID, uuid4
 
 import sqlalchemy.exc
 from flask_login import UserMixin
@@ -28,11 +29,16 @@ class User(db.Model, UserMixin):
     is_teacher = db.Column(db.Boolean, default=False)
     group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=True, index=True)
     creation_date = db.Column(db.DateTime, default=datetime.now)
+    last_auth = db.Column(db.DateTime, default=None, nullable=True)
     avatar = db.Column(db.String(128), default="default.png")
+    alternative_id = db.Column(db.String(36), nullable=False, default=uuid4)
 
     group = db.relation("Group", back_populates='users')
     balance = db.relation("Balance", back_populates='user', uselist=False)
     orders = db.relation("Order", back_populates='user')
+
+    def get_id(self) -> str:
+        return str(self.alternative_id)
 
     @property
     def full_name(self) -> str:
@@ -142,6 +148,7 @@ class UserQuery:
     def new_password(user_id) -> str:
         password = UserQuery._random_password()
         user = User.query.get(user_id)
+        user.alternative_id = str(uuid4())
         user.set_password(password)
         db.session.commit()
         return password
@@ -168,6 +175,11 @@ class UserQuery:
     @staticmethod
     def delete_user(user: User):
         User.query.filter(User.id == user.id).delete()
+        db.session.commit()
+
+    @staticmethod
+    def update_auth_time(user: User):
+        user.last_auth = datetime.now()
         db.session.commit()
 
     @staticmethod

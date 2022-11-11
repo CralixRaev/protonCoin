@@ -21,7 +21,7 @@ class Transaction(db.Model):
 class TransactionQuery:
     @staticmethod
     def get_all_transactions() -> list[Transaction]:
-        return Transaction.query.all()
+        return Transaction.query.order_by(Transaction.id.desc()).all()
 
     @staticmethod
     def create_transaction(from_balance_id, to_balance_id, amount, comment=None) -> Transaction:
