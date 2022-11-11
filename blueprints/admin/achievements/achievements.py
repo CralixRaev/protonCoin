@@ -51,3 +51,26 @@ def disapprove():
     AchievementQuery.disapprove_achievement(achievement, reason)
     flask.flash(f"Достижение отклонено", "danger")
     return redirect(url_for('admin.achievements.index'))
+
+
+@achievements.route('/disapprove_existing/')
+@login_required
+@admin_required
+def disapprove_existing():
+    achievement_id = int(request.args.get('id'))
+    reason = request.args.get('reason')
+    achievement = AchievementQuery.get_achievement_by_id(achievement_id)
+    AchievementQuery.disapprove_existing_achievement(achievement,
+                                                     f"Отмена подтверждения достижения "
+                                                     f"администратором: {reason}")
+    TransactionQuery.create_withdraw(achievement.user.balance, achievement.criteria.cost,
+                                     comment=f"За отмену подтверждения достижения администратором"
+                                             f" ({achievement.criteria.basis})"
+                                             f" {achievement.criteria} (ID: {achievement.id})")
+
+    flask.flash(
+        f"Начисление отменено, достижение отклонено, создана новая транзакция,"
+        f" со счёта {achievement.user.full_name} списаны"
+        f" {achievement.criteria.cost} {current_app.config['COIN_UNIT']}",
+        "danger")
+    return redirect(url_for('admin.achievements.index'))

@@ -28,7 +28,8 @@
                     </td>
                     <td>
                         {% if achievement.achievement_file_path %}
-                            <a target="_blank" rel="noopener noreferrer" href="{{ url_for("webp_viewer") }}?path={{ achievement.achievement_file_path }}">Ссылка
+                            <a target="_blank" rel="noopener noreferrer"
+                               href="{{ url_for("webp_viewer") }}?path={{ achievement.achievement_file_path }}">Ссылка
                                 на файл</a>
                         {% endif %}
                     </td>
@@ -65,7 +66,8 @@
     <h3>История одобренных/отклоненных достижений</h3>
     <div class="table-responsive">
         <table class="table table-striped table-sm" data-toggle="table" data-pagination="true"
-               data-search="true" data-show-columns="true" data-locale="ru-RU" data-show-refresh="true">
+               data-search="true" data-show-columns="true" data-locale="ru-RU" data-show-refresh="true"
+               data-detail-formatter="historyDetailFormatter" data-detail-view="true">
             <thead>
             <tr>
                 <th data-sortable="true" data-field="id">ID</th>
@@ -74,7 +76,7 @@
                 <th data-sortable="true">Критерий</th>
                 <th data-sortable="true">Файл</th>
                 <th data-sortable="true">Комментарий</th>
-                <th data-sortable="true">Статус</th>
+                <th data-sortable="true" data-field="status">Статус</th>
                 <th data-sortable="true">Причина отклонения, если отклонено</th>
                 <th data-sortable="true">Отклонено/подтверждено кем</th>
             </tr>
@@ -90,7 +92,8 @@
                     </td>
                     <td>
                         {% if achievement.achievement_file_path %}
-                            <a target="_blank" rel="noopener noreferrer" href="{{ url_for("webp_viewer") }}?path={{ achievement.achievement_file_path }}">Ссылка
+                            <a target="_blank" rel="noopener noreferrer"
+                               href="{{ url_for("webp_viewer") }}?path={{ achievement.achievement_file_path }}">Ссылка
                                 на файл</a>
                         {% endif %}
                     </td>
@@ -111,5 +114,20 @@
 
             </tbody>
         </table>
+
+        <script>
+            function disapprove_existing(row_id) {
+                let reason = window.prompt("Введите причину отклонения существующего достижения")
+                window.location.href = "{{ url_for("admin.achievements.disapprove_existing") }}" + "?id=" + row_id + "&reason=" + reason
+            }
+
+            function historyDetailFormatter(index, row) {
+                let html = []
+                if (row.status === "Одобрено") {
+                    html.push("<button type=\"button\" class=\"btn btn-danger me-2\" onclick=\"disapprove_existing(" + row.id + ")\">Отклонить существующее достижение (аккуратно!!)</button>")
+                }
+                return html
+            }
+        </script>
     </div>
 {% endblock %}

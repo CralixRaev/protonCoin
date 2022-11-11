@@ -111,3 +111,12 @@ class AchievementQuery:
         achievement.is_disapproved = True
         achievement.disapproval_reason = reason
         db.session.commit()
+
+    @staticmethod
+    def disapprove_existing_achievement(achievement: Achievement, reason: str):
+        achievement.approved_disapproved_by = current_user.id
+        achievement.is_disapproved = True
+        achievement.is_approved = False
+        achievement.disapproval_reason = reason
+        db.session.commit()
+
