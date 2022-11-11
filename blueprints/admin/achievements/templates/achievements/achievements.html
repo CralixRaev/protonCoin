@@ -28,7 +28,7 @@
                     </td>
                     <td>
                         {% if achievement.achievement_file_path %}
-                            <a target="_blank" rel="noopener noreferrer" href="{{ achievement.achievement_file_path }}">Ссылка
+                            <a target="_blank" rel="noopener noreferrer" href="{{ url_for("webp_viewer") }}?path={{ achievement.achievement_file_path }}">Ссылка
                                 на файл</a>
                         {% endif %}
                     </td>
@@ -90,7 +90,7 @@
                     </td>
                     <td>
                         {% if achievement.achievement_file_path %}
-                            <a target="_blank" rel="noopener noreferrer" href="{{ achievement.achievement_file_path }}">Ссылка
+                            <a target="_blank" rel="noopener noreferrer" href="{{ url_for("webp_viewer") }}?path={{ achievement.achievement_file_path }}">Ссылка
                                 на файл</a>
                         {% endif %}
                     </td>

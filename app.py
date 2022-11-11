@@ -3,8 +3,9 @@ import os
 from typing import Any
 
 import click
+import flask
 from dotenv import load_dotenv
-from flask import Flask, abort, send_from_directory, Blueprint
+from flask import Flask, abort, send_from_directory, Blueprint, render_template, request
 from flask_login import LoginManager, login_required
 from flask_migrate import Migrate
 from flask_uploads import configure_uploads, UploadSet
@@ -46,6 +47,14 @@ def uploaded_file(setname: UploadSet, filename: str) -> Any:
         abort(404)
     return send_from_directory(config.destination, filename)
 
+
+@app.route('/webp_viewer/')
+@teacher_or_admin_required
+def webp_viewer():
+    path = request.args.get("path")
+    if not path:
+        flask.abort(400)
+    return render_template("webp_viewer.html", path=path)
 
 app.register_blueprint(_uploads, url_prefix="/uploads")
 app.register_blueprint(admin, url_prefix='/admin')
