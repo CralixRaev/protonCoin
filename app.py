@@ -19,7 +19,7 @@ from db.models.balances import BalanceQuery
 from db.models.group import GroupQuery
 from db.models.user import User, UserQuery
 from uploads import avatars, gift_images, achievement_files
-from util import admin_required
+from util import admin_required, teacher_required, teacher_or_admin_required
 
 load_dotenv()
 
@@ -39,8 +39,7 @@ _uploads = Blueprint("_uploads", "_uploads")
 
 # require admin for all not-proxied uploads
 @_uploads.route('/<setname>/<path:filename>')
-@login_required
-@admin_required
+@teacher_or_admin_required
 def uploaded_file(setname: UploadSet, filename: str) -> Any:
     config = app.upload_set_config.get(setname)  # type: ignore
     if config is None:
@@ -81,7 +80,7 @@ def create_admin(name, surname, patronymic):
 def create_admin(login):
     password = UserQuery.new_password(UserQuery.get_user_by_login(login).id)
 
-    click.echo(f"Пароль изменён. Новый пароль: {password}") @ app.cli.command("reset_password")
+    click.echo(f"Пароль изменён. Новый пароль: {password}")
 
 
 @app.cli.command("import_folders")
