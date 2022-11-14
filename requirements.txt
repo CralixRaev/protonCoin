@@ -13,7 +13,7 @@ flask-login==0.6.2
 python-dotenv==0.21.0
 WTForms==3.0.1
 transliterate==1.10.2
-Flask-Migrate==3.1.0
+Flask-Migrate==4.0.0
 Mako==1.2.3
 alembic==1.8.1
 SQLAlchemy==1.4.44
