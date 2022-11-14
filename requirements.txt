@@ -3,7 +3,7 @@ Flask==2.2.2
 itsdangerous==2.1.2
 Jinja2==3.1.2
 MarkupSafe==2.1.1
-pip==22.2.2
+pip==22.3.1
 setuptools==65.5.1
 Werkzeug==2.2.2
 wheel==0.38.4
@@ -13,10 +13,10 @@ flask-login==0.6.2
 python-dotenv==0.21.0
 WTForms==3.0.1
 transliterate==1.10.2
-Flask-Migrate==3.1.0
+Flask-Migrate==4.0.0
 Mako==1.2.3
 alembic==1.8.1
-SQLAlchemy==1.4.43
+SQLAlchemy==1.4.44
 openpyxl==3.0.10
 flask_reuploaded==1.2.0
 wtforms_components==0.10.5
