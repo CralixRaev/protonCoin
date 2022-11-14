@@ -13,8 +13,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from db.database import db
 from db.models.balances import Balance, BalanceQuery
 from uploads import avatars
-
-ALPHABET = string.ascii_letters + string.digits
+from util import random_password
 
 
 class User(db.Model, UserMixin):
@@ -69,10 +68,6 @@ class UserQuery:
         return login.replace("'", "").lower()
 
     @staticmethod
-    def _random_password():
-        return ''.join(secrets.choice(ALPHABET) for _ in range(8))
-
-    @staticmethod
     def get_user_by_login(login) -> User:
         login = login.lower()
         return User.query.filter((User.email == login) | (User.login == login)).first()
@@ -116,7 +111,7 @@ class UserQuery:
 
         user.login = UserQuery._create_login(name, surname, patronymic)
 
-        password = UserQuery._random_password()
+        password = random_password()
         user.set_password(password)
         try:
             db.session.add(user)
@@ -147,7 +142,7 @@ class UserQuery:
 
     @staticmethod
     def new_password(user_id) -> str:
-        password = UserQuery._random_password()
+        password = random_password()
         user = User.query.get(user_id)
         user.set_password(password)
         db.session.commit()

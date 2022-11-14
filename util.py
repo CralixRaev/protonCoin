@@ -1,4 +1,6 @@
 import re
+import secrets
+import string
 from functools import wraps
 from io import BytesIO
 from urllib.parse import urlparse, urljoin
@@ -15,7 +17,7 @@ from werkzeug.utils import secure_filename
 from uploads import avatars
 
 
-def convert_to_webp(file: FileStorage, processing = None) -> FileStorage:
+def convert_to_webp(file: FileStorage, processing=None) -> FileStorage:
     im = Image.open(file.stream)
     if processing:
         processing(im)
@@ -29,7 +31,7 @@ def convert_to_webp(file: FileStorage, processing = None) -> FileStorage:
     return file
 
 
-def save_upload(file: FileStorage, upload_set: UploadSet, processing = None) -> str:
+def save_upload(file: FileStorage, upload_set: UploadSet, processing=None) -> str:
     file.filename = secure_filename(translit(file.filename, 'ru', True))
     return upload_set.save(convert_to_webp(file, processing))
 
@@ -111,3 +113,15 @@ def password_check(password):
         'uppercase_error': uppercase_error,
         'lowercase_error': lowercase_error,
     }
+
+
+ALPHABET = ['a', 'e', 'f', 'g', 'h', 'm', 'n', 't', 'y'] + \
+           ['A', 'B', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'Q', 'R', 'T', 'X', 'Y'] + \
+           ['2', '3', '4', '5', '6', '7', '8', '9']
+
+
+def random_password():
+    password = ''.join(secrets.choice(ALPHABET) for _ in range(8))
+    while not password_check(password):
+        password = ''.join(secrets.choice(ALPHABET) for _ in range(8))
+    return password
