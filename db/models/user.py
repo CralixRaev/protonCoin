@@ -120,7 +120,7 @@ class UserQuery:
             db.session.rollback()
 
             user.login += '1'
-
+            db.session.add(user)
             db.session.commit()
         return user, password
 
