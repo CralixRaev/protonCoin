@@ -1,6 +1,8 @@
 {% extends "account/account.html" %}
 {% block account_tab %}
     <h5>Достижения</h5>
+    <a class="btn btn-primary mt-2 mb-4" href="{{ url_for(".declare_achievement") }}" role="button">Заявить о
+        достижении</a>
     <div class="table-responsive">
         <table class="table table-striped table-sm" data-toggle="table" data-pagination="true" data-locale="ru-RU">
             <thead>
@@ -14,7 +16,7 @@
             {% for achievement in achievements %}
                 <tr>
                     <td>({{ achievement.criteria.basis.name }}) {{ achievement.criteria.name }}
-                        - {{ achievement.criteria.cost }}</td>
+                        - {{ achievement.criteria.cost }} {{ common_macros.coin() }}ов</td>
                     <td class="{{ achievement.status_color_class }}">{{ achievement.status }}</td>
                     <td>{% if achievement.disapproval_reason %}{{ achievement.disapproval_reason }}{% endif %}</td>
                 </tr>

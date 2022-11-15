@@ -1,0 +1,11 @@
+.avatar {
+    object-fit: cover;
+}
+
+.coin_icon {
+    vertical-align: middle;
+}
+
+main {
+    min-height: 100vh;
+}
