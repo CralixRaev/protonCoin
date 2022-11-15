@@ -68,8 +68,8 @@ class UserQuery:
         return login.replace("'", "").lower()
 
     @staticmethod
-    def get_user_by_login(login) -> User:
-        login = login.lower()
+    def get_user_by_login(login: str) -> User:
+        login = login.strip().lower()
         return User.query.filter((User.email == login) | (User.login == login)).first()
 
     @staticmethod
@@ -179,7 +179,6 @@ class UserQuery:
 
     @staticmethod
     def find_user(surname, name, patronymic: str | None = None) -> User | None:
-        print(surname, name, patronymic)
         if patronymic:
             user = User.query.filter(
                 User.surname == surname,
