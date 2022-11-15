@@ -1,28 +1,5 @@
 {% extends "account/account.html" %}
 {% block account_tab %}
-    <a class="btn btn-primary mb-4" href="{{ url_for(".declare_achievement") }}" role="button">Заявить о
-        достижении</a>
-
-    <h5>Списания</h5>
-    <div class="table-responsive">
-        <table class="table table-striped table-sm" data-toggle="table" data-pagination="true" data-locale="ru-RU">
-            <thead>
-            <tr>
-                <th data-sortable="true">Количество</th>
-                <th data-sortable="true">Комментарий</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for withdraw in withdraws %}
-                <tr>
-                    <td class="text-danger">-{{ withdraw.amount }}</td>
-                    <td>{{ withdraw.comment }}</td>
-                </tr>
-            {% endfor %}
-
-            </tbody>
-        </table>
-    </div>
     <h5>Начисления</h5>
     <div class="table-responsive">
         <table class="table table-striped table-sm" data-toggle="table" data-pagination="true" data-locale="ru-RU">
@@ -35,7 +12,7 @@
             <tbody>
             {% for accrual in accruals %}
                 <tr>
-                    <td class="text-success">+{{ accrual.amount }}</td>
+                    <td class="text-success">+{{ accrual.amount }} {{ common_macros.coin() }}</td>
                     <td>{{ accrual.comment }}</td>
                 </tr>
             {% endfor %}
@@ -43,4 +20,26 @@
             </tbody>
         </table>
     </div>
+
+    <h5 class="mt-4">Списания</h5>
+    <div class="table-responsive">
+        <table class="table table-striped table-sm" data-toggle="table" data-pagination="true" data-locale="ru-RU">
+            <thead>
+            <tr>
+                <th data-sortable="true">Количество</th>
+                <th data-sortable="true">Комментарий</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for withdraw in withdraws %}
+                <tr>
+                    <td class="text-danger">-{{ withdraw.amount }} {{ common_macros.coin() }}</td>
+                    <td>{{ withdraw.comment }}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
 {% endblock %}

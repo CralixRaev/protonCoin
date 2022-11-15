@@ -2,6 +2,7 @@
 {% block account_tab %}
     <div class="row">
         <div class="col">
+            <p class="text-secondary"><b>*</b> - необходимые поля</p>
             <form action="" method="POST" enctype="multipart/form-data" id="achievement-form">
                 {{ form.hidden_tag() }}
                 {{ form.do_not_redirect() }}
@@ -13,7 +14,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-3">
                     <div class="col">
                         <div class="form-group">
                             {{ form.comment.label }}
@@ -21,7 +22,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-3">
                     <div class="col">
                         <div class="form-group">
                             {{ form.file.label }}
@@ -29,20 +30,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mt-1">
+                <div class="row mt-3">
                     <div class="col d-flex justify-content-end">
                         {{ form.submit_button(type="submit", class="btn btn-primary me-2") }}
-                        <button type="button" class="btn btn-secondary" onclick="submitWithDoNotRedirect()">Отправить и добавить ещё одно достижение</button>
+                        <button type="button" class="btn btn-secondary" onclick="submitWithDoNotRedirect()">Отправить и
+                            добавить ещё одно достижение
+                        </button>
                     </div>
                 </div>
-                <script>
-                    // меня явно нужно учить джаваскрипту)
-                    function submitWithDoNotRedirect() {
-                        let form = document.getElementById("achievement-form")
-                        document.getElementById("do_not_redirect").value = "True"
-                        form.submit()
-                    }
-                </script>
             </form>
         </div>
     </div>

@@ -41,7 +41,7 @@ def create_gift():
         filename = save_upload(image, gift_images)
         gift = GiftQuery.create_gift(form.name.data, form.description.data, form.price.data,
                                      filename)
-        flask.flash(f"Подарок успешно создан", "success", "success")
+        flask.flash(f"Подарок успешно создан", "success")
         return redirect(url_for('admin.gifts.index'))
     return render_template("gifts/gift.html", **context)
 

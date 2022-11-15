@@ -1,0 +1,11 @@
+{% macro avatar(user, size=32, class='', remove_default_class=False) %}
+    <img src="{{ user.avatar_path }}" height="{{ size }}px" width="{{ size }}px"
+         class="{% if not remove_default_class %}avatar rounded-circle{% endif %} {{ class }}">
+{% endmacro %}
+
+{% macro coin_icon(size=16, class='') %}
+    <img src="{{ url_for('static', filename='coin.webp') }}" height="{{ size }}px" width="{{ size }}px"
+         class="coin_icon {{ class }}">
+{% endmacro %}
+
+{% macro coin(size=16, class='') %}{{ coin_icon(class=class + 'ms-1') }} {{ config.COIN_UNIT }}{% endmacro %}

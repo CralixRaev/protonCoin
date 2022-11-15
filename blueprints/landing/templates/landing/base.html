@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="ru" xmlns:og="http://ogp.me/ns#">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{{ title }} - {{ config.COIN_UNIT }}</title>
+{% extends 'common.html' %}
 
+{% block title %}{{ title }} - {{ config.COIN_UNIT }}{% endblock %}
+{% block head %}
     <meta name="Description"
           content="{{ config.COIN_UNIT }} - это школьная электронная валюта, направленная на мотивацию учеников образовательного центра &quot;Протон&quot;">
 
@@ -16,20 +13,12 @@
     <meta property="og:url" content="https://coin.protonmos.ru{{ url_for(request.endpoint) }}"/>
     <meta property="og:image" content="https://coin.protonmos.ru/static/coin.webp"/>
 
-    <meta name="generator" content="ProtonCoin: https://github.com/CralixRaev/protonCoin"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for("landing.static", filename="style.css") }}">
+
     <link rel="icon" href="https://coin.protonmos.ru/static/coin.webp" type="image/png">
     <link rel="manifest" href="https://coin.protonmos.ru/static/site.webmanifest">
 
     <meta name="yandex-verification" content="30666c916d54b7c3"/>
-
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
-            integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
-            crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.20.0/dist/bootstrap-table.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <script src="https://unpkg.com/bootstrap-table@1.20.0/dist/bootstrap-table-locale-all.min.js"></script>
 
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
@@ -57,116 +46,28 @@
         <div><img src="https://mc.yandex.ru/watch/90615182" style="position:absolute; left:-9999px;" alt=""/></div>
     </noscript>
     <!-- /Yandex.Metrika counter -->
-</head>
-{#Вынести в css файл#}
-<style>
-    body {
-        background-color: #8ea6d0;
-        background-image: url("/static/background.png");
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
-</style>
-<body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-<header class="navbar-light bg-light">
-    <nav class="p-3 mb-3 border-bottom navbar-expand-lg">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark navbar-brand">
-                    <img src="/static/coin.webp" height="64px" width="64px" class="me-3">{{ config.COIN_UNIT }}
-                </a>
-                <button class="navbar-toggler me-3" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                        <li class="nav-item">
-                            <a class="nav-link px-2" href="{{ url_for("landing.catalog.index") }}">Витрина подарков</a>
-                        </li>
-                        {% if current_user.is_teacher %}
-                            <li class="nav-item">
-                                <a class="nav-link px-2" href="{{ url_for("teacher.index") }}">Панель учителя</a>
-                            </li>
-                        {% endif %}
-                        {% if current_user.is_admin %}
-                            <li class="nav-item">
-                                <a class="nav-link px-2" href="{{ url_for("admin.index") }}">Панель администратора</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </div>
+{% endblock %}
 
-                {% if current_user.is_authenticated %}
-                    <div class="dropdown text-end">
-                        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
-                           data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                            <img src="{{ current_user.avatar_path }}" width="32" height="32"
-                                 class="rounded-circle">
-                        </a>
-                        <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                            <li>
-                                <div class="dropdown-item disabled">На вашем счету {{ current_user.balance.amount }}
-                                    <img
-                                            src="/static/coin.webp" height="16px" width="16px"
-                                            class="ms-1"> {{ config.COIN_UNIT }}</div>
-                            </li>
-                            <li><a class="dropdown-item" href="{{ url_for("landing.account.index") }}">Ваш аккаунт</a>
-                            </li>
-                            <li><a class="dropdown-item" href="{{ url_for("landing.account.declare_achievement") }}">Заявить
-                                о достижении</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="{{ url_for("login.logout") }}">Выйти</a></li>
-                        </ul>
-                    </div>
-                {% else %}
-                    <div class="text-end">
-                        <a class="btn btn-secondary" href="{{ url_for("login.index") }}"
-                           role="button">Войти</a>
-                    </div>
-                {% endif %}
+{% block body %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script defer src="{{ url_for("landing.static", filename="scripts.js") }}"></script>
+    {% include 'landing/_header.html' %}
+    <main class="container mt-5">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} w-100" role="alert">
+                        {{ message }}
+                    </div><br>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h1 class="h4 mb-0">{{ title }}</h1>
             </div>
         </div>
-    </nav>
-</header>
-<main class="container mt-5" style="min-height: 100vh;">
-    {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} w-100" role="alert">
-                    {{ message }}
-                </div><br>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    <div class="card mb-3">
-        <div class="card-body">
-            <h1 class="h4 mb-0">{{ title }}</h1>
-        </div>
-    </div>
-    {% block content %}{% endblock %}
-</main>
-<footer class="bg-light text-center text-lg-start mt-5">
-    <div class="text-center p-3">
-        © 2022 Copyright Раев Анатолий.
-        <a href="https://github.com/CralixRaev/protonCoin"><img height="32px" width="32px"
-                                                                src="/static/github.svg"></a>
-    </div>
-</footer>
-<!-- Optional JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
-        integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk"
-        crossorigin="anonymous"></script>
-<script>
-    feather.replace()
-</script>
-<script src="https://unpkg.com/bootstrap-table@1.20.0/dist/bootstrap-table.min.js"></script>
-<script src="https://unpkg.com/bootstrap-table@1.20.0/dist/bootstrap-table-locale-all.min.js"></script>
-</body>
-</html>
+        {% block content %}{% endblock %}
+    </main>
+    {% include 'landing/_footer.html' %}
+{% endblock %}
