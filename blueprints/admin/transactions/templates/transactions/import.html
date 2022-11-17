@@ -27,5 +27,14 @@
                 {% endfor %}
             </div>
         </div>
+        <div class="form-floating">
+            {{ form.comment(class="form-control", placeholder="comment") }}
+            {{ form.comment.label }}
+            <div class="invalid-feedback">
+                {% for error in form.comment.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
         {{ form.submit(type="submit", class="w-100 btn btn-lg btn-primary") }}
     </form>{% endblock %}

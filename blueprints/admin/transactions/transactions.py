@@ -65,6 +65,11 @@ def import_achievements():
     }
     if form.validate_on_submit():
         criteria = CriteriaQuery.get_criteria_by_id(form.criteria.data)
+        comment = form.comment.data
+        if comment:
+            comment = f"({comment})"
+        else:
+            comment = ""
         not_found_users = []
         table = form.file.data
         table = io.BytesIO(table.stream.read())
@@ -77,7 +82,8 @@ def import_achievements():
                                        patronymic.value.capitalize().strip() if patronymic.value else None)
             if user:
                 TransactionQuery.create_accrual(user.balance, criteria.cost,
-                                                f"За критерий ({criteria.basis.name}) {criteria.name} (начислено автоматически)")
+                                                f"За критерий ({criteria.basis.name}) {criteria.name}"
+                                                f" {comment} (начислено автоматически)")
             else:
                 not_found_users.append(
                     (surname.value, name.value, patronymic.value if patronymic.value else ""))
