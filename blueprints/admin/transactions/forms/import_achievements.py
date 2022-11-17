@@ -9,5 +9,5 @@ class AchievementImportForm(FlaskForm):
     criteria = SelectField("Критерия", coerce=int, validators=[DataRequired(), ])
     file = FileField("Таблица с пользователями (Фамилия, Имя, Отчество, Цифра класса, Буква класса)",
                      validators=[FileRequired(), FileAllowed(['xlsx'], "Таблица с пользователями")])
-    comment = StringField("Комментарий (к примеру, предмет олимпиады)")
+    comment = StringField("Комментарий (к примеру, предмет олимпиады)", validators=[])
     submit = SubmitField('Импортировать')

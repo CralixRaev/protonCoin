@@ -76,15 +76,19 @@ def import_achievements():
         wb_read = openpyxl.load_workbook(table)
         ws_read = wb_read.active
         for i, cells in enumerate(ws_read.iter_rows(2), start=2):
-            surname, name, patronymic, number, letter = cells
-            user = UserQuery.find_user(surname.value.capitalize().strip(),
-                                       name.value.capitalize().strip(),
-                                       patronymic.value.capitalize().strip() if patronymic.value else None)
-            if user:
-                TransactionQuery.create_accrual(user.balance, criteria.cost,
-                                                f"За критерий ({criteria.basis.name}) {criteria.name}"
-                                                f" {comment} (начислено автоматически)")
-            else:
+            try:
+                surname, name, patronymic, number, letter = cells
+                user = UserQuery.find_user(surname.value.capitalize().strip(),
+                                           name.value.capitalize().strip(),
+                                           patronymic.value.capitalize().strip() if patronymic.value else None)
+                if user:
+                    TransactionQuery.create_accrual(user.balance, criteria.cost,
+                                                    f"За критерий ({criteria.basis.name}) {criteria.name}"
+                                                    f" {comment} (начислено автоматически)")
+                else:
+                    not_found_users.append(
+                        (surname.value, name.value, patronymic.value if patronymic.value else ""))
+            except Exception:
                 not_found_users.append(
                     (surname.value, name.value, patronymic.value if patronymic.value else ""))
         not_found_users = ',\n'.join([' '.join(i) for i in not_found_users])
