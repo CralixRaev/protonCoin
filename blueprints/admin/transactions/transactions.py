@@ -89,8 +89,7 @@ def import_achievements():
                     not_found_users.append(
                         (surname.value, name.value, patronymic.value if patronymic.value else ""))
             except Exception:
-                not_found_users.append(
-                    (surname.value, name.value, patronymic.value if patronymic.value else ""))
+                not_found_users.append(" ".join(cells))
         not_found_users = ',\n'.join([' '.join([str(j) for j in i]) for i in not_found_users])
         flask.flash(f"Начисления успешно созданы.\nНе найденные пользователи: {not_found_users}",
                     "success")
