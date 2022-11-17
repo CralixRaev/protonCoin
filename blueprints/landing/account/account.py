@@ -37,7 +37,7 @@ def _check_password(old: str, new: str, confirm: str) -> str | None:
     if new != confirm:
         return "Пароли не совпадают"
     if not password_check(new)['password_ok']:
-        return "Пароль не соответствует требованиям безопасности"
+        return "Пароль не соответствует требованиям безопасности. Нужна одна цифра и одна заглавная буква. Не ругайтесь, все на ваше же благо)"
     return None
 
 
