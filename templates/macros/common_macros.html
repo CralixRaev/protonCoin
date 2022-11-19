@@ -8,4 +8,4 @@
          class="coin_icon {{ class }}">
 {% endmacro %}
 
-{% macro coin(size=16, class='') %}{{ coin_icon(class=class + 'ms-1') }} {{ config.COIN_UNIT }}{% endmacro %}
+{% macro coin(size=16, class='') %}{{ coin_icon(class=class + 'ms-1', size=size) }} {{ config.COIN_UNIT }}{% endmacro %}

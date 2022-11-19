@@ -6,21 +6,21 @@ import click
 import flask
 from dotenv import load_dotenv
 from flask import Flask, abort, send_from_directory, Blueprint, render_template, request
-from flask_login import LoginManager, login_required
+from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_uploads import configure_uploads, UploadSet
 
-from blueprints.admin.admin import admin
 from blueprints.api.api import api_blueprint as api
 from blueprints.landing.landing import landing
 from blueprints.login.login import login
-from blueprints.teacher.teacher import teacher
+
+from blueprints.manage.manage import manage
 from db.database import db
 from db.models.balances import BalanceQuery
 from db.models.group import GroupQuery
 from db.models.user import User, UserQuery
 from uploads import avatars, gift_images, achievement_files
-from util import admin_required, teacher_required, teacher_or_admin_required
+from util import teacher_or_admin_required
 
 load_dotenv()
 
@@ -56,9 +56,9 @@ def webp_viewer():
         flask.abort(400)
     return render_template("webp_viewer.html", path=path)
 
+
 app.register_blueprint(_uploads, url_prefix="/uploads")
-app.register_blueprint(admin, url_prefix='/admin')
-app.register_blueprint(teacher, url_prefix='/teacher')
+app.register_blueprint(manage, url_prefix='/manage')
 app.register_blueprint(login, url_prefix='/login')
 app.register_blueprint(landing, url_prefix='/')
 app.register_blueprint(api, url_prefix='/api/v1/')
@@ -159,7 +159,7 @@ def import_teachers(file):
                 stage, letter = row[0].value[0:2], row[0].value[2]
             print(stage, letter)
             print(GroupQuery.get_group_by_stage_letter(stage,
-                                                 letter))
+                                                       letter))
             surname, name, patronymic = split_name[0], split_name[1], ' '.join(split_name[2:])
             user, password = UserQuery.create_user(name, surname,
                                                    patronymic if patronymic else None,

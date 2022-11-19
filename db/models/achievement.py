@@ -5,6 +5,7 @@ from sqlalchemy import or_, and_
 from sqlalchemy.orm import backref
 
 from db.database import db
+from db.models.group import Group
 from db.models.user import User
 from uploads import achievement_files
 
@@ -77,10 +78,13 @@ class AchievementQuery:
                                         Achievement.is_disapproved == False).all()
 
     @staticmethod
-    def get_achievements_none() -> list[Achievement]:
-        return Achievement.query.filter(Achievement.is_approved == False,
-                                        Achievement.is_disapproved == False) \
-            .order_by(Achievement.id.desc()).all()
+    def get_achievements_none(group: Group = None) -> list[Achievement]:
+        achievements_query = Achievement.query.filter(Achievement.is_approved == False,
+                                                      Achievement.is_disapproved == False)
+        if group:
+            users = db.session.query(User.id).filter(User.group_id == group.id).all()
+            achievements_query = achievements_query.filter(Achievement.user_id.in_([id for id, in users]))
+        return achievements_query.order_by(Achievement.id.desc()).all()
 
     @staticmethod
     def get_achievements_approved_disapproved() -> list[Achievement]:
@@ -119,4 +123,3 @@ class AchievementQuery:
         achievement.is_approved = False
         achievement.disapproval_reason = reason
         db.session.commit()
-
