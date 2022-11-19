@@ -7,7 +7,7 @@ from blueprints.manage.admin.groups.forms.group import GroupForm
 from db.models.group import GroupQuery
 from util import admin_required
 
-groups = Blueprint('groups', __name__, template_folder='templates')
+groups = Blueprint('groups', __name__, template_folder='templates', static_folder='static')
 
 
 @groups.route("/")
@@ -16,7 +16,6 @@ groups = Blueprint('groups', __name__, template_folder='templates')
 def index():
     context = {
         'title': 'Классы',
-        'groups': GroupQuery.get_all_groups()
     }
     return render_template("groups/groups.html", **context)
 

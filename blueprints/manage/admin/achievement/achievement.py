@@ -1,22 +1,22 @@
 import flask
 from flask import Blueprint, render_template, current_app, url_for, redirect, request
 from flask_login import login_required, current_user
+from flask_restful import marshal
 
+from blueprints.api.marshallers import achievement_fields
 from db.models.achievement import AchievementQuery
 from db.models.transaction import TransactionQuery
 from util import teacher_or_admin_required, admin_required
 
-achievement = Blueprint('achievement', __name__, template_folder='templates')
+achievement = Blueprint('achievement', __name__, template_folder='templates', static_folder='static')
 
 
 @achievement.route('/')
 def index():
     context = {
         'title': f'Достижения',
-        'achievements_none': AchievementQuery.get_achievements_none(group if group else None),
-        'achievements_approved_disapproved': AchievementQuery.get_achievements_approved_disapproved()
     }
-    return render_template("achievement/achievements.html", **context)
+    return render_template("achievement/list_achievement.html", **context)
 
 
 @achievement.route('/approve/')

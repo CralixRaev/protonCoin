@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+    <div class="table-responsive">
+        <table id="achievementList" class="table table-stripped">
+            <thead>
+                <tr>
+                    <th>ФИО</th>
+                    <th>(Основание) Критерий</th>
+                    <th>Файл</th>
+                    <th>Комментарий</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <script src="{{ url_for('.static', filename='achievement.js') }}"></script>
+{% endblock %}

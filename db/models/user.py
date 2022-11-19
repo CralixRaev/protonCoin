@@ -6,12 +6,14 @@ from uuid import UUID, uuid4
 
 import sqlalchemy.exc
 from flask_login import UserMixin
+from flask_restful import fields
 from sqlalchemy import func
 from transliterate import translit
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from db.database import db
 from db.models.balances import Balance, BalanceQuery
+from db.models.group import Group
 from uploads import avatars
 from util import random_password
 
@@ -54,6 +56,20 @@ class User(db.Model, UserMixin):
     def check_password(self, password) -> bool:
         return check_password_hash(self.hashed_password, password)
 
+    @staticmethod
+    def __json__() -> dict:
+        _json = {
+            'id': fields.Integer(),
+            'login': fields.String(),
+            'email': fields.String(),
+            'name': fields.String(),
+            'surname': fields.String(),
+            'patronymic': fields.String(),
+            'avatar': fields.String(),
+            'group': fields.Nested(Group.__json__())
+        }
+        return _json
+
 
 class UserQuery:
     @staticmethod
@@ -78,10 +94,9 @@ class UserQuery:
 
     @staticmethod
     def search_by_name(full_name, offset=0, limit=10) -> tuple[list[User], int]:
-        # с кирилицей ilike и lower не работает!!!
         searched = User.query.filter(
             (User.surname + ' ' + User.name + ' ' + User.patronymic).ilike(
-                f"%{full_name.capitalize()}%"))
+                f"%{full_name}%"))
         return searched.offset(offset).limit(limit).all(), searched.count()
 
     @staticmethod

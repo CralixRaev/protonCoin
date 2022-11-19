@@ -71,20 +71,18 @@ class AchievementQuery:
         return achievement
 
     @staticmethod
-    def get_achievements_by_group(group) -> list[Achievement]:
-        users = db.session.query(User.id).filter(User.group_id == group.id).all()
-        return Achievement.query.filter(Achievement.user_id.in_([id for id, in users]),
-                                        Achievement.is_approved == False,
-                                        Achievement.is_disapproved == False).all()
+    def get_total_count() -> int:
+        return Achievement.query.count()
 
     @staticmethod
-    def get_achievements_none(group: Group = None) -> list[Achievement]:
+    def get_achievements(group: Group = None) -> tuple[int, list[Achievement]]:
         achievements_query = Achievement.query.filter(Achievement.is_approved == False,
                                                       Achievement.is_disapproved == False)
         if group:
             users = db.session.query(User.id).filter(User.group_id == group.id).all()
-            achievements_query = achievements_query.filter(Achievement.user_id.in_([id for id, in users]))
-        return achievements_query.order_by(Achievement.id.desc()).all()
+            achievements_query = achievements_query.filter(
+                Achievement.user_id.in_([id for id, in users]))
+        return achievements_query.count(), achievements_query.order_by(Achievement.id.desc()).all()
 
     @staticmethod
     def get_achievements_approved_disapproved() -> list[Achievement]:
