@@ -65,13 +65,18 @@ class User(db.Model, UserMixin):
             'name': fields.String(),
             'surname': fields.String(),
             'patronymic': fields.String(),
-            'avatar': fields.String(),
-            'group': fields.Nested(Group.__json__())
+            'avatar_path': fields.String(),
+            'group': fields.Nested(Group.__json__()),
+            'balance': fields.Nested(Balance.__json__())
         }
         return _json
 
 
 class UserQuery:
+    @staticmethod
+    def total_count() -> int:
+        return User.query.count()
+
     @staticmethod
     def _create_login(name, surname, patronymic=None):
         name = translit(name, 'ru', reversed=True)
@@ -87,6 +92,20 @@ class UserQuery:
     def get_user_by_login(login: str) -> User:
         login = login.strip().lower()
         return User.query.filter((User.email == login) | (User.login == login)).first()
+
+    @staticmethod
+    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
+            int, list[User]):
+        user_query = User.query
+        count = user_query.count()
+        if search:
+            user_query = user_query.filter(User.name.ilike(f'%{search}%'))
+            count = user_query.count()
+        print(order_expr)
+        if order_expr is not None:
+            user_query = user_query.order_by(*order_expr)
+        user_query = user_query.limit(length).offset(start)
+        return count, user_query.all()
 
     @staticmethod
     def get_all_users() -> list[User]:

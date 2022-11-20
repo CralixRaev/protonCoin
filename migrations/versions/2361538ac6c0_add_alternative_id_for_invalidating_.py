@@ -22,6 +22,7 @@ depends_on = None
 
 Base = automap_base()
 
+
 def upgrade():
     conn = op.get_bind()
     session = Session(bind=conn)

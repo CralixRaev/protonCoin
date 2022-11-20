@@ -6,7 +6,7 @@ from blueprints.manage.admin.basises.forms.basis import BasisForm
 from db.models.basis import BasisQuery
 from util import admin_required
 
-basises = Blueprint('basises', __name__, template_folder='templates')
+basises = Blueprint('basises', __name__, template_folder='templates', static_folder='static')
 
 
 @basises.route("/")

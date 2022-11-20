@@ -3,6 +3,7 @@ from sqlalchemy import types
 from sqlalchemy.sql import functions, expression
 
 from db.database import db
+from util import ABCQuery
 
 
 class Group(db.Model):
@@ -36,7 +37,7 @@ class GroupQuery:
         return Group.query.all()
 
     @staticmethod
-    def get_groups(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
+    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
             int, list[Group]):
         groups_query = Group.query
         count = groups_query.count()

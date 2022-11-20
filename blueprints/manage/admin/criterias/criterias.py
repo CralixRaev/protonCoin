@@ -9,7 +9,7 @@ from db.models.basis import BasisQuery
 from db.models.criteria import CriteriaQuery
 from util import admin_required
 
-criterias = Blueprint('criterias', __name__, template_folder='templates')
+criterias = Blueprint('criterias', __name__, template_folder='templates', static_folder='static')
 
 
 @criterias.route("/")
@@ -18,7 +18,6 @@ criterias = Blueprint('criterias', __name__, template_folder='templates')
 def index():
     context = {
         'title': 'Критерии',
-        'criterias': CriteriaQuery.get_all_criterias()
     }
     return render_template("criterias/criterias.html", **context)
 

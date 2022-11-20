@@ -1,13 +1,31 @@
+import types
 from datetime import datetime
+from enum import Enum
 
 from flask_login import current_user
+from flask_restful import fields
 from sqlalchemy import or_, and_
 from sqlalchemy.orm import backref
+from sqlalchemy.sql import functions, expression
 
 from db.database import db
+from db.models.criteria import Criteria
 from db.models.group import Group
 from db.models.user import User
 from uploads import achievement_files
+
+
+class AchievementStatusEnum(Enum):
+    awaiting_approval = "awaiting_approval"
+    approved = "approved"
+    disapproved = "disapproved"
+
+
+STATUS_TO_STRING = {
+    AchievementStatusEnum.awaiting_approval: 'Ожидает обработки',
+    AchievementStatusEnum.approved: 'Одобрено',
+    AchievementStatusEnum.disapproved: 'Отклонено'
+}
 
 
 class Achievement(db.Model):
@@ -18,8 +36,8 @@ class Achievement(db.Model):
     comment = db.Column(db.String(4096), nullable=True)
     creation_date = db.Column(db.DateTime, default=datetime.now)
     edit_date = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-    is_approved = db.Column(db.Boolean, default=False, nullable=False)
-    is_disapproved = db.Column(db.Boolean, default=False, nullable=False)
+    status = db.Column(db.Enum(AchievementStatusEnum),
+                       default=AchievementStatusEnum.awaiting_approval, nullable=False)
     disapproval_reason = db.Column(db.String(4096), nullable=True, default=None)
     approved_disapproved_by = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True,
                                         default=None)
@@ -35,22 +53,21 @@ class Achievement(db.Model):
         return None
 
     @property
-    def status(self) -> str:
-        if self.is_approved:
-            return "Одобрено"
-        elif self.is_disapproved:
-            return "Отклонено"
-        else:
-            return "Ожидает обработки"
+    def status_translation(self) -> str:
+        return STATUS_TO_STRING[self.status]
 
-    @property
-    def status_color_class(self) -> str:
-        if self.is_approved:
-            return "text-success fw-bold"
-        elif self.is_disapproved:
-            return "text-danger"
-        else:
-            return ""
+    @staticmethod
+    def __json__():
+        _json = {
+            'id': fields.Integer(),
+            'user': fields.Nested(User.__json__()),
+            'criteria': fields.Nested(Criteria.__json__()),
+            'achievement_file_path': fields.String(),
+            'comment': fields.String(),
+            'status': fields.FormattedString("{status.value}"),
+            'status_translation': fields.String(),
+        }
+        return _json
 
 
 class AchievementQuery:
@@ -71,8 +88,23 @@ class AchievementQuery:
         return achievement
 
     @staticmethod
-    def get_total_count() -> int:
+    def total_count() -> int:
         return Achievement.query.count()
+
+    @staticmethod
+    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None, status=None) -> (
+            int, list[Achievement]):
+        achievement_query = Achievement.query
+        if status:
+            achievement_query = achievement_query.filter(Achievement.status == status)
+        count = achievement_query.count()
+        if search:
+            count = achievement_query.count()
+        print(order_expr)
+        if order_expr is not None:
+            achievement_query = achievement_query.order_by(*order_expr)
+        achievement_query = achievement_query.limit(length).offset(start)
+        return count, achievement_query.all()
 
     @staticmethod
     def get_achievements(group: Group = None) -> tuple[int, list[Achievement]]:

@@ -1,15 +1,28 @@
 {% extends "admin/base.html" %}
 
 {% block content %}
+    <div class="mb-3">
+        <label class="form-label" for="achievementsStatusFilter">Фильтрация по статусу</label>
+        <select onchange="changeStatusFilter()" class="form-select" name="achievementsStatuses" id="achievementsStatusFilter">
+            <option value="">Все</option>
+            <option value="awaiting_approval">Ожидающие одобрения</option>
+            <option value="approved">Одобренные</option>
+            <option value="disapproved">Отклонённые</option>
+        </select>
+    </div>
+
     <div class="table-responsive">
-        <table id="achievementList" class="table table-stripped">
+        <table id="achievementList" class="table table-hover table-stripped">
             <thead>
-                <tr>
-                    <th>ФИО</th>
-                    <th>(Основание) Критерий</th>
-                    <th>Файл</th>
-                    <th>Комментарий</th>
-                </tr>
+            <tr>
+                <th>ID</th>
+                <th>ФИО</th>
+                <th>(Основание) Критерий</th>
+                <th>Файл</th>
+                <th>Комментарий</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
             </thead>
         </table>
     </div>

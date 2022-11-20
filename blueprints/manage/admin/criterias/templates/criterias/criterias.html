@@ -2,41 +2,22 @@
 
 {% block content %}
     <div class="d-flex justify-content-end">
-        <a href="{{ url_for("admin.criterias.create_criteria") }}" class="btn btn-primary" role="button"
+        <a href="{{ url_for("manage.admin.criterias.create_criteria") }}" class="btn btn-primary" role="button"
            data-toggle="button">Создать
             критерию</a>
     </div>
     <div class="table-responsive">
-        <table class="table table-striped table-sm" data-toggle="table" data-pagination="true"
-               data-search="true" data-show-columns="true" data-locale="ru-RU" data-show-refresh="true"
-               data-detail-view="true" data-detail-formatter="detailFormatter">
+        <table id="criteriaList" class="table table-hover table-striped">
             <thead>
             <tr>
-                <th data-sortable="true" data-field="id">ID</th>
-                <th data-sortable="true">Основание</th>
-                <th data-sortable="true">Критерия</th>
-                <th data-sortable="true">Цена</th>
+                <th style="width: 36px"></th>
+                <th>ID</th>
+                <th>Основание</th>
+                <th>Наименование</th>
+                <th>Цена</th>
             </tr>
             </thead>
-            <tbody>
-            {% for criteria in criterias %}
-                <tr>
-                    <td>{{ criteria.id }}</td>
-                    <td>{{ criteria.basis.name }}</td>
-                    <td>{{ criteria.name }}</td>
-                    <td>{{ criteria.cost }}</td>
-                </tr>
-            {% endfor %}
-
-            </tbody>
         </table>
-
-        <script>
-            function detailFormatter(index, row) {
-                let html = []
-                html.push("<a href=\"/admin/criterias/edit/?id=" + row.id + "\" class=\"btn btn-primary btn-sm me-1\" role=\"button\" data-toggle=\"button\">Редактировать критерию</a>")
-                html.push("<a href=\"/admin/criterias/delete/?id=" + row.id + "\" class=\"btn btn-danger btn-sm me-1\" role=\"button\" data-toggle=\"button\">Удалить критерию</a>")
-                return html
-            }
-        </script>
+    </div>
+    <script src="{{ url_for('.static', filename='criterias.js') }}"></script>
 {% endblock %}

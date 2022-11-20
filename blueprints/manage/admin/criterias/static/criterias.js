@@ -1,12 +1,12 @@
 function format(data) {
     let html = []
-    html.push("<a href=\"/manage/admin/groups/edit/?id=" + data.id + "\" class=\"btn btn-primary btn-sm me-1\" role=\"button\" data-toggle=\"button\">Редактировать класс</a>")
-    html.push("<a href=\"/manage/admin/groups/delete/?id=" + data.id + "\" class=\"btn btn-danger btn-sm me-1\" role=\"button\" data-toggle=\"button\">Удалить класс</a>")
+    html.push("<a href=\"/manage/admin/criterias/edit/?id=" + data.id + "\" class=\"btn btn-primary btn-sm me-1\" role=\"button\" data-toggle=\"button\">Редактировать критерию</a>")
+    html.push("<a href=\"/manage/admin/criterias/delete/?id=" + data.id + "\" class=\"btn btn-danger btn-sm me-1\" role=\"button\" data-toggle=\"button\">Удалить критерию</a>")
     return html
 }
 
 $(document).ready(function () {
-    table = $('#groupList').DataTable({
+    table = $('#criteriaList').DataTable({
         language: {
             url: '/static/datatables/ru.json'
         },
@@ -18,21 +18,19 @@ $(document).ready(function () {
                 defaultContent: '',
             },
             {data: 'id'},
-            {
-                data: 'name', render: function (data, type, row, meta) {
-                    return row.stage + row.letter
-                }
-            },
+            {data: 'basis.name', orderable: false},
+            {data: 'name'},
+            {data: 'cost'},
         ],
-        order: [[2, "desc"]],
+        order: [[4, "desc"]],
         orderMulti: false,
         processing: true,
         serverSide: true,
-        ajax: '/api/v1/groups/',
+        ajax: '/api/v1/criterias/',
     });
 });
 
-$('#groupList').on('click', 'td.dt-control', function () {
+$('#criteriaList').on('click', 'td.dt-control', function () {
     let tr = $(this).closest('tr');
     let row = table.row(tr);
 

@@ -3,7 +3,6 @@ from flask import Blueprint, render_template, current_app, url_for, redirect, re
 from flask_login import login_required, current_user
 from flask_restful import marshal
 
-from blueprints.api.marshallers import achievement_fields
 from db.models.achievement import AchievementQuery
 from db.models.transaction import TransactionQuery
 from util import teacher_or_admin_required, admin_required
@@ -32,7 +31,7 @@ def approve():
                                             f" {achievement_entity.criteria} (ID: {achievement_entity.id})")
     flask.flash(f"Достижение одобрено. Ученику {achievement_entity.user.full_name} выдан"
                 f" {achievement_entity.criteria.cost} {current_app.config['COIN_UNIT']}", "success")
-    return redirect(url_for('admin.achievements.index'))
+    return redirect(url_for('manage.admin.achievement.index'))
 
 
 @achievement.route('/disapprove/')
@@ -44,7 +43,7 @@ def disapprove():
     achievement_entity = AchievementQuery.get_achievement_by_id(achievement_id)
     AchievementQuery.disapprove_achievement(achievement_entity, reason)
     flask.flash(f"Достижение отклонено", "danger")
-    return redirect(url_for('admin.achievements.index'))
+    return redirect(url_for('manage.admin.achievement.index'))
 
 
 @achievement.route('/disapprove_existing/')

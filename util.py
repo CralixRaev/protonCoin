@@ -14,6 +14,7 @@ from transliterate import translit
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
+from db.database import db
 from uploads import avatars
 
 
@@ -125,3 +126,30 @@ def random_password():
     while not password_check(password):
         password = ''.join(secrets.choice(ALPHABET) for _ in range(8))
     return password
+
+
+class ABCQuery:
+    Model = None
+    Search_expr = None
+
+    def __init__(self):
+        print(self.Model)
+        func = list_get_factory(self.Model, self.Search_expr)
+        setattr(self, func.__name__, func)
+
+
+def list_get_factory(model, search_expr):
+    def _get_model(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
+            int, list[model]):
+        model_query = model.query
+        count = model_query.count()
+        if search:
+            model_query = model_query.filter(search_expr.ilike(f'%{search}%'))
+            count = model_query.count()
+        if order_expr is not None:
+            model_query = model_query.order_by(*order_expr)
+        model_query = model_query.limit(length).offset(start)
+        return count, model_query.all()
+
+    _get_model.__name__ = f'get_api'
+    return _get_model

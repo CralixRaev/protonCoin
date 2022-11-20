@@ -1,27 +1,20 @@
 {% extends "admin/base.html" %}
 
 {% block content %}
-    <div class="d-flex justify-content-end">
-        <a href="{{ url_for("admin.basises.create_basis") }}" class="btn btn-primary" role="button" data-toggle="button">Создать
-            основание</a>
+    <div class="d-flex justify-content-end my-3">
+        <a href="{{ url_for("manage.admin.basises.create_basis") }}" class="btn btn-primary" role="button"
+           data-toggle="button">Создать основание</a>
     </div>
     <div class="table-responsive">
-        <table class="table table-striped table-sm" data-toggle="table" data-pagination="true"
-               data-search="true" data-show-columns="true" data-locale="ru-RU" data-show-refresh="true">
+        <table id="basisList" class="table table-hover table-striped">
             <thead>
             <tr>
-                <th data-sortable="true" data-field="id">ID</th>
-                <th data-sortable="true">Наименование</th>
+                <th style="width: 36px"></th>
+                <th>ID</th>
+                <th>Наименование</th>
             </tr>
             </thead>
-            <tbody>
-            {% for basis in basises %}
-                <tr>
-                    <td>{{ basis.id }}</td>
-                    <td>{{ basis.name }}</td>
-                </tr>
-            {% endfor %}
-
-            </tbody>
         </table>
+    </div>
+    <script src="{{ url_for('.static', filename='basis.js') }}"></script>
 {% endblock %}
