@@ -16,6 +16,6 @@ def index():
     context = {
         'title': "Главная страница",
         'top_balances': enumerate(BalanceQuery.top_balances(10), start=1),
-        'last_accruals': TransactionQuery.last_transactions
+        'last_accruals': TransactionQuery.last_accruals
     }
     return render_template("landing/top.html", **context)
