@@ -5,13 +5,15 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 import sqlalchemy.exc
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
+from flask_restful import fields
 from sqlalchemy import func
 from transliterate import translit
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from db.database import db
 from db.models.balances import Balance, BalanceQuery
+from db.models.group import Group
 from uploads import avatars
 from util import random_password
 
@@ -54,8 +56,30 @@ class User(db.Model, UserMixin):
     def check_password(self, password) -> bool:
         return check_password_hash(self.hashed_password, password)
 
+    @staticmethod
+    def __json__() -> dict:
+        _json = {
+            'id': fields.Integer(),
+            'login': fields.String(),
+            'email': fields.String(),
+            'name': fields.String(),
+            'surname': fields.String(),
+            'patronymic': fields.String(),
+            'avatar_path': fields.String(),
+            'group': fields.Nested(Group.__json__()),
+            'balance': fields.Nested(Balance.__json__())
+        }
+        return _json
+
 
 class UserQuery:
+    @staticmethod
+    def total_count(is_teacher: bool = False) -> int:
+        if is_teacher:
+            return User.query.filter(User.group_id == current_user.group_id).count()
+        else:
+            return User.query.count()
+
     @staticmethod
     def _create_login(name, surname, patronymic=None):
         name = translit(name, 'ru', reversed=True)
@@ -73,20 +97,36 @@ class UserQuery:
         return User.query.filter((User.email == login) | (User.login == login)).first()
 
     @staticmethod
+    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None,
+                is_teacher=False) -> (
+            int, list[User]):
+        user_query = User.query.join(Balance)
+        if is_teacher:
+            user_query = user_query.filter(User.group_id == current_user.group_id)
+        count = user_query.count()
+        if search:
+            user_query = user_query.filter(
+                (User.surname + ' ' + User.name + ' ' + User.patronymic).ilike(f'%{search}%'))
+            count = user_query.count()
+        if order_expr is not None:
+            user_query = user_query.order_by(*order_expr)
+        user_query = user_query.limit(length).offset(start)
+        return count, user_query.all()
+
+    @staticmethod
     def get_all_users() -> list[User]:
         return User.query.order_by(User.patronymic).all()
 
     @staticmethod
     def search_by_name(full_name, offset=0, limit=10) -> tuple[list[User], int]:
-        # с кирилицей ilike и lower не работает!!!
         searched = User.query.filter(
             (User.surname + ' ' + User.name + ' ' + User.patronymic).ilike(
-                f"%{full_name.capitalize()}%"))
+                f"%{full_name}%"))
         return searched.offset(offset).limit(limit).all(), searched.count()
 
     @staticmethod
-    def user_count() -> int:
-        return User.query.count()
+    def user_count(is_teacher: bool = False) -> int:
+        return UserQuery.total_count(is_teacher)
 
     @staticmethod
     def get_offset_limit_users(offset=0, limit=10) -> list[User]:
@@ -188,7 +228,6 @@ class UserQuery:
             user = User.query.filter(
                 User.surname == surname,
                 User.name == name)
-        print(user)
         if user.count() > 1:
             return None
         else:

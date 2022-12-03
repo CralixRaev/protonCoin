@@ -16,12 +16,12 @@
                     </li>
                     {% if current_user.is_teacher %}
                         <li class="nav-item">
-                            <a class="nav-link px-2" href="{{ url_for("teacher.index") }}">Панель учителя</a>
+                            <a class="nav-link px-2" href="{{ url_for("manage.teacher.index") }}">Панель учителя</a>
                         </li>
                     {% endif %}
                     {% if current_user.is_admin %}
                         <li class="nav-item">
-                            <a class="nav-link px-2" href="{{ url_for("admin.index") }}">Панель
+                            <a class="nav-link px-2" href="{{ url_for("manage.admin.index") }}">Панель
                                 администратора</a>
                         </li>
                     {% endif %}

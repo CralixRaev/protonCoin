@@ -1,6 +1,7 @@
 from functools import cache
 
 from flask import current_app
+from flask_restful import fields
 
 from db.database import db
 
@@ -26,6 +27,12 @@ class Balance(db.Model):
 
     def __repr__(self) -> str:
         return self.__str__()
+
+    @staticmethod
+    def __json__() -> dict:
+        _json = {'id': fields.Integer(),
+                 'amount': fields.Integer()}
+        return _json
 
 
 class BalanceQuery:

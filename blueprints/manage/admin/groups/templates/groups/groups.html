@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+    <div class="d-flex justify-content-end my-3">
+        <a href="{{ url_for("manage.admin.groups.create_group") }}" class="btn btn-primary" role="button"
+           data-toggle="button">Создать класс</a>
+    </div>
+    <div class="table-responsive">
+        <table id="groupList" class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <th style="width: 36px;"></th>
+                <th>ID</th>
+                <th>Наименование</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <script src="{{ url_for('.static', filename='groups.js') }}"></script>
+{% endblock %}

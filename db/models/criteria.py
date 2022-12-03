@@ -1,4 +1,7 @@
+from flask_restful import fields
+
 from db.database import db
+from db.models.basis import Basis
 
 
 class Criteria(db.Model):
@@ -17,8 +20,23 @@ class Criteria(db.Model):
     def __repr__(self) -> str:
         return self.__str__()
 
+    @staticmethod
+    def __json__() -> dict:
+        _json = {
+            'id': fields.Integer(),
+            'basis': fields.Nested(Basis.__json__()),
+            'name': fields.String(),
+            'cost': fields.Integer(),
+            'is_user_achievable': fields.Boolean(),
+        }
+        return _json
+
 
 class CriteriaQuery:
+    @staticmethod
+    def total_count() -> int:
+        return Criteria.query.count()
+
     @staticmethod
     def get_all_criterias() -> list[Criteria]:
         return Criteria.query.all()
@@ -34,11 +52,25 @@ class CriteriaQuery:
         return criteria
 
     @staticmethod
+    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
+            int, list[Criteria]):
+        criteria_query = Criteria.query
+        count = criteria_query.count()
+        if search:
+            criteria_query = criteria_query.filter(Criteria.name.ilike(f'%{search}%'))
+            count = criteria_query.count()
+        if order_expr is not None:
+            criteria_query = criteria_query.join(Criteria.basis).order_by(*order_expr)
+        criteria_query = criteria_query.limit(length).offset(start)
+        return count, criteria_query.all()
+
+    @staticmethod
     def get_criteria_by_id(criteria_id) -> Criteria:
         return Criteria.query.get(criteria_id)
 
     @staticmethod
-    def update_criteria(criteria: Criteria, name: str, basis_id: int, cost: int, is_user_achievable: bool):
+    def update_criteria(criteria: Criteria, name: str, basis_id: int, cost: int,
+                        is_user_achievable: bool):
         criteria.name = name
         criteria.basis_id = basis_id
         criteria.cost = cost

@@ -1,0 +1,4 @@
+{% extends "manage/base.html" %}
+
+{% set navigation = [[None, [('Ваш класс', url_for('manage.teacher.group.index'), 'bi-people'),
+('Достижения', url_for('manage.teacher.achievement.index'), 'bi-award')]]] %}

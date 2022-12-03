@@ -1,0 +1,61 @@
+{% extends "teacher/base.html" %}
+
+{% block content %}
+    <div class="mb-3">
+        <label class="form-label" for="achievementsStatusFilter">Фильтрация по статусу</label>
+        <select class="form-select" name="achievementsStatuses" id="achievementsStatusFilter">
+            <option value="">Все</option>
+            <option value="awaiting_approval">Ожидающие одобрения</option>
+            <option value="approved">Одобренные</option>
+            <option value="disapproved">Отклонённые</option>
+        </select>
+    </div>
+
+    <div class="table-responsive">
+        <table id="achievementList" class="table table-hover table-stripped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>ФИО</th>
+                <th>(Основание) Критерий</th>
+                <th>Файл</th>
+                <th>Комментарий</th>
+                <th>Статус (наведитесь, что бы узнать причину отклонения и кем изменено)</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <script type="module" src="{{ url_for('.static', filename='achievement.js') }}"></script>
+    <script>
+        function approve(row_id) {
+            window.location.href = "/manage/methods/achievement/approve" + "?id=" + row_id
+        }
+
+        function disapprove(row_id) {
+            let reason = window.prompt("Введите причину отказа")
+            if (reason) {
+                window.location.href = "/manage/methods/achievement/disapprove" + "?id=" + row_id + "&reason=" + reason
+            } else {
+                window.alert("К сожалению, причину отказа надо указать :(")
+            }
+        }
+
+        function approved_disapproved_user(data) {
+            if (data && data.id !== 0) {
+                return `${data.surname} ${data.name} ${data.patronymic}`
+            } else {
+                return `пока что никто`
+            }
+        }
+
+        function disapprove_existing(row_id) {
+            let reason = window.prompt("Введите причину отклонения существующего достижения")
+            if (reason) {
+                window.location.href = "/manage/methods/achievement/disapprove_existing" + "?id=" + row_id + "&reason=" + reason
+            } else {
+                window.alert("К сожалению, причину отклонения надо указать :(")
+            }
+        }
+    </script>
+{% endblock %}
