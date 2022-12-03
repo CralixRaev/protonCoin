@@ -123,7 +123,6 @@ ALPHABET = ['a', 'e', 'f', 'g', 'h', 'm', 'n', 't', 'y'] + \
 def random_password():
     password = ''.join(secrets.choice(ALPHABET) for _ in range(8))
     while password_check(password)['password_ok']:
-        print(password)
         password = ''.join(secrets.choice(ALPHABET) for _ in range(8))
     return password
 
@@ -133,7 +132,6 @@ class ABCQuery:
     Search_expr = None
 
     def __init__(self):
-        print(self.Model)
         func = list_get_factory(self.Model, self.Search_expr)
         setattr(self, func.__name__, func)
 

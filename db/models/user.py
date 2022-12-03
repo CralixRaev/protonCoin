@@ -228,7 +228,6 @@ class UserQuery:
             user = User.query.filter(
                 User.surname == surname,
                 User.name == name)
-        print(user)
         if user.count() > 1:
             return None
         else:

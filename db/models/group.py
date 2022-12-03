@@ -46,7 +46,6 @@ class GroupQuery:
                 functions.concat(expression.cast(Group.stage, types.Unicode), Group.letter).ilike(
                     f'%{search}%'))
             count = groups_query.count()
-        print(order_expr)
         if order_expr is not None:
             groups_query = groups_query.order_by(*order_expr)
         groups_query = groups_query.limit(length).offset(start)

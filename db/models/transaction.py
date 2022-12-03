@@ -63,7 +63,6 @@ class TransactionQuery:
             count = transaction_query.count()
         if order_expr is not None:
             transaction_query = transaction_query.order_by(*order_expr)
-            print(transaction_query)
         transaction_query = transaction_query.limit(length).offset(start)
         return count, transaction_query.all()
 

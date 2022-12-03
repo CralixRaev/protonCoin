@@ -36,7 +36,6 @@ class BasisQuery:
         if search:
             basis_query = basis_query.filter(Basis.name.ilike(f'%{search}%'))
             count = basis_query.count()
-        print(order_expr)
         if order_expr is not None:
             basis_query = basis_query.order_by(*order_expr)
         basis_query = basis_query.limit(length).offset(start)
