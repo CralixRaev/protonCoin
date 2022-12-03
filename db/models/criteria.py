@@ -59,7 +59,6 @@ class CriteriaQuery:
         if search:
             criteria_query = criteria_query.filter(Criteria.name.ilike(f'%{search}%'))
             count = criteria_query.count()
-        print(order_expr)
         if order_expr is not None:
             criteria_query = criteria_query.join(Criteria.basis).order_by(*order_expr)
         criteria_query = criteria_query.limit(length).offset(start)

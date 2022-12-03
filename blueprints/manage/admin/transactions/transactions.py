@@ -15,7 +15,7 @@ from db.models.transaction import TransactionQuery
 from db.models.user import UserQuery
 from util import admin_required
 
-transactions = Blueprint('transactions', __name__, template_folder='templates')
+transactions = Blueprint('transactions', __name__, template_folder='templates', static_folder='static')
 
 
 @transactions.route("/")

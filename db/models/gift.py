@@ -1,3 +1,5 @@
+from flask_restful import fields
+
 from db.database import db
 from uploads import gift_images
 
@@ -14,6 +16,17 @@ class Gift(db.Model):
     @property
     def image_file(self):
         return gift_images.url(self.image if self.image else 'default.jpeg')
+
+    @staticmethod
+    def __json__() -> dict:
+        _json = {
+            'id': fields.Integer(),
+            'name': fields.String(),
+            'description': fields.String(),
+            'price': fields.Integer(),
+            'image_file': fields.String(),
+        }
+        return _json
 
 
 class GiftQuery:
@@ -32,6 +45,23 @@ class GiftQuery:
         db.session.add(gift)
         db.session.commit()
         return gift
+
+    @staticmethod
+    def total_count() -> int:
+        return Gift.query.count()
+
+    @staticmethod
+    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
+            int, list[Gift]):
+        gift_query = Gift.query
+        count = gift_query.count()
+        if search:
+            gift_query = gift_query.filter(Gift.name.ilike(f"%{search}%"))
+            count = gift_query.count()
+        if order_expr is not None:
+            gift_query = gift_query.order_by(*order_expr)
+        gift_query = gift_query.limit(length).offset(start)
+        return count, gift_query.all()
 
     @staticmethod
     def update_gift(gift, name, description, price, image_path) -> Gift:

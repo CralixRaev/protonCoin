@@ -2,33 +2,25 @@
 
 {% block content %}
     <div class="d-flex justify-content-end">
-        <a href="{{ url_for("admin.transactions.create") }}" class="btn btn-primary" role="button" data-toggle="button">Создать
+        <a href="{{ url_for("manage.admin.transactions.create") }}" class="btn btn-primary" role="button"
+           data-toggle="button">Создать
             транзакцию</a>
-        <a href="{{ url_for("admin.transactions.import_achievements") }}" class="btn btn-primary mx-2" role="button" data-toggle="button">Импортировать достижения</a>
+        <a href="{{ url_for("manage.admin.transactions.import_achievements") }}" class="btn btn-primary mx-2"
+           role="button" data-toggle="button">Импортировать достижения</a>
     </div>
     <div class="table-responsive">
-        <table class="table table-striped table-sm" data-toggle="table" data-pagination="true"
-               data-search="true" data-show-columns="true" data-locale="ru-RU" data-show-refresh="true">
+        <table id="transactionList" class="table table-hover table-striped">
             <thead>
             <tr>
-                <th data-sortable="true" data-field="id">ID</th>
-                <th data-sortable="true">От</th>
-                <th data-sortable="true">К</th>
-                <th data-sortable="true">Количество</th>
-                <th data-sortable="true">Комментарий</th>
+                <th>ID</th>
+                <th>От</th>
+                <th>К</th>
+                <th>Количество</th>
+                <th>Комментарий</th>
+                <th>Когда?</th>
             </tr>
             </thead>
-            <tbody>
-            {% for transaction in transactions %}
-                <tr>
-                    <td>{{ transaction.id }}</td>
-                    <td>{{ transaction.from_balance.holder_name }}</td>
-                    <td>{{ transaction.to_balance.holder_name }}</td>
-                    <td>{{ transaction.amount }}</td>
-                    <td>{{ transaction.comment }}</td>
-                </tr>
-            {% endfor %}
-
-            </tbody>
         </table>
+    </div>
+    <script type="module" src="{{ url_for('.static', filename='transactions.js') }}"></script>
 {% endblock %}

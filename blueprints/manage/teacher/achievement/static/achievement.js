@@ -1,9 +1,11 @@
 import {user_from_api} from "/static/common_funcs.js";
 
+
 function redrawTooltips() {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 }
+
 
 $(document).ready(function () {
     let table = $('#achievementList').DataTable({
@@ -46,7 +48,6 @@ $(document).ready(function () {
                     let html = []
                     html.push(`<div class="btn-group" role="group">`)
                     if (row.status === 'approved') {
-                        html.push(`<button class="btn btn-danger" onclick="disapprove_existing('${data.id}')"><i class="bi bi-x-circle-fill"></i> (!!!)</button>`)
                     } else if (row.status === 'awaiting_approval') {
                         html.push(`<button class="btn btn-success" onclick="approve('${data.id}')"><i class="bi bi-check-circle-fill"></i></button>`)
                         html.push(`<button class="btn btn-danger" onclick="disapprove('${data.id}')"><i class="bi bi-x-circle-fill"></i></button>`)
@@ -56,11 +57,11 @@ $(document).ready(function () {
                 }, orderable: false
             },
         ],
-        order: [[0, "desc"]],
+        order: [[5, "asc"]],
         orderMulti: false,
         processing: true,
         serverSide: true,
-        ajax: '/api/v1/achievements/',
+        ajax: {url: '/api/v1/achievements/', data: {'is_teacher': 'true'}},
         "rowCallback": function (row, data, index) {
             if (data.status === 'disapproved') {
                 $('td', row).addClass('table-danger');

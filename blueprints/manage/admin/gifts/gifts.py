@@ -1,19 +1,14 @@
-import os.path
-
 import flask
-from flask import Blueprint, render_template, redirect, request, url_for, Request, Response
+from flask import Blueprint, render_template, redirect, request, url_for
 from flask_login import login_required
 from werkzeug.datastructures import MultiDict
 
 from blueprints.manage.admin.gifts.forms.gift import GiftForm
-from blueprints.manage.admin.users.forms.user import UserForm
 from db.models.gift import GiftQuery
-from db.models.group import GroupQuery
-from db.models.user import UserQuery
 from uploads import gift_images
 from util import admin_required, save_upload
 
-gifts = Blueprint('gifts', __name__, template_folder='templates')
+gifts = Blueprint('gifts', __name__, template_folder='templates', static_folder='static')
 
 
 @gifts.route('/')
@@ -22,7 +17,6 @@ gifts = Blueprint('gifts', __name__, template_folder='templates')
 def index():
     context = {
         'title': 'Подарки',
-        'gifts': GiftQuery.get_all_gifts()
     }
     return render_template("gifts/gifts.html", **context)
 

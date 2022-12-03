@@ -1,7 +1,7 @@
 function format(data) {
     let html = []
-    // html.push("<a href=\"/manage/admin/basises/edit/?id=" + data.id + "\" class=\"btn btn-primary btn-sm me-1\" role=\"button\" data-toggle=\"button\">Редактировать основание</a>")
-    // html.push("<a href=\"/manage/admin/basises/delete/?id=" + data.id + "\" class=\"btn btn-danger btn-sm me-1\" role=\"button\" data-toggle=\"button\">Удалить основание</a>")
+    // html.push(`<a href="/manage/admin/basises/edit?id=${data.id}" class="btn btn-primary btn-sm me-1" role="button">Редактировать основание</a>`)
+    // html.push(`<a href="/manage/admin/basises/delete?id=${data.id}" class="btn btn-danger btn-sm me-1" role="button">Удалить основание</a>`)
     return html
 }
 

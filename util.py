@@ -7,7 +7,7 @@ from urllib.parse import urlparse, urljoin
 
 import flask
 from PIL import Image
-from flask import request
+from flask import request, redirect
 from flask_login import current_user
 from flask_uploads import UploadSet
 from transliterate import translit
@@ -106,7 +106,6 @@ def password_check(password):
 
     # overall result
     password_ok = not (length_error or digit_error or uppercase_error or lowercase_error)
-
     return {
         'password_ok': password_ok,
         'length_error': length_error,
@@ -123,7 +122,8 @@ ALPHABET = ['a', 'e', 'f', 'g', 'h', 'm', 'n', 't', 'y'] + \
 
 def random_password():
     password = ''.join(secrets.choice(ALPHABET) for _ in range(8))
-    while not password_check(password):
+    while password_check(password)['password_ok']:
+        print(password)
         password = ''.join(secrets.choice(ALPHABET) for _ in range(8))
     return password
 
@@ -153,3 +153,14 @@ def list_get_factory(model, search_expr):
 
     _get_model.__name__ = f'get_api'
     return _get_model
+
+
+def redirect_to_back():
+    back = request.args.get("back", None)
+    if is_safe_url(back):
+        return redirect(back)
+    else:
+        flask.abort(400)
+
+def is_teacher_to_bool() -> bool:
+    return True if request.args.get('is_teacher', 'false') == 'true' else False

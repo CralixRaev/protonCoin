@@ -15,4 +15,4 @@ def index():
     context = {
         'title': f'Достижения',
     }
-    return render_template("achievement/list_achievement.html", **context)
+    return render_template("achievement_teacher/list_achievement.html", **context)

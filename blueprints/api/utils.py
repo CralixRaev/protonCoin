@@ -25,11 +25,12 @@ def abort_if_not_found(obj):
         abort(404, message=f"Entity with this id does not exist.")
 
 
-def generate_list_response(args, rows, get_method, count_method, fields, get_api_kwargs: dict):
+def generate_list_response(args, rows, get_method, count_method, fields, get_api_kwargs: dict = {}, total_count_kwargs: dict = {}):
     order_expr = None
     print(args)
     if 'order_column_id' in args:
         order_expr = rows[int(args['order_column_id'])]
+        print(order_expr)
         if args['order_direction'] == 'desc':
             order_expr = tuple(map(lambda x: desc(x), order_expr))
         elif args['order_direction'] == 'asc':
@@ -38,7 +39,7 @@ def generate_list_response(args, rows, get_method, count_method, fields, get_api
                                 search=args['search'] if 'search' in args else None,
                                 order_expr=order_expr, **get_api_kwargs)
     answer = {
-        'recordsTotal': count_method(),
+        'recordsTotal': count_method(**total_count_kwargs),
         'recordsFiltered': count,
         'data': marshal(records, fields)
     }

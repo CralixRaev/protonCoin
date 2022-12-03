@@ -12,7 +12,7 @@ from db.models.user import UserQuery
 from uploads import gift_images
 from util import admin_required, teacher_required
 
-group = Blueprint('group', __name__, template_folder='templates')
+group = Blueprint('group', __name__, template_folder='templates', static_folder='static')
 
 
 @group.route('/')

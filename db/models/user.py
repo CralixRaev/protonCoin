@@ -5,7 +5,7 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 import sqlalchemy.exc
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 from flask_restful import fields
 from sqlalchemy import func
 from transliterate import translit
@@ -74,8 +74,11 @@ class User(db.Model, UserMixin):
 
 class UserQuery:
     @staticmethod
-    def total_count() -> int:
-        return User.query.count()
+    def total_count(is_teacher: bool = False) -> int:
+        if is_teacher:
+            return User.query.filter(User.group_id == current_user.group_id).count()
+        else:
+            return User.query.count()
 
     @staticmethod
     def _create_login(name, surname, patronymic=None):
@@ -94,14 +97,17 @@ class UserQuery:
         return User.query.filter((User.email == login) | (User.login == login)).first()
 
     @staticmethod
-    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
+    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None,
+                is_teacher=False) -> (
             int, list[User]):
-        user_query = User.query
+        user_query = User.query.join(Balance)
+        if is_teacher:
+            user_query = user_query.filter(User.group_id == current_user.group_id)
         count = user_query.count()
         if search:
-            user_query = user_query.filter(User.name.ilike(f'%{search}%'))
+            user_query = user_query.filter(
+                (User.surname + ' ' + User.name + ' ' + User.patronymic).ilike(f'%{search}%'))
             count = user_query.count()
-        print(order_expr)
         if order_expr is not None:
             user_query = user_query.order_by(*order_expr)
         user_query = user_query.limit(length).offset(start)
@@ -119,8 +125,8 @@ class UserQuery:
         return searched.offset(offset).limit(limit).all(), searched.count()
 
     @staticmethod
-    def user_count() -> int:
-        return User.query.count()
+    def user_count(is_teacher: bool = False) -> int:
+        return UserQuery.total_count(is_teacher)
 
     @staticmethod
     def get_offset_limit_users(offset=0, limit=10) -> list[User]:

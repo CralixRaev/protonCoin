@@ -1,8 +1,6 @@
 function format(data) {
     let html = []
     html.push(`<a href="/manage/methods/user/new_password?id=${data.id}&back=${window.location.href}" class="btn btn-primary btn-sm me-1" role="button" data-toggle="button">Сгенирировать новый пароль</a>`)
-    html.push("<a href=\"/manage/admin/users/edit/?id=" + data.id + "\" class=\"btn btn-primary btn-sm me-1\" role=\"button\" data-toggle=\"button\">Редактировать пользователя</a>")
-    html.push(`<a href="/manage/methods/user/delete?id=${data.id}&back=${window.location.href}" class="btn btn-danger btn-sm me-1" role="button" data-toggle="button">Удалить пользователя</a>`)
     return html
 }
 
@@ -32,11 +30,13 @@ $(document).ready(function () {
             },
             {data: 'balance.amount'},
         ],
-        order: [[2, "desc"]],
+        order: [[2, "asc"]],
         orderMulti: false,
         processing: true,
         serverSide: true,
-        ajax: '/api/v1/users/',
+        ajax: {url: '/api/v1/users/', data: {
+            'is_teacher': 'true'
+            }},
     });
 });
 

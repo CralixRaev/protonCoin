@@ -1,14 +1,12 @@
 import io
-import json
 from tempfile import NamedTemporaryFile
 
 import flask
 import openpyxl
-import werkzeug
-from flask import Blueprint, render_template, redirect, request, url_for, Request, Response
+from flask import Blueprint, render_template, redirect, url_for, Response, request
 from flask_login import login_required
-from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
+from openpyxl.workbook import Workbook
 from openpyxl.worksheet.dimensions import DimensionHolder, ColumnDimension
 from werkzeug.datastructures import MultiDict
 
@@ -27,7 +25,6 @@ users = Blueprint('users', __name__, template_folder='templates', static_folder=
 def index():
     context = {
         'title': 'Пользователи',
-        # 'users': UserQuery.get_all_users()
     }
     return render_template("users/users.html", **context)
 
@@ -57,17 +54,6 @@ def create_user():
     return render_template("users/user.html", **context)
 
 
-@users.route('/delete/')
-@login_required
-@admin_required
-def delete_user():
-    user_id = request.args.get("id")
-    user = UserQuery.get_user_by_id(user_id)
-    UserQuery.delete_user(user)
-    flask.flash(f"Пользователь ID: {user.id} - {user.full_name} успешно удалён", "success")
-    return redirect(url_for('.index'))
-
-
 @users.route('/import/', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -93,7 +79,8 @@ def import_users():
             if full_name:
                 split_name = full_name.split()
                 surname, name, patronymic = split_name[0], split_name[1], ' '.join(split_name[2:])
-                user, password = UserQuery.create_user(name, surname, patronymic if patronymic else None,
+                user, password = UserQuery.create_user(name, surname,
+                                                       patronymic if patronymic else None,
                                                        None, False, False,
                                                        form.group_id.data if form.group_id.data != -1 else None)
                 ws_write.cell(i, 1, user.full_name)
@@ -147,12 +134,3 @@ def edit_user():
     form.group_id.choices = group_list
     context['form'] = form
     return render_template("users/user.html", **context)
-
-
-@users.route('/new_password/', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def new_password():
-    password = UserQuery.new_password(request.args.get('id'))
-    flask.flash(f"Новый пароль для пользователя: {password}", "success")
-    return redirect(url_for('.index'))
