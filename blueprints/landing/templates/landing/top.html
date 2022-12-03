@@ -4,31 +4,51 @@
     <div class="album py-3 rounded bg-light">
         <div class="container">
             <h1 class="text-center">Топ 10 самых богатых людей Протона</h1>
-            <table class="table table-hover table-striped">
+            <table class="table table-hover table-striped" id="topTable">
                 <thead>
                 <tr>
+                    <th style="width: 24px"></th>
                     <th>Место</th>
                     <th>ФИО</th>
                     <th>Количество {{ common_macros.coin() }}ов</th>
+                    <th style="display: none"></th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for i, balance in top_balances %}
                     {% if loop.first %}
                         <tr style="background-color: #8BA7CF">
+                            <td></td>
                             <td style="color: #f5f5f5">{{ i }}.</td>
                             <td style="color: #f5f5f5">
                                 {{ common_macros.avatar(balance.user, class='me-3') }}{{ balance.user.full_name }}</td>
                             <td style="color: #f5f5f5">{{ balance.amount }} {{ common_macros.coin() }}ов</td>
-                        </tr>
-                    {% else %}
+                            {% else %}
                         <tr>
-                            <td>{{ i }}.</td>
-                            <td>{{ common_macros.avatar(balance.user, class='me-3') }}{{ balance.user.full_name }}</td>
-                            <td>{{ balance.amount }} {{ common_macros.coin() }}ов</td>
-                        </tr>
+                        <td></td>
+                        <td>{{ i }}.</td>
+                        <td>{{ common_macros.avatar(balance.user, class='me-3') }}{{ balance.user.full_name }}</td>
+                        <td>{{ balance.amount }} {{ common_macros.coin() }}ов</td>
                     {% endif %}
-
+                <td><h6>Последние 10 начислений:</h6>
+                    <table class="table table-hover table-striped">
+                        <thead>
+                        <tr>
+                            <th>Количество</th>
+                            <th>Комментарий</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for transaction in last_accruals(balance) %}
+                            <tr>
+                                <td class="text-success">+{{ transaction.amount }}{{ common_macros.coin() }}</td>
+                                <td>{{ transaction.comment }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+                </tr>
                 {% endfor %}
                 </tbody>
             </table>

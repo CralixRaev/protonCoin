@@ -110,3 +110,7 @@ class TransactionQuery:
     @staticmethod
     def total_count() -> int:
         return Transaction.query.count()
+
+    @staticmethod
+    def last_accruals(balance, amount: int = 10) -> list[Transaction]:
+        return Transaction.query.filter(Transaction.to_balance_id == balance.id).order_by(Transaction.id.desc()).limit(amount).all()

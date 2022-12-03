@@ -31,3 +31,36 @@ function submitWithDoNotRedirect() {
     document.getElementById("do_not_redirect").value = "True"
     form.submit()
 }
+
+$(document).ready(function () {
+    let table = $('#topTable').DataTable({
+        language: {
+            url: '/static/datatables/ru.json'
+        },
+        paging: false,
+        searching: false,
+        columns: [
+            {
+                className: 'dt-control',
+                orderable: false,
+                data: null,
+                defaultContent: '',
+            }, {}, {orderable: false}, {orderable: false}, {visible: false}
+        ],
+        order: [1, "asc"]
+    });
+    $('#topTable').on('click', 'td.dt-control', function () {
+        let tr = $(this).closest('tr');
+        let row = table.row(tr);
+
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            // Open this row
+            row.child(row.data()[4]).show();
+            tr.addClass('shown');
+        }
+    });
+});
