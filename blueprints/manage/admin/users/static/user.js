@@ -32,7 +32,7 @@ $(document).ready(function () {
             },
             {data: 'balance.amount'},
         ],
-        order: [[2, "desc"]],
+        order: [[0, "desc"]],
         orderMulti: false,
         processing: true,
         serverSide: true,

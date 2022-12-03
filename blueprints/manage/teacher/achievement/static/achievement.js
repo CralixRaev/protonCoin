@@ -6,6 +6,13 @@ function redrawTooltips() {
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 }
 
+function approved_disapproved_user(data) {
+    if (data && data.id !== 0) {
+        return `${data.surname} ${data.name} ${data.patronymic}`
+    } else {
+        return `пока что никто`
+    }
+}
 
 $(document).ready(function () {
     let table = $('#achievementList').DataTable({

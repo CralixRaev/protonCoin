@@ -6,7 +6,7 @@ from db.models.achievement import AchievementQuery
 from db.models.transaction import TransactionQuery
 from util import teacher_or_admin_required, admin_required, redirect_to_back
 
-achievement_methods = Blueprint('achievement_methods', __name__)
+achievement_methods = Blueprint('achievement_methods', __name__, static_folder='static')
 
 
 @achievement_methods.route('/approve/')

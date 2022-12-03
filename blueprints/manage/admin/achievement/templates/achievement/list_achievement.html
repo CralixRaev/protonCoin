@@ -27,35 +27,5 @@
         </table>
     </div>
     <script type="module" src="{{ url_for('.static', filename='achievement.js') }}"></script>
-    <script>
-        function approve(row_id) {
-            window.location.href = "/manage/methods/achievement/approve" + "?id=" + row_id
-        }
-
-        function disapprove(row_id) {
-            let reason = window.prompt("Введите причину отказа")
-            if (reason) {
-                window.location.href = "/manage/methods/achievement/disapprove" + "?id=" + row_id + "&reason=" + reason
-            } else {
-                window.alert("К сожалению, причину отказа надо указать :(")
-            }
-        }
-
-        function approved_disapproved_user(data) {
-            if (data && data.id !== 0) {
-                return `${data.surname} ${data.name} ${data.patronymic}`
-            } else {
-                return `пока что никто`
-            }
-        }
-
-        function disapprove_existing(row_id) {
-            let reason = window.prompt("Введите причину отклонения существующего достижения")
-            if (reason) {
-                window.location.href = "/manage/methods/achievement/disapprove_existing" + "?id=" + row_id + "&reason=" + reason
-            } else {
-                window.alert("К сожалению, причину отклонения надо указать :(")
-            }
-        }
-    </script>
+    <script src="{{ url_for('manage.methods.achievement_methods.static', filename='achievements_methods.js') }}"></script>
 {% endblock %}
