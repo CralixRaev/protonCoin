@@ -104,7 +104,6 @@ def import_folders(folder):
     for group in groups:
         groupname = os.path.basename(group).split(".")[0]
         if groupname:
-            print(groupname)
             stage, letter = groupname[0], groupname[1]
             wb_read = openpyxl.load_workbook(os.path.join(folder, "for_import", group),
                                              read_only=True, data_only=True)
@@ -157,9 +156,6 @@ def import_teachers(file):
                 stage, letter = row[0].value[0], row[0].value[1]
             else:
                 stage, letter = row[0].value[0:2], row[0].value[2]
-            print(stage, letter)
-            print(GroupQuery.get_group_by_stage_letter(stage,
-                                                       letter))
             surname, name, patronymic = split_name[0], split_name[1], ' '.join(split_name[2:])
             user, password = UserQuery.create_user(name, surname,
                                                    patronymic if patronymic else None,

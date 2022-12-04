@@ -2,7 +2,7 @@ import io
 
 import flask
 import openpyxl
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import login_required
 from openpyxl.workbook import Workbook
 
@@ -47,7 +47,7 @@ def create():
         TransactionQuery.create_transaction(form.from_balance_id.data, form.to_balance_id.data,
                                             form.amount.data, form.comment.data)
         flask.flash(f"Транзакция осуществлена.", "success")
-        return redirect(url_for('admin.transactions.index'))
+        return redirect(url_for('.index'))
     return render_template("transactions/transaction.html", **context)
 
 

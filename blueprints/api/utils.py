@@ -27,10 +27,8 @@ def abort_if_not_found(obj):
 
 def generate_list_response(args, rows, get_method, count_method, fields, get_api_kwargs: dict = {}, total_count_kwargs: dict = {}):
     order_expr = None
-    print(args)
     if 'order_column_id' in args:
         order_expr = rows[int(args['order_column_id'])]
-        print(order_expr)
         if args['order_direction'] == 'desc':
             order_expr = tuple(map(lambda x: desc(x), order_expr))
         elif args['order_direction'] == 'asc':

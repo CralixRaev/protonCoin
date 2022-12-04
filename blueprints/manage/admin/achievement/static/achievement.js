@@ -79,7 +79,6 @@ $(document).ready(function () {
         "drawCallback": redrawTooltips,
     });
     $('#achievementsStatusFilter').on('change', function () {
-        console.log("print")
         let status = this.value
         if (status === undefined) {
             status = ''

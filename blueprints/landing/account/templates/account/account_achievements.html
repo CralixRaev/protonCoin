@@ -17,7 +17,7 @@
                 <tr>
                     <td>({{ achievement.criteria.basis.name }}) {{ achievement.criteria.name }}
                         - {{ achievement.criteria.cost }} {{ common_macros.coin() }}ов</td>
-                    <td class="{{ achievement.status_color_class }}">{{ achievement.status }}</td>
+                    <td class="{{ achievement.status_color_class }}">{{ achievement.status_translation }}</td>
                     <td>{% if achievement.disapproval_reason %}{{ achievement.disapproval_reason }}{% endif %}</td>
                 </tr>
             {% endfor %}
