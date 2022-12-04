@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from db.database import db
+from db.models.gift import Gift
 from uploads import gift_images
 
 
@@ -33,6 +34,7 @@ class OrderQuery:
         order = Order()
         order.gift_id = gift_id
         order.user_id = user_id
+        Gift.query.get(gift_id).stock -= 1
 
         db.session.add(order)
         db.session.commit()
@@ -52,6 +54,7 @@ class OrderQuery:
         db.session.rollback()
 
         order.is_returned = True
+        order.gift.stock += 1
 
         db.session.commit()
 

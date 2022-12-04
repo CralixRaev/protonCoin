@@ -10,6 +10,7 @@ class Gift(db.Model):
     description = db.Column(db.Text)
     price = db.Column(db.Integer)
     image = db.Column(db.String(1024), default="default.jpeg")
+    stock = db.Column(db.Integer, default=0)
 
     orders = db.relation("Order", back_populates='gift')
 
@@ -17,12 +18,20 @@ class Gift(db.Model):
     def image_file(self):
         return gift_images.url(self.image if self.image else 'default.jpeg')
 
+    @property
+    def in_stock(self) -> bool:
+        if self.stock is None:
+            self.stock = 0
+            db.session.commit()
+        return True if self.stock > 0 else False
+
     @staticmethod
     def __json__() -> dict:
         _json = {
             'id': fields.Integer(),
             'name': fields.String(),
             'description': fields.String(),
+            'stock': fields.Integer(),
             'price': fields.Integer(),
             'image_file': fields.String(),
         }
@@ -32,7 +41,8 @@ class Gift(db.Model):
 class GiftQuery:
     @staticmethod
     def get_all_gifts(order_by=Gift.price.desc()) -> list[Gift]:
-        return Gift.query.order_by(order_by).all()
+        qr = Gift.query.order_by(Gift.stock == 0, order_by)
+        return qr.all()
 
     @staticmethod
     def create_gift(name, description, price, image_path) -> Gift:
@@ -40,7 +50,8 @@ class GiftQuery:
         gift.name = name
         gift.description = description
         gift.price = price
-        gift.image = image_path
+        if image_path:
+            gift.image = image_path
 
         db.session.add(gift)
         db.session.commit()
@@ -64,11 +75,13 @@ class GiftQuery:
         return count, gift_query.all()
 
     @staticmethod
-    def update_gift(gift, name, description, price, image_path) -> Gift:
+    def update_gift(gift, name, description, price, image_path, stock) -> Gift:
         gift.name = name
         gift.description = description
         gift.price = price
-        gift.image = image_path
+        if image_path:
+            gift.image = image_path
+        gift.stock = stock
         db.session.commit()
         return gift
 

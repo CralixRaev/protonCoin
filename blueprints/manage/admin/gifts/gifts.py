@@ -1,7 +1,7 @@
 import flask
 from flask import Blueprint, render_template, redirect, request, url_for
 from flask_login import login_required
-from werkzeug.datastructures import MultiDict
+from werkzeug.datastructures import MultiDict, FileStorage
 
 from blueprints.manage.admin.gifts.forms.gift import GiftForm
 from db.models.gift import GiftQuery
@@ -36,7 +36,7 @@ def create_gift():
         gift = GiftQuery.create_gift(form.name.data, form.description.data, form.price.data,
                                      filename)
         flask.flash(f"Подарок успешно создан", "success")
-        return redirect(url_for('admin.gifts.index'))
+        return redirect(url_for('manage.admin.gifts.index'))
     return render_template("gifts/gift.html", **context)
 
 
@@ -51,12 +51,14 @@ def edit_gift():
         'form': form
     }
     if form.validate_on_submit():
-        image = form.image.data
-        filename = save_upload(image, gift_images)
+        filename = None
+        image = form.image
+        if image.data:
+            filename = save_upload(image.data, gift_images)
         gift = GiftQuery.update_gift(gift, form.name.data, form.description.data, form.price.data,
-                                     filename)
+                                     filename, form.stock.data)
         flask.flash(f"Подарок успешно обновлен", "success")
-        return redirect(url_for('admin.gifts.index'))
+        return redirect(url_for('manage.admin.gifts.index'))
     context['form'] = GiftForm(MultiDict(gift.__dict__.items()))
     return render_template("gifts/gift.html", **context)
 
@@ -69,4 +71,4 @@ def delete_gift():
     gift = GiftQuery.get_gift_by_id(gift_id)
     GiftQuery.delete_gift(gift)
     flask.flash(f"Подарок ID: {gift.id} - {gift.name} успешно удалён", "success")
-    return redirect(url_for('admin.gifts.index'))
+    return redirect(url_for('manage.admin.gifts.index'))

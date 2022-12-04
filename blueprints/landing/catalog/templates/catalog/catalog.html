@@ -29,8 +29,12 @@
                                 <p class="card-text">{{ gift.description }}</p>
                                 <div class="d-flex justify-content-between align-items-center mt-auto">
                                     <div class="btn-group">
+                                        {% if gift.in_stock %}
                                         <a class="btn btn-sm btn-primary" href="{{ url_for(".buy", gift_id=gift.id) }}"
                                            role="button">Купить</a>
+                                        {% else %}
+                                            <button type="button" class="btn btn-sm btn-secondary" disabled>Нет в наличии :(</button>
+                                        {% endif %}
                                     </div>
                                     <small class="text-right">{{ gift.price }}
                                         {{ common_macros.coin() }}

@@ -50,6 +50,7 @@ $(document).ready(function () {
                     return `${data} ${coin(16)}`
                 }
             },
+            {data: 'stock'}
         ],
         order: [[3, "desc"]],
         orderMulti: false,

@@ -37,6 +37,15 @@
             </div>
         </div>
         <div class="form-floating">
+            {{ form.stock(class="form-control", placeholder="Stock") }}
+            {{ form.stock.label }}
+            <div class="invalid-feedback">
+                {% for error in form.stock.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
             {{ form.image(class="form-control", placeholder="Image") }}
             {{ form.image.label }}
             <div class="invalid-feedback">

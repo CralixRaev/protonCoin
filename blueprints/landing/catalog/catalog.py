@@ -25,7 +25,7 @@ def index():
         'title': "Подарки",
         'order_by_current': order_by_type,
         'order_by': ORDER_TYPES,
-        'gifts': GiftQuery.get_all_gifts(order_by[1]),
+        'gifts': GiftQuery.get_all_gifts(order_by[1])
     }
     return render_template("catalog/catalog.html", **context)
 
@@ -34,7 +34,11 @@ def index():
 @login_required
 def buy():
     gift = GiftQuery.get_gift_by_id(request.args.get('gift_id'))
+    if not gift:
+        flask.abort(400)
     if current_user.balance.amount - gift.price >= 0:
+        if not gift.in_stock:
+            flask.abort(400)
         order = OrderQuery.create_order(gift.id, current_user.id)
         TransactionQuery.create_withdraw(current_user.balance, gift.price,
                                          comment=f"Оплата за заказ №{order.id} ({gift.name})")

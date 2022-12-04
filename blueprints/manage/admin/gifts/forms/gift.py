@@ -11,8 +11,8 @@ class GiftForm(FlaskForm):
     name = StringField("Имя", validators=[DataRequired()])
     description = TextAreaField("Описание", validators=[DataRequired()])
     price = IntegerField('Цена', validators=[DataRequired()])
+    stock = IntegerField('Остаток', validators=[DataRequired()])
     image = FileField('Изображение', validators=[
-        FileRequired(),
         FileAllowed(gift_images, 'Картинка')
     ])
     submit = SubmitField('Создать/Изменить')
