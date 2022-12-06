@@ -47,7 +47,7 @@ $(document).ready(function () {
                 defaultContent: '',
             }, {}, {orderable: false}, {orderable: false}, {visible: false}
         ],
-        order: [1, "asc"]
+        order: [1, "asc"],
     });
     $('#topTable').on('click', 'td.dt-control', function () {
         let tr = $(this).closest('tr');
@@ -80,5 +80,6 @@ $(document).ready(function () {
         serverSide: true,
         ajax: '/api/v1/criterias/',
         pageLength: 25,
+        responsive: true
     });
 });

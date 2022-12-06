@@ -50,7 +50,7 @@
 
 {% block body %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script defer src="{{ url_for("landing.static", filename="scripts.js", v='1.0') }}"></script>
+    <script defer src="{{ url_for("landing.static", filename="scripts.js", v='1.1') }}"></script>
     {% include 'landing/_header.html' %}
     <main class="container mt-5">
         {% with messages = get_flashed_messages(with_categories=True) %}

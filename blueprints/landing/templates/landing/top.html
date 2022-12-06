@@ -3,11 +3,25 @@
 {% block content %}
     <div class="album py-3 rounded bg-light">
         <div class="container">
+            <style>
+                #topTable {
+                    table-layout: fixed;
+                    width: 100% !important;
+                }
+
+                #topTable td,
+                #topTable th {
+                    width: auto;
+                    white-space: normal;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                }
+            </style>
             <h1 class="text-center">Топ 10 самых богатых людей Протона</h1>
             <table class="table table-hover table-striped" id="topTable">
                 <thead>
                 <tr>
-                    <th style="width: 24px"></th>
+                    <th style="width: 24px !important;"></th>
                     <th>Место</th>
                     <th>ФИО</th>
                     <th>Количество {{ common_macros.coin() }}ов</th>
