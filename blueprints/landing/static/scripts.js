@@ -33,7 +33,7 @@ function submitWithDoNotRedirect() {
 }
 
 $(document).ready(function () {
-    let table = $('#topTable').DataTable({
+    let topTable = $('#topTable').DataTable({
         language: {
             url: '/static/datatables/ru.json'
         },
@@ -51,7 +51,7 @@ $(document).ready(function () {
     });
     $('#topTable').on('click', 'td.dt-control', function () {
         let tr = $(this).closest('tr');
-        let row = table.row(tr);
+        let row = topTable.row(tr);
 
         if (row.child.isShown()) {
             // This row is already open - close it
@@ -62,5 +62,23 @@ $(document).ready(function () {
             row.child(row.data()[4]).show();
             tr.addClass('shown');
         }
+    });
+    $('#criteriaList').DataTable({
+        language: {
+            url: '/static/datatables/ru.json'
+        },
+        columns: [
+            {data: null, visible: false},
+            {data: null, visible: false},
+            {data: 'basis.name'},
+            {data: 'name'},
+            {data: 'cost'},
+        ],
+        order: [[4, "desc"]],
+        orderMulti: false,
+        processing: true,
+        serverSide: true,
+        ajax: '/api/v1/criterias/',
+        pageLength: 25,
     });
 });

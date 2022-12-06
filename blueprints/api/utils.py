@@ -2,12 +2,6 @@ from flask_restful import abort, reqparse, marshal
 from marshmallow import EXCLUDE, fields, Schema
 from sqlalchemy import desc, asc
 
-list_parser = reqparse.RequestParser()
-list_parser.add_argument('draw', type=int, help='Used for DataTables, ignore it')
-list_parser.add_argument('start', type=int, default=0)
-list_parser.add_argument('length', type=int, default=10)
-
-
 class ListQuery(Schema):
     class Meta:
         unknown = EXCLUDE

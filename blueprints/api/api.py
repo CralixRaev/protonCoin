@@ -1,6 +1,6 @@
 import flask
-from flask import Blueprint
-from flask_login import login_required
+from flask import Blueprint, request
+from flask_login import login_required, current_user
 from flask_restful import Api
 
 from blueprints.api.resources.achievement import AchievementList
@@ -15,13 +15,13 @@ from util import teacher_or_admin_required
 
 api_blueprint = Blueprint('api', __name__)
 @api_blueprint.before_request
-@login_required
-@teacher_or_admin_required
 def before_request():
-    pass
+    if request.endpoint != 'api.criterialist':
+        if not current_user.is_authenticated or not (current_user.is_teacher or current_user.is_admin):
+            flask.abort(403)
+
+
 api = Api(api_blueprint)
-# api.add_resource(GiftList, '/gifts/')
-# api.add_resource(GiftElement, '/gifts/<gift_id>')
 api.add_resource(GroupList, '/groups/')
 api.add_resource(BasisList, '/basis/')
 api.add_resource(CriteriaList, '/criterias/')

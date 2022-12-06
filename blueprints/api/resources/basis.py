@@ -4,7 +4,7 @@ from marshmallow import Schema, fields, EXCLUDE
 from sqlalchemy import types
 from sqlalchemy.sql import functions, expression
 
-from blueprints.api.utils import abort_if_not_found, list_parser, ListQuery, generate_list_response
+from blueprints.api.utils import abort_if_not_found, ListQuery, generate_list_response
 from db.models.basis import BasisQuery, Basis
 from db.models.group import Group, GroupQuery
 

@@ -19,3 +19,11 @@ def index():
         'last_accruals': TransactionQuery.last_accruals
     }
     return render_template("landing/top.html", **context)
+
+
+@landing.route("/criteria_list/")
+def criteria_list():
+    context = {
+        'title': "Список критериев",
+    }
+    return render_template("landing/criteria_list.html", **context)
