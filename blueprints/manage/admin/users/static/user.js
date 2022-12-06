@@ -1,3 +1,5 @@
+import {user_from_api} from "/static/common_funcs.js";
+
 function format(data) {
     let html = []
     html.push(`<a href="/manage/methods/user/new_password?id=${data.id}&back=${window.location.href}" class="btn btn-primary btn-sm me-1" role="button" data-toggle="button">Сгенирировать новый пароль</a>`)
@@ -7,7 +9,7 @@ function format(data) {
 }
 
 $(document).ready(function () {
-    table = $('#userList').DataTable({
+    let table = $('#userList').DataTable({
         language: {
             url: '/static/datatables/ru.json'
         },
@@ -20,9 +22,8 @@ $(document).ready(function () {
             },
             {data: 'id'},
             {
-                data: null, render: function (data, type, row, meta) {
-                    return `<img src="${data.avatar_path}" height="32px" width="32px" class="avatar rounded-circle">
-                    ${data.surname} ${data.name} ${data.patronymic}`
+                data: 'null', render: function (data, type, row, meta) {
+                    return `${user_from_api(row)}`
                 }
             },
             {
@@ -38,19 +39,20 @@ $(document).ready(function () {
         serverSide: true,
         ajax: '/api/v1/users/',
     });
+    $('#userList').on('click', 'td.dt-control', function () {
+        let tr = $(this).closest('tr');
+        let row = table.row(tr);
+
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            // Open this row
+            row.child(format(row.data())).show();
+            tr.addClass('shown');
+        }
+    });
+
 });
 
-$('#userList').on('click', 'td.dt-control', function () {
-    let tr = $(this).closest('tr');
-    let row = table.row(tr);
-
-    if (row.child.isShown()) {
-        // This row is already open - close it
-        row.child.hide();
-        tr.removeClass('shown');
-    } else {
-        // Open this row
-        row.child(format(row.data())).show();
-        tr.addClass('shown');
-    }
-});

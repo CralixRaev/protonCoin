@@ -26,7 +26,7 @@
                             <img src="{{ gift.image_file }}" class="card-img-top gift_image" alt="Gift image">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">{{ gift.name }}</h5>
-                                <p class="card-text">{{ gift.description }}</p>
+                                <p class="card-text">{{ gift.description|safe }}</p>
                                 <div class="d-flex justify-content-between align-items-center mt-auto">
                                     <div class="btn-group">
                                         {% if gift.in_stock %}

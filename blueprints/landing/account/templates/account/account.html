@@ -40,6 +40,10 @@
                                 class="nav-link{% if url_for(request.endpoint) == url_for(".achievements") %} active{% endif %}"><i
                 class="bi bi-award-fill h6 me-2"></i>Достижения</a>
         </li>
+        <li class="nav-item"><a href="{{ url_for(".orders") }}"
+                                class="nav-link{% if url_for(request.endpoint) == url_for(".orders") %} active{% endif %}"><i
+                class="bi bi-box-fill h6 me-2"></i>Заказы</a>
+        </li>
     </ul>
 
     <div class="tab-content pt-3">

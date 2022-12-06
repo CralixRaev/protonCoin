@@ -11,6 +11,7 @@ from blueprints.landing.account.forms.password import PasswordForm
 from db.models.achievement import AchievementQuery
 from db.models.basis import BasisQuery
 from db.models.criteria import CriteriaQuery
+from db.models.order import OrderQuery
 from db.models.transaction import TransactionQuery
 from db.models.user import UserQuery
 from uploads import avatars, achievement_files
@@ -79,8 +80,8 @@ def transactions():
     context = {
         "title": "Транзакции",
         'form_avatar': form_avatar,
-        'withdraws': reversed(TransactionQuery.get_withdraws(current_user.balance)),
-        'accruals': reversed(TransactionQuery.get_accruals(current_user.balance))
+        'withdraws': TransactionQuery.get_withdraws(current_user.balance),
+        'accruals': TransactionQuery.get_accruals(current_user.balance)
     }
     if form_avatar.validate_on_submit():
         _avatar_form_handler(form_avatar)
@@ -98,7 +99,29 @@ def achievements():
     }
     if form_avatar.validate_on_submit():
         _avatar_form_handler(form_avatar)
-    return render_template("account/account_achievements.html", **context)
+    return render_template("account/account_achievements.html", **context)\
+
+@account.route("/orders/", methods=['GET', 'POST'])
+@login_required
+def orders():
+    form_avatar = AvatarForm()
+    context = {
+        "title": "Достижения",
+        'form_avatar': form_avatar,
+        'orders': OrderQuery.order_by_user(current_user.id)
+    }
+    if form_avatar.validate_on_submit():
+        _avatar_form_handler(form_avatar)
+    return render_template("account/account_orders.html", **context)
+
+@account.route("/cancel_order/<int:order_id>")
+@login_required
+def cancel_order(order_id: int):
+    order = OrderQuery.get_order_by_id(order_id)
+    if order.user_id != current_user.id or not order.cancellation_available:
+        flask.abort(400)
+    OrderQuery.cancel_order_user(order)
+    return redirect(url_for(".orders"))
 
 
 @account.route("/declare_achievement/", methods=["GET", "POST"])

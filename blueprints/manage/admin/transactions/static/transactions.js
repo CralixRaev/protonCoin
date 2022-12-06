@@ -34,7 +34,6 @@ $(document).ready(function () {
             {
                 data: 'creation_date', render: function (data, type, row, meta) {
                     let date = new Date(data)
-                    console.log(date)
                     return date.toLocaleString('ru-RU')
                 }
             },

@@ -91,11 +91,11 @@ class TransactionQuery:
 
     @staticmethod
     def get_withdraws(balance) -> list[Transaction]:
-        return Transaction.query.filter(Transaction.from_balance_id == balance.id).all()
+        return Transaction.query.filter(Transaction.from_balance_id == balance.id).order_by(Transaction.id.desc()).all()
 
     @staticmethod
     def get_accruals(balance) -> list[Transaction]:
-        return Transaction.query.filter(Transaction.to_balance_id == balance.id).all()
+        return Transaction.query.filter(Transaction.to_balance_id == balance.id).order_by(Transaction.id.desc()).all()
 
     @staticmethod
     def create_accrual(balance, amount, comment=None) -> Transaction:
