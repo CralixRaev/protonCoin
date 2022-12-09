@@ -1,0 +1,18 @@
+{% if news %}
+    <section>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h1 class="h4 mb-3">Последние новости</h1>
+                {% for news_item in news %}
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{  news_item.title }}</h5>
+                            <p class="card-text">{{ news_item.description|safe|truncate(120)|striptags }}</p>
+                            <a href="{{ news_item.detail_url }}" class="card-link">Читать подробнее</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endif %}

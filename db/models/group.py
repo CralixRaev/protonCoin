@@ -3,7 +3,6 @@ from sqlalchemy import types
 from sqlalchemy.sql import functions, expression
 
 from db.database import db
-from util import ABCQuery
 
 
 class Group(db.Model):

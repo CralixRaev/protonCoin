@@ -6,3 +6,4 @@ from .models import basis
 from .models import criteria
 from .models import achievement
 from .models import order
+from .models import news

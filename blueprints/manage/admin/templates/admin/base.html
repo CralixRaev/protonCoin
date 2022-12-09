@@ -1,6 +1,7 @@
 {% extends "manage/base.html" %}
 
-{% set navigation = [[None, [('Главная страница', url_for('manage.admin.index'), 'bi-house')]],
+{% set navigation = [[None, [('Главная страница', url_for('manage.admin.index'), 'bi-house'),
+('Новости', url_for('manage.admin.news.index'), 'bi-newspaper')]],
 ['Управление пользователями', [('Пользователи', url_for('manage.admin.users.index'), 'bi-people'),
 ('Классы', url_for('manage.admin.groups.index'), 'bi-folder')]],
 ['Управление финансами', [('Транзацкии', url_for('manage.admin.transactions.index'), 'bi-arrow-left-right'),

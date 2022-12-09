@@ -10,7 +10,7 @@
           content="{{ config.COIN_UNIT }} - это школьная электронная валюта, направленная на мотивацию учеников образовательного центра &quot;Протон&quot;"/>
     <meta property="og:type" content="website"/>
     <meta property="og:site_name" content="{{ config.COIN_UNIT }}: школьная электронная валюта"/>
-    <meta property="og:url" content="https://coin.protonmos.ru{{ url_for(request.endpoint) }}"/>
+    <meta property="og:url" content="https://coin.protonmos.ru{{ url_for(request.endpoint, **request.view_args) }}"/>
     <meta property="og:image" content="https://coin.protonmos.ru/static/coin.webp"/>
 
     <link rel="stylesheet" href="{{ url_for("landing.static", filename="style.css") }}">

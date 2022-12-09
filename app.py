@@ -9,7 +9,7 @@ from flask import Flask, abort, send_from_directory, Blueprint, render_template,
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_uploads import configure_uploads, UploadSet
-
+from db.__all_models import *
 from blueprints.api.api import api_blueprint as api
 from blueprints.landing.landing import landing
 from blueprints.login.login import login

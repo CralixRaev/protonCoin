@@ -1,0 +1,48 @@
+{% extends "admin/base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <script src="https://cdn.tiny.cloud/1/nshjk5y70fualmriht17869yhfs12whrz6cvvw5q74ay9twr/tinymce/6/tinymce.min.js"
+            referrerpolicy="origin"></script>
+    <script src="{{ url_for('static', filename='tinymce-ru.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <form action="" method="POST">
+        {% if edit_message %}
+            <div class="alert alert-danger" role="alert">
+                {{ edit_message }}
+            </div>
+        {% endif %}
+        {{ form.hidden_tag() }}
+
+        <div class="form-floating">
+            {{ form.title(class="form-control", placeholder="Title") }}
+            {{ form.title.label }}
+            <div class="invalid-feedback">
+                {% for error in form.title.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
+            {{ form.description(class="form-control", placeholder="Description") }}
+            {{ form.description.label }}
+            <div class="invalid-feedback">
+                {% for error in form.description.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        {{ form.submit(type="submit", class="w-100 btn btn-lg btn-primary") }}
+    </form>
+
+    <script>
+        tinymce.init({
+            selector: '#description',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+            language: 'ru'
+        });
+    </script>
+{% endblock %}
