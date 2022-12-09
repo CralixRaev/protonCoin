@@ -3,9 +3,13 @@ from wtforms import StringField, SubmitField, IntegerField, SelectField
 from wtforms.validators import DataRequired
 
 
+class NonValidatingSelectField(SelectField):
+    def pre_validate(self, form):
+        pass
+
 class TransactionForm(FlaskForm):
-    from_balance_id = SelectField("От", coerce=int, validators=[DataRequired()])
-    to_balance_id = SelectField("К", coerce=int, validators=[DataRequired()])
+    from_balance_id = NonValidatingSelectField("От", validators=[DataRequired()])
+    to_balance_id = NonValidatingSelectField("К", validators=[DataRequired()])
     amount = IntegerField("Количество", validators=[DataRequired()])
     comment = StringField("Комментарий")
     submit = SubmitField("Создать")

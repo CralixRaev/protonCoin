@@ -91,3 +91,7 @@ body {
 .hover_img a:hover span {
     display: block;
 }
+
+form div {
+    margin-bottom: 1rem;
+}

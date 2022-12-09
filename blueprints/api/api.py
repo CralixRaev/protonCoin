@@ -12,6 +12,7 @@ from blueprints.api.resources.news import NewsList
 from blueprints.api.resources.order import OrderList
 from blueprints.api.resources.transaction import TransactionList
 from blueprints.api.resources.user import UserList
+from blueprints.api.resources.user_select import UserSelectList
 from util import teacher_or_admin_required
 
 api_blueprint = Blueprint('api', __name__)
@@ -24,6 +25,7 @@ def before_request():
 
 api = Api(api_blueprint)
 api.add_resource(GroupList, '/groups/')
+api.add_resource(UserSelectList, '/users/select/')
 api.add_resource(BasisList, '/basis/')
 api.add_resource(CriteriaList, '/criterias/')
 api.add_resource(TransactionList, '/transactions/')

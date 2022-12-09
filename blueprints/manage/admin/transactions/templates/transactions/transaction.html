@@ -9,18 +9,18 @@
         {% endif %}
         {{ form.hidden_tag() }}
 
+        {{ form.from_balance_id.label }}
         <div class="form-floating">
-            {{ form.from_balance_id(class="form-control", placeholder="From") }}
-            {{ form.from_balance_id.label }}
+            {{ form.from_balance_id(class="form-control ", placeholder="From") }}
             <div class="invalid-feedback">
                 {% for error in form.from_balance_id.errors %}
                     {{ error }}<br>
                 {% endfor %}
             </div>
         </div>
+        {{ form.to_balance_id.label }}
         <div class="form-floating">
             {{ form.to_balance_id(class="form-control", placeholder="To") }}
-            {{ form.to_balance_id.label }}
             <div class="invalid-feedback">
                 {% for error in form.to_balance_id.errors %}
                     {{ error }}<br>
@@ -46,4 +46,25 @@
             </div>
         </div>
         {{ form.submit(type="submit", class="w-100 btn btn-lg btn-primary") }}
-    </form>{% endblock %}
+    </form>
+
+    <script>
+        // In your Javascript (external .js resource or <script> tag)
+        $(document).ready(function () {
+            $('#from_balance_id').select2({
+                ajax: {
+                    url: '/api/v1/users/select',
+                    dataType: 'json'
+                    // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+                }
+            });
+            $('#to_balance_id').select2({
+                ajax: {
+                    url: '/api/v1/users/select',
+                    dataType: 'json'
+                    // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+                }
+            });
+        });
+    </script>
+{% endblock %}
