@@ -9,6 +9,7 @@ class Gift(db.Model):
     name = db.Column(db.String(255))
     description = db.Column(db.Text)
     price = db.Column(db.Integer)
+    promo_price = db.Column(db.Integer, nullable=True, default=None)
     image = db.Column(db.String(1024), default="default.jpeg")
     stock = db.Column(db.Integer, default=0)
 
@@ -33,6 +34,7 @@ class Gift(db.Model):
             'description': fields.String(),
             'stock': fields.Integer(),
             'price': fields.Integer(),
+            'promo_price': fields.Integer(),
             'image_file': fields.String(),
         }
         return _json
@@ -45,11 +47,12 @@ class GiftQuery:
         return qr.all()
 
     @staticmethod
-    def create_gift(name, description, price, image_path) -> Gift:
+    def create_gift(name, description, price, image_path, promo_price) -> Gift:
         gift = Gift()
         gift.name = name
         gift.description = description
         gift.price = price
+        gift.promo_price = promo_price
         if image_path:
             gift.image = image_path
 
@@ -75,10 +78,11 @@ class GiftQuery:
         return count, gift_query.all()
 
     @staticmethod
-    def update_gift(gift, name, description, price, image_path, stock) -> Gift:
+    def update_gift(gift, name, description, price, image_path, stock, promo_price: int | None) -> Gift:
         gift.name = name
         gift.description = description
         gift.price = price
+        gift.promo_price = promo_price
         if image_path:
             gift.image = image_path
         gift.stock = stock

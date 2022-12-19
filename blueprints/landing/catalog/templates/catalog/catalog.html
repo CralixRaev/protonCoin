@@ -36,7 +36,11 @@
                                             <button type="button" class="btn btn-sm btn-secondary" disabled>Нет в наличии :(</button>
                                         {% endif %}
                                     </div>
-                                    <small class="text-right">{{ gift.price }}
+                                    <small class="text-right">
+                                        {% if gift.promo_price %}
+                                            <span class="promo_price">{{ gift.promo_price }}</span>
+                                        {% endif %} 
+                                        {{ gift.price }}
                                         {{ common_macros.coin() }}
                                     </small>
                                 </div>

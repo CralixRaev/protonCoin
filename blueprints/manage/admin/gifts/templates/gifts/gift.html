@@ -43,6 +43,15 @@
             </div>
         </div>
         <div class="form-floating">
+            {{ form.promo_price(class="form-control", placeholder="Promo price") }}
+            {{ form.promo_price.label }}
+            <div class="invalid-feedback">
+                {% for error in form.promo_price.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="form-floating">
             {{ form.stock(class="form-control", placeholder="Stock") }}
             {{ form.stock.label }}
             <div class="invalid-feedback">

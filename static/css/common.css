@@ -9,3 +9,17 @@
 main {
     min-height: 100vh;
 }
+
+.promo_price {
+    position: relative;
+}
+
+.promo_price:before {
+    margin-top: 3px;
+    border-bottom: 3px solid var(--bs-red);
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 50%;
+    transform: rotate(5deg);
+}

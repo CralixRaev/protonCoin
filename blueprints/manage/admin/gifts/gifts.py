@@ -34,7 +34,7 @@ def create_gift():
         image = form.image.data
         filename = save_upload(image, gift_images)
         gift = GiftQuery.create_gift(form.name.data, form.description.data, form.price.data,
-                                     filename)
+                                     filename, form.promo_price.data)
         flask.flash(f"Подарок успешно создан", "success")
         return redirect(url_for('manage.admin.gifts.index'))
     return render_template("gifts/gift.html", **context)
@@ -56,7 +56,7 @@ def edit_gift():
         if image.data:
             filename = save_upload(image.data, gift_images)
         gift = GiftQuery.update_gift(gift, form.name.data, form.description.data, form.price.data,
-                                     filename, form.stock.data)
+                                     filename, form.stock.data, form.promo_price.data)
         flask.flash(f"Подарок успешно обновлен", "success")
         return redirect(url_for('manage.admin.gifts.index'))
     context['form'] = GiftForm(MultiDict(gift.__dict__.items()))

@@ -47,7 +47,11 @@ $(document).ready(function () {
             {data: 'name'},
             {
                 data: 'price', render: function (data, type, row, meta) {
-                    return `${data} ${coin(16)}`
+                    if (row.promo_price) {
+                        return `<span class="promo_price">${row.promo_price} ${coin(16)}</span> ${data} ${coin(16)}`
+                    } else {
+                        return `${data} ${coin(16)}`
+                    }
                 }
             },
             {data: 'stock'}
