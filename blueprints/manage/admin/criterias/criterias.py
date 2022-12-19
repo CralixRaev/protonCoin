@@ -36,7 +36,7 @@ def create_criteria():
     if form.validate_on_submit():
         CriteriaQuery.create_criteria(form.name.data, form.basis_id.data, form.cost.data)
         flask.flash(f"Критерий успешно создан.", "success")
-        return redirect(url_for('admin.criterias.index'))
+        return redirect(url_for('manage.admin.criterias.index'))
     return render_template("criterias/criteria.html", **context)
 
 

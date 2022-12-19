@@ -127,7 +127,7 @@ def edit_user():
                               form.is_admin.data, form.is_teacher.data,
                               form.group_id.data if form.group_id.data != -1 else None)
         flask.flash(f"Пользователь успешно обновлен.", "success")
-        return redirect(url_for('admin.users.index'))
+        return redirect(url_for('manage.admin.users.index'))
     model_data = MultiDict(user.__dict__.items())
     model_data['group_id'] = -1 if not model_data['group_id'] else model_data['group_id']
     form = UserForm(model_data)

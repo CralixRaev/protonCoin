@@ -32,7 +32,7 @@ def create_group():
     if form.validate_on_submit():
         GroupQuery.create_group(form.stage.data, form.letter.data)
         flask.flash(f"Класс успешно создан.", "success")
-        return redirect(url_for('admin.groups.index'))
+        return redirect(url_for('manage.admin.groups.index'))
     return render_template("groups/group.html", **context)
 
 
@@ -49,7 +49,7 @@ def edit_user():
     if form.validate_on_submit():
         GroupQuery.update_group(user, form.stage.data, form.letter.data)
         flask.flash(f"Класс успешно обновлен.", "success")
-        return redirect(url_for('admin.groups.index'))
+        return redirect(url_for('manage.admin.groups.index'))
     model_data = MultiDict(user.__dict__.items())
     form = GroupForm(model_data)
     context['form'] = form
@@ -64,4 +64,4 @@ def delete_group():
     group = GroupQuery.get_group_by_id(group_id)
     GroupQuery.delete_group(group)
     flask.flash(f"Класс ID: {group.id} - {group.name} успешно удалён", "success")
-    return redirect(url_for('admin.groups.index'))
+    return redirect(url_for('manage.admin.groups.index'))
