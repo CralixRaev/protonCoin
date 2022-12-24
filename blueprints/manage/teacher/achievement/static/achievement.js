@@ -1,4 +1,4 @@
-import {user_from_api} from "/static/common_funcs.js";
+import {criteria_with_basis, escapeHtml, user_from_api, user_full_name} from "/static/common_funcs.js";
 
 
 function redrawTooltips() {
@@ -8,7 +8,7 @@ function redrawTooltips() {
 
 function approved_disapproved_user(data) {
     if (data && data.id !== 0) {
-        return `${data.surname} ${data.name} ${data.patronymic}`
+        return user_full_name(data)
     } else {
         return `пока что никто`
     }
@@ -28,7 +28,7 @@ $(document).ready(function () {
             },
             {
                 data: 'criteria', render: function (data, type, row, meta) {
-                    return `(${data.basis.name}) ${data.name}`
+                    return criteria_with_basis(data)
                 }
             },
             {
@@ -37,7 +37,7 @@ $(document).ready(function () {
                 }, orderable: false
             },
             {
-                data: 'comment', orderable: false,
+                data: 'comment', orderable: false, render: $.fn.dataTable.render.text()
             },
             {
                 data: 'status_translation', render: function (data, type, row, meta) {
@@ -47,7 +47,7 @@ $(document).ready(function () {
                     } else if (row.status === 'disapproved') {
                         p_class = 'text-danger fw-bold'
                     }
-                    return `<a class="${p_class}" data-bs-toggle="tooltip" data-bs-title="${row.disapproval_reason ?? ' '}, изменил ${approved_disapproved_user(row.approved_disapproved_user)}">${data}</a>`
+                    return `<a class="${p_class}" data-bs-toggle="tooltip" data-bs-title="${escapeHtml(row.disapproval_reason) ?? ' '}, изменил ${approved_disapproved_user(row.approved_disapproved_user)}">${data}</a>`
                 }
             },
             {
