@@ -44,7 +44,7 @@ pytz==2022.6
 setuptools==65.6.3
 signxml==3.0.2
 six==1.16.0
-SQLAlchemy==1.4.44
+SQLAlchemy==1.4.46
 transliterate==1.10.2
 validators==0.20.0
 Werkzeug==2.2.2
