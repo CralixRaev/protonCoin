@@ -18,6 +18,7 @@ from blueprints.manage.manage import manage
 from db.database import db
 from db.models.balances import BalanceQuery
 from db.models.group import GroupQuery
+from db.models.transaction import TransactionQuery
 from db.models.user import User, UserQuery
 from uploads import avatars, gift_images, achievement_files
 from util import teacher_or_admin_required
@@ -173,6 +174,31 @@ def import_teachers(file):
 
     wb_write.save("teachers.xlsx")
     click.echo("Ну, вро де импортировали!")
+
+
+@app.cli.command("vsoh_import")
+@click.argument("file")
+def vsoh_import(file):
+    import openpyxl
+    wb_read = openpyxl.load_workbook(file, read_only=True, data_only=True)
+    for sheet in wb_read:
+        for row in sheet.iter_rows(min_row=2):
+            subject = row[5].value
+            user_raw = row[1].value.split()
+            surname = user_raw[0]
+            name_first_letter = user_raw[1][0]
+            if len(user_raw) == 3:
+                patronymic_first_letter = user_raw[2][0]
+            else:
+                patronymic_first_letter = ""
+            user = User.query.filter(User.surname == surname, User.name.like(f"{name_first_letter}%"),
+                                     User.patronymic.like(f"{patronymic_first_letter}%")).all()
+            if len(user) > 1 or len(user) < 1:
+                print(subject, surname, name_first_letter, patronymic_first_letter)
+            else:
+                user = user[0]
+                TransactionQuery.create_accrual(user.balance, 10, f"За критерий (Участие во Всероссийской Олимпиаде Школьников) Школьный тур ({subject}) (начислено автоматически)")
+    click.echo("Ну, вроде импортировали!")
 
 
 db.init_app(app)
