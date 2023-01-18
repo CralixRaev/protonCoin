@@ -75,6 +75,7 @@ def index():
                 UserQuery.set_nickname(current_user, nickname)
             except sqlalchemy.exc.DataError:
                 flask.flash("Никнейм слишком длинный (его длина не должна быть больше 16 символов)", "success")
+                return
             with Client(current_app.config['RCON_IP'],
                         int(current_app.config['RCON_PORT']),
                         passwd=current_app.config['RCON_PASSWORD']) as client:
