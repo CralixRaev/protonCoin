@@ -1,6 +1,7 @@
 import os
 
 import flask
+import sqlalchemy
 from flask import Blueprint, render_template, redirect, url_for, current_app, request
 from flask_login import current_user, login_required
 from rcon import Client
@@ -70,7 +71,10 @@ def index():
         UserQuery.update_email(current_user, form_main.email.data)
         nickname = form_main.nickname.data
         if nickname != current_user.nickname:
-            UserQuery.set_nickname(current_user, nickname)
+            try:
+                UserQuery.set_nickname(current_user, nickname)
+            except sqlalchemy.exc.DataError:
+                flask.flash("Никнейм слишком длинный (его длина не должна быть больше 16 символов)", "success")
             with Client(current_app.config['RCON_IP'],
                         int(current_app.config['RCON_PORT']),
                         passwd=current_app.config['RCON_PASSWORD']) as client:
