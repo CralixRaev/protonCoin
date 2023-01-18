@@ -10,4 +10,5 @@ from uploads import avatars
 
 class UserForm(FlaskForm):
     email = EmailField("Электронная почта", validators=[Email()])
+    nickname = StringField("Пcевдоним (для игровых серверов)", validators=[])
     submit = SubmitField('Сохранить')

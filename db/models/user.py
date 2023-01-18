@@ -5,6 +5,7 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 import sqlalchemy.exc
+from flask import current_app
 from flask_login import UserMixin, current_user
 from flask_restful import fields
 from sqlalchemy import func
@@ -21,6 +22,7 @@ from util import random_password
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
     login = db.Column(db.String(32), nullable=False, unique=True, index=True)
+    nickname = db.Column(db.String(16), nullable=True, unique=True, index=True)
     email = db.Column(db.String(64), nullable=True, unique=True, index=True)
     name = db.Column(db.String(32), nullable=False)
     surname = db.Column(db.String(32), nullable=False)
@@ -127,6 +129,15 @@ class UserQuery:
     @staticmethod
     def user_count(is_teacher: bool = False) -> int:
         return UserQuery.total_count(is_teacher)
+
+    @staticmethod
+    def set_nickname(user: User, nickname: str):
+        if not user.nickname:
+            user.nickname = nickname
+        else:
+            raise ValueError("cannot update nickname if it already set")
+        db.session.commit()
+
 
     @staticmethod
     def get_offset_limit_users(offset=0, limit=10) -> list[User]:

@@ -3,6 +3,7 @@ import os
 import flask
 from flask import Blueprint, render_template, redirect, url_for, current_app, request
 from flask_login import current_user, login_required
+from rcon import Client
 from werkzeug.datastructures import MultiDict
 from blueprints.landing.account.forms.achievement import AchievementForm
 from blueprints.landing.account.forms.avatar import AvatarForm
@@ -67,7 +68,15 @@ def index():
         return redirect(url_for(".index"))
     elif form_main.validate_on_submit():
         UserQuery.update_email(current_user, form_main.email.data)
-        flask.flash("Почта успешно обновлена", "success")
+        nickname = form_main.nickname.data
+        if nickname != current_user.nickname:
+            UserQuery.set_nickname(current_user, nickname)
+            with Client(current_app.config['RCON_IP'],
+                        int(current_app.config['RCON_PORT']),
+                        passwd=current_app.config['RCON_PASSWORD']) as client:
+                response = client.run('whitelist', 'add', nickname)
+                print('rcon', response)
+        flask.flash("Данные успешно обновлены", "success")
         return redirect(url_for(".index"))
     context['form_main'] = UserForm(MultiDict(current_user.__dict__.items()))
     return render_template("account/account_info.html", **context)

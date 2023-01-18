@@ -36,6 +36,10 @@ app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(os.path.abspath(os.path.dirnam
                                                   'uploads')
 app.config['UPLOADS_AUTOSERVE'] = False
 
+app.config['RCON_IP'] = os.getenv("RCON_IP")
+app.config['RCON_PORT'] = os.getenv("RCON_PORT")
+app.config['RCON_PASSWORD'] = os.getenv("RCON_PASSWORD")
+
 _uploads = Blueprint("_uploads", "_uploads")
 
 
@@ -175,6 +179,19 @@ def import_teachers(file):
     wb_write.save("teachers.xlsx")
     click.echo("Ну, вро де импортировали!")
 
+
+"""
+Русский язык Ильина М А
+Русский язык Соколов А А
+Математика Аксёнов Е Д
+Математика дубов м е
+Математика Кашинин И М
+Математика Симакоа А Д
+Математика Соколов А А
+Математика Фокин А В
+Биология Кубрин А Д
+География Соколов А А
+Физическая культура Визитиу Д Ю"""
 
 @app.cli.command("vsoh_import")
 @click.argument("file")

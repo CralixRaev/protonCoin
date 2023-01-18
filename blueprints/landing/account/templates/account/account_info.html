@@ -28,6 +28,12 @@
                             {{ form_main.email(class="form-control", type="email") }}
                         </div>
                     </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_main.nickname.label }}
+                            {{ form_main.nickname(class="form-control", disabled=True if current_user.nickname else False) }}
+                        </div>
+                    </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col d-flex justify-content-end">
