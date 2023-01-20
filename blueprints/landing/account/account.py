@@ -68,9 +68,12 @@ def index():
             flask.flash("Пароль успешно обновлен", "success")
         return redirect(url_for(".index"))
     elif form_main.validate_on_submit():
-        UserQuery.update_email(current_user, form_main.email.data)
+        email = form_main.email.data
+        print(email, email)
+        if email != current_user.email:
+            UserQuery.update_email(current_user, email)
         nickname = form_main.nickname.data
-        if nickname != current_user.nickname:
+        if nickname is not None and nickname != current_user.nickname:
             try:
                 UserQuery.set_nickname(current_user, nickname)
             except sqlalchemy.exc.DataError:
