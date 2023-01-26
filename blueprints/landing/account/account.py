@@ -67,9 +67,8 @@ def index():
             UserQuery.update_password(current_user, form_password.password.data)
             flask.flash("Пароль успешно обновлен", "success")
         return redirect(url_for(".index"))
-    elif form_main.validate_on_submit():
+    elif form_main.is_submitted():
         email = form_main.email.data
-        print(email, email)
         if email != current_user.email:
             UserQuery.update_email(current_user, email)
         nickname = form_main.nickname.data
@@ -83,7 +82,6 @@ def index():
                         int(current_app.config['RCON_PORT']),
                         passwd=current_app.config['RCON_PASSWORD']) as client:
                 response = client.run('whitelist', 'add', nickname)
-                print('rcon', response)
         flask.flash("Данные успешно обновлены", "success")
         return redirect(url_for(".index"))
     context['form_main'] = UserForm(MultiDict(current_user.__dict__.items()))
@@ -116,7 +114,8 @@ def achievements():
     }
     if form_avatar.validate_on_submit():
         _avatar_form_handler(form_avatar)
-    return render_template("account/account_achievements.html", **context)\
+    return render_template("account/account_achievements.html", **context) \
+
 
 @account.route("/orders/", methods=['GET', 'POST'])
 @login_required
@@ -130,6 +129,7 @@ def orders():
     if form_avatar.validate_on_submit():
         _avatar_form_handler(form_avatar)
     return render_template("account/account_orders.html", **context)
+
 
 @account.route("/cancel_order/<int:order_id>")
 @login_required
@@ -172,4 +172,3 @@ def declare_achievement():
         else:
             return redirect(url_for(".transactions"))
     return render_template("account/account_declare_achievement.html", **context)
-

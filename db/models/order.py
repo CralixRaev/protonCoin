@@ -39,7 +39,6 @@ class Order(db.Model):
 
     @property
     def status_translation(self) -> str:
-        print(self.status)
         return STATUS_TO_STRING[self.status]
 
     @property
