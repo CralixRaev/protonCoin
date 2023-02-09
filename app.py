@@ -40,6 +40,10 @@ app.config['RCON_IP'] = os.getenv("RCON_IP")
 app.config['RCON_PORT'] = os.getenv("RCON_PORT")
 app.config['RCON_PASSWORD'] = os.getenv("RCON_PASSWORD")
 
+
+app.config['SMARTCAPTCHA_SERVER_KEY'] = os.getenv("SMARTCAPTCHA_SERVER_KEY")
+app.config['SMARTCAPTCHA_CLIENT_KEY'] = os.getenv("SMARTCAPTCHA_CLIENT_KEY")
+
 _uploads = Blueprint("_uploads", "_uploads")
 
 
