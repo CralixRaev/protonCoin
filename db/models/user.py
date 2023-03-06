@@ -99,6 +99,11 @@ class UserQuery:
         return User.query.filter((User.email == login) | (User.login == login)).first()
 
     @staticmethod
+    def get_user_by_email(email: str) -> User:
+        email = email.strip().lower()
+        return User.query.filter(User.email == email).first()
+
+    @staticmethod
     def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None,
                 is_teacher=False) -> (
             int, list[User]):

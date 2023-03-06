@@ -1,19 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ title }}: ProtonCoin</title>
-    <meta name="robots" content="noindex,nofollow"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+{% extends 'common.html' %}
 
+{% block title %}
+    {{ title }}: {{ config['COIN_UNIT'] }}
+{% endblock %}
+
+{% block head %}
+    <meta name="robots" content="noindex,nofollow"/>
     <link href="{{ url_for('.static', filename='login.css') }}" rel="stylesheet">
-</head>
-<body class="text-center">
-{% block content %}{% endblock %}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
-        crossorigin="anonymous"></script>
-</body>
-</html>
+{% endblock %}
+
+{% block body %}
+    <script defer src="https://captcha-api.yandex.ru/captcha.js?render=onload&onload=onloadFunction"></script>
+    {% block content required %}{% endblock %}
+    <script>
+        function onloadFunction() {
+            if (window.smartCaptcha) {
+                const container = document.getElementById('captcha-container');
+
+                const widgetId = window.smartCaptcha.render(container, {
+                    sitekey: '{{ config["SMARTCAPTCHA_CLIENT_KEY"] }}',
+                    hl: 'ru',
+                });
+
+            }
+        }
+    </script>
+{% endblock %}

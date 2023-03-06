@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 from typing import Any
@@ -7,7 +8,9 @@ import flask
 from dotenv import load_dotenv
 from flask import Flask, abort, send_from_directory, Blueprint, render_template, request
 from flask_login import LoginManager
+from flask_mail import Mail
 from flask_migrate import Migrate
+from flask_redis import Redis
 from flask_uploads import configure_uploads, UploadSet
 from db.__all_models import *
 from blueprints.api.api import api_blueprint as api
@@ -32,6 +35,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DB_STRING") or \
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['COIN_UNIT'] = "ПРОтоКоин"
+app.config['PASSWORD_RESET_EXPIRE'] = datetime.timedelta(hours=1)
 app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                                   'uploads')
 app.config['UPLOADS_AUTOSERVE'] = False
@@ -39,6 +43,13 @@ app.config['UPLOADS_AUTOSERVE'] = False
 app.config['RCON_IP'] = os.getenv("RCON_IP")
 app.config['RCON_PORT'] = os.getenv("RCON_PORT")
 app.config['RCON_PASSWORD'] = os.getenv("RCON_PASSWORD")
+
+app.config['REDIS_HOST'] = os.getenv("REDIS_HOST")
+app.config['REDIS_PORT'] = os.getenv("REDIS_PORT")
+
+app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 
 
 app.config['SMARTCAPTCHA_SERVER_KEY'] = os.getenv("SMARTCAPTCHA_SERVER_KEY")
@@ -184,19 +195,6 @@ def import_teachers(file):
     click.echo("Ну, вро де импортировали!")
 
 
-"""
-Русский язык Ильина М А
-Русский язык Соколов А А
-Математика Аксёнов Е Д
-Математика дубов м е
-Математика Кашинин И М
-Математика Симакоа А Д
-Математика Соколов А А
-Математика Фокин А В
-Биология Кубрин А Д
-География Соколов А А
-Физическая культура Визитиу Д Ю"""
-
 @app.cli.command("vsoh_import")
 @click.argument("file")
 def vsoh_import(file):
@@ -224,6 +222,10 @@ def vsoh_import(file):
 
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True, compare_type=True)
+
+redis = Redis(app)
+
+mail = Mail(app)
 
 configure_uploads(app, avatars)
 configure_uploads(app, gift_images)

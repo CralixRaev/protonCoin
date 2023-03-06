@@ -1,13 +1,14 @@
 import re
 import secrets
 import string
+import threading
 from functools import wraps
 from io import BytesIO
 from urllib.parse import urlparse, urljoin
 
 import flask
 from PIL import Image
-from flask import request, redirect
+from flask import request, redirect, copy_current_request_context, current_app
 from flask_login import current_user
 from flask_uploads import UploadSet
 from transliterate import translit
@@ -162,3 +163,11 @@ def redirect_to_back():
 
 def is_teacher_to_bool() -> bool:
     return True if request.args.get('is_teacher', 'false') == 'true' else False
+
+def send_email_async(message, **kwargs):
+    @copy_current_request_context
+    def send_message(message):
+        current_app.extensions['mail'].send(message)
+
+    sender = threading.Thread(name='mail_sender', target=send_message, args=(message,))
+    sender.start()

@@ -24,3 +24,38 @@ body {
 .form-signin .form-floating:focus-within {
     z-index: 2;
 }
+
+.cascading-right {
+    margin-right: -50px;
+}
+
+.login-image {
+    z-index: 1;
+}
+
+.login-card {
+    padding: 3rem;
+}
+
+@media (max-width: 991.98px) {
+    .cascading-right {
+        margin-right: 0;
+    }
+
+    .login-image {
+        display: none;
+    }
+    .login-card {
+        padding: 1.5rem;
+    }
+}
+
+.jumbotron {
+    background: hsla(0, 0%, 100%, 0.55);
+    backdrop-filter: blur(30px);
+    z-index: 999;
+}
+
+.smart-captcha {
+    min-width: 120px;
+}
