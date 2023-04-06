@@ -39,7 +39,7 @@ psycopg2==2.9.5
 pycparser==2.21
 pyOpenSSL==23.0.0
 pyparsing==3.0.9
-python-dotenv==0.21.1
+python-dotenv==1.0.0
 pytz==2022.7.1
 rcon==2.3.9
 redis==4.5.4
