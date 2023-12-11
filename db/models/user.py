@@ -1,14 +1,9 @@
-import logging
-import secrets
-import string
 from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 import sqlalchemy.exc
-from flask import current_app
 from flask_login import UserMixin, current_user
 from flask_restful import fields
-from sqlalchemy import func
 from transliterate import translit
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -20,7 +15,9 @@ from util import random_password
 
 
 class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
+    id = db.Column(
+        db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True
+    )
     login = db.Column(db.String(32), nullable=False, unique=True, index=True)
     nickname = db.Column(db.String(16), nullable=True, unique=True, index=True)
     email = db.Column(db.String(64), nullable=True, unique=True, index=True)
@@ -30,15 +27,17 @@ class User(db.Model, UserMixin):
     hashed_password = db.Column(db.String, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     is_teacher = db.Column(db.Boolean, default=False)
-    group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=True, index=True)
+    group_id = db.Column(
+        db.Integer, db.ForeignKey("group.id"), nullable=True, index=True
+    )
     creation_date = db.Column(db.DateTime, default=datetime.now)
     last_auth = db.Column(db.DateTime, default=None, nullable=True)
     avatar = db.Column(db.String(128), default="default.png")
     alternative_id = db.Column(db.String(36), nullable=False, default=uuid4)
 
-    group = db.relation("Group", back_populates='users')
-    balance = db.relation("Balance", back_populates='user', uselist=False)
-    orders = db.relation("Order", back_populates='user')
+    group = db.relation("Group", back_populates="users")
+    balance = db.relation("Balance", back_populates="user", uselist=False)
+    orders = db.relation("Order", back_populates="user")
 
     def get_id(self) -> str:
         return str(self.alternative_id)
@@ -49,7 +48,7 @@ class User(db.Model, UserMixin):
 
     @property
     def avatar_path(self) -> str:
-        return avatars.url(self.avatar if self.avatar else 'default.png')
+        return avatars.url(self.avatar if self.avatar else "default.png")
 
     def set_password(self, password):
         self.alternative_id = str(uuid4())
@@ -61,15 +60,15 @@ class User(db.Model, UserMixin):
     @staticmethod
     def __json__() -> dict:
         _json = {
-            'id': fields.Integer(),
-            'login': fields.String(),
-            'email': fields.String(),
-            'name': fields.String(),
-            'surname': fields.String(),
-            'patronymic': fields.String(),
-            'avatar_path': fields.String(),
-            'group': fields.Nested(Group.__json__()),
-            'balance': fields.Nested(Balance.__json__())
+            "id": fields.Integer(),
+            "login": fields.String(),
+            "email": fields.String(),
+            "name": fields.String(),
+            "surname": fields.String(),
+            "patronymic": fields.String(),
+            "avatar_path": fields.String(),
+            "group": fields.Nested(Group.__json__()),
+            "balance": fields.Nested(Balance.__json__()),
         }
         return _json
 
@@ -84,10 +83,10 @@ class UserQuery:
 
     @staticmethod
     def _create_login(name, surname, patronymic=None):
-        name = translit(name, 'ru', reversed=True)
-        surname = translit(surname, 'ru', reversed=True)
+        name = translit(name, "ru", reversed=True)
+        surname = translit(surname, "ru", reversed=True)
         if patronymic:
-            patronymic = translit(patronymic, 'ru', reversed=True)
+            patronymic = translit(patronymic, "ru", reversed=True)
         login = surname + name[0]
         if patronymic:
             login += patronymic[0]
@@ -104,16 +103,23 @@ class UserQuery:
         return User.query.filter(User.email == email).first()
 
     @staticmethod
-    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None,
-                is_teacher=False) -> (
-            int, list[User]):
+    def get_api(
+        start: int = 0,
+        length: int = 10,
+        search: str | None = None,
+        order_expr=None,
+        is_teacher=False,
+    ) -> (int, list[User]):
         user_query = User.query.join(Balance)
         if is_teacher:
             user_query = user_query.filter(User.group_id == current_user.group_id)
         count = user_query.count()
         if search:
             user_query = user_query.filter(
-                (User.surname + ' ' + User.name + ' ' + User.patronymic).ilike(f'%{search}%'))
+                (User.surname + " " + User.name + " " + User.patronymic).ilike(
+                    f"%{search}%"
+                )
+            )
             count = user_query.count()
         if order_expr is not None:
             user_query = user_query.order_by(*order_expr)
@@ -127,8 +133,10 @@ class UserQuery:
     @staticmethod
     def search_by_name(full_name, offset=0, limit=10) -> tuple[list[User], int]:
         searched = User.query.filter(
-            (User.surname + ' ' + User.name + ' ' + User.patronymic).ilike(
-                f"%{full_name}%"))
+            (User.surname + " " + User.name + " " + User.patronymic).ilike(
+                f"%{full_name}%"
+            )
+        )
         return searched.offset(offset).limit(limit).all(), searched.count()
 
     @staticmethod
@@ -143,16 +151,26 @@ class UserQuery:
             raise ValueError("cannot update nickname if it already set")
         db.session.commit()
 
-
     @staticmethod
     def get_offset_limit_users(offset=0, limit=10) -> list[User]:
-        return User.query.order_by(User.group_id).order_by(User.surname).offset(offset).limit(
-            limit).all()
+        return (
+            User.query.order_by(User.group_id)
+            .order_by(User.surname)
+            .offset(offset)
+            .limit(limit)
+            .all()
+        )
 
     @staticmethod
-    def create_user(name, surname, patronymic=None, email=None, is_admin=False, is_teacher=False,
-                    group=None) -> (
-            User, str):
+    def create_user(
+        name,
+        surname,
+        patronymic=None,
+        email=None,
+        is_admin=False,
+        is_teacher=False,
+        group=None,
+    ) -> (User, str):
         db.session.rollback()
         user = User()
         user.name = name
@@ -175,15 +193,22 @@ class UserQuery:
         except sqlalchemy.exc.IntegrityError:
             db.session.rollback()
 
-            user.login += '1'
+            user.login += "1"
             db.session.add(user)
             db.session.commit()
         return user, password
 
     @staticmethod
-    def update_user(user, name, surname, patronymic=None, email=None, is_admin=False,
-                    is_teacher=False,
-                    group=None) -> User:
+    def update_user(
+        user,
+        name,
+        surname,
+        patronymic=None,
+        email=None,
+        is_admin=False,
+        is_teacher=False,
+        group=None,
+    ) -> User:
         db.session.rollback()
         user.name = name
         user.surname = surname
@@ -239,11 +264,10 @@ class UserQuery:
             user = User.query.filter(
                 User.surname == surname,
                 User.name == name,
-                User.patronymic == patronymic)
+                User.patronymic == patronymic,
+            )
         else:
-            user = User.query.filter(
-                User.surname == surname,
-                User.name == name)
+            user = User.query.filter(User.surname == surname, User.name == name)
         if user.count() > 1:
             return None
         else:

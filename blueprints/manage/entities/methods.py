@@ -5,13 +5,15 @@ from blueprints.manage.entities.achievement.achievement import achievement_metho
 from blueprints.manage.entities.user.user import user_methods
 from util import teacher_or_admin_required
 
-methods = Blueprint('methods', __name__)
+methods = Blueprint("methods", __name__)
+
 
 @methods.before_request
 @login_required
 @teacher_or_admin_required
 def before_request():
     pass
+
 
 methods.register_blueprint(user_methods, url_prefix="/user")
 methods.register_blueprint(achievement_methods, url_prefix="/achievement")

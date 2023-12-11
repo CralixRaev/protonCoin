@@ -2,13 +2,11 @@ from datetime import datetime
 from enum import Enum
 
 from flask_restful import fields
-from sqlalchemy.dialects.postgresql import ENUM
 
 from db.database import db
 from db.models.gift import Gift
 from db.models.transaction import TransactionQuery
 from db.models.user import User
-from uploads import gift_images
 
 
 class OrderStatusEnum(Enum):
@@ -19,23 +17,26 @@ class OrderStatusEnum(Enum):
 
 
 STATUS_TO_STRING = {
-    OrderStatusEnum.created: 'Создан',
-    OrderStatusEnum.delivered: 'Доставлен',
-    OrderStatusEnum.cancelled: 'Отменён',
-    OrderStatusEnum.cancelled_user: 'Отменён пользователем',
+    OrderStatusEnum.created: "Создан",
+    OrderStatusEnum.delivered: "Доставлен",
+    OrderStatusEnum.cancelled: "Отменён",
+    OrderStatusEnum.cancelled_user: "Отменён пользователем",
 }
 
 
 class Order(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
+    id = db.Column(
+        db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True
+    )
     gift_id = db.Column(db.Integer, db.ForeignKey("gift.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    status = db.Column(db.Enum(OrderStatusEnum),
-                       default=OrderStatusEnum.created, nullable=False)
+    status = db.Column(
+        db.Enum(OrderStatusEnum), default=OrderStatusEnum.created, nullable=False
+    )
     creation_date = db.Column(db.DateTime, default=datetime.now)
 
-    gift = db.relation("Gift", back_populates='orders')
-    user = db.relation("User", back_populates='orders')
+    gift = db.relation("Gift", back_populates="orders")
+    user = db.relation("User", back_populates="orders")
 
     @property
     def status_translation(self) -> str:
@@ -43,20 +44,17 @@ class Order(db.Model):
 
     @property
     def cancellation_available(self) -> bool:
-        if self.status == OrderStatusEnum.created:
-            return True
-        else:
-            return False
+        return self.status == OrderStatusEnum.created
 
     @staticmethod
     def __json__() -> dict:
         _json = {
-            'id': fields.Integer(),
-            'gift': fields.Nested(Gift.__json__()),
-            'user': fields.Nested(User.__json__()),
-            'status': fields.FormattedString("{status.value}"),
-            'status_translation': fields.String(),
-            'creation_date': fields.DateTime(dt_format='iso8601'),
+            "id": fields.Integer(),
+            "gift": fields.Nested(Gift.__json__()),
+            "user": fields.Nested(User.__json__()),
+            "status": fields.FormattedString("{status.value}"),
+            "status_translation": fields.String(),
+            "creation_date": fields.DateTime(dt_format="iso8601"),
         }
         return _json
 
@@ -67,8 +65,9 @@ class OrderQuery:
         return Order.query.count()
 
     @staticmethod
-    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
-            int, list[Gift]):
+    def get_api(
+        start: int = 0, length: int = 10, search: str | None = None, order_expr=None
+    ) -> (int, list[Gift]):
         order_query = Order.query
         count = order_query.count()
         if search:
@@ -106,15 +105,19 @@ class OrderQuery:
         db.session.rollback()
 
         order.status = OrderStatusEnum.cancelled
-        TransactionQuery.create_accrual(order.user.balance, order.gift.price,
-                                        f"Возврат за заказ №{order.id}")
+        TransactionQuery.create_accrual(
+            order.user.balance, order.gift.price, f"Возврат за заказ №{order.id}"
+        )
 
         db.session.commit()
 
     @staticmethod
     def get_awaited_orders() -> list[Order]:
-        return Order.query.filter(Order.is_issued == False).filter(
-            Order.is_returned == False).all()
+        return (
+            Order.query.filter(Order.is_issued is False)
+            .filter(Order.is_returned is False)
+            .all()
+        )
 
     @staticmethod
     def get_order_by_id(order_id: int) -> Order:
@@ -122,7 +125,9 @@ class OrderQuery:
 
     @staticmethod
     def order_by_user(user_id: int) -> list[Order]:
-        return Order.query.filter(Order.user_id == user_id).order_by(Order.id.desc()).all()
+        return (
+            Order.query.filter(Order.user_id == user_id).order_by(Order.id.desc()).all()
+        )
 
     @staticmethod
     def cancel_order_user(order: Order):
@@ -130,7 +135,8 @@ class OrderQuery:
 
         order.status = OrderStatusEnum.cancelled_user
         order.gift.stock += 1
-        TransactionQuery.create_accrual(order.user.balance, order.gift.price,
-                                        f"Возврат за заказ №{order.id}")
+        TransactionQuery.create_accrual(
+            order.user.balance, order.gift.price, f"Возврат за заказ №{order.id}"
+        )
 
         db.session.commit()

@@ -1,6 +1,5 @@
 import re
 import secrets
-import string
 import threading
 from functools import wraps
 from io import BytesIO
@@ -15,8 +14,9 @@ from transliterate import translit
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
-from db.database import db
 from uploads import avatars
+
+MAX_PASSWORD_LENGTH = 8
 
 
 def convert_to_webp(file: FileStorage, processing=None) -> FileStorage:
@@ -34,7 +34,7 @@ def convert_to_webp(file: FileStorage, processing=None) -> FileStorage:
 
 
 def save_upload(file: FileStorage, upload_set: UploadSet, processing=None) -> str:
-    file.filename = secure_filename(translit(file.filename, 'ru', True))
+    file.filename = secure_filename(translit(file.filename, "ru", True))
     return upload_set.save(convert_to_webp(file, processing))
 
 
@@ -48,7 +48,7 @@ def upload_avatar(file: FileStorage, size: tuple[int, int] = (512, 512)) -> str:
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+    return test_url.scheme in {"http", "https"} and ref_url.netloc == test_url.netloc
 
 
 def admin_required(func):
@@ -94,7 +94,7 @@ def password_check(password):
     """
 
     # calculating the length
-    length_error = len(password) <= 8
+    length_error = len(password) <= MAX_PASSWORD_LENGTH
 
     # searching for digits
     digit_error = re.search(r"\d", password) is None
@@ -106,25 +106,59 @@ def password_check(password):
     lowercase_error = re.search(r"[a-z]", password) is None
 
     # overall result
-    password_ok = not (length_error or digit_error or uppercase_error or lowercase_error)
+    password_ok = not (
+        length_error or digit_error or uppercase_error or lowercase_error
+    )
     return {
-        'password_ok': password_ok,
-        'length_error': length_error,
-        'digit_error': digit_error,
-        'uppercase_error': uppercase_error,
-        'lowercase_error': lowercase_error,
+        "password_ok": password_ok,
+        "length_error": length_error,
+        "digit_error": digit_error,
+        "uppercase_error": uppercase_error,
+        "lowercase_error": lowercase_error,
     }
 
 
-ALPHABET = ['a', 'e', 'f', 'g', 'h', 'm', 'n', 't', 'y'] + \
-           ['A', 'B', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'Q', 'R', 'T', 'X', 'Y'] + \
-           ['2', '3', '4', '5', '6', '7', '8', '9']
+ALPHABET = [
+    "a",
+    "e",
+    "f",
+    "g",
+    "h",
+    "m",
+    "n",
+    "t",
+    "y",
+    "A",
+    "B",
+    "E",
+    "F",
+    "G",
+    "H",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "Q",
+    "R",
+    "T",
+    "X",
+    "Y",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+]
 
 
 def random_password():
-    password = ''.join(secrets.choice(ALPHABET) for _ in range(8))
-    while password_check(password)['password_ok']:
-        password = ''.join(secrets.choice(ALPHABET) for _ in range(8))
+    password = "".join(secrets.choice(ALPHABET) for _ in range(8))
+    while password_check(password)["password_ok"]:
+        password = "".join(secrets.choice(ALPHABET) for _ in range(8))
     return password
 
 
@@ -138,19 +172,20 @@ class ABCQuery:
 
 
 def list_get_factory(model, search_expr):
-    def _get_model(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
-            int, list[model]):
+    def _get_model(
+        start: int = 0, length: int = 10, search: str | None = None, order_expr=None
+    ) -> (int, list[model]):
         model_query = model.query
         count = model_query.count()
         if search:
-            model_query = model_query.filter(search_expr.ilike(f'%{search}%'))
+            model_query = model_query.filter(search_expr.ilike(f"%{search}%"))
             count = model_query.count()
         if order_expr is not None:
             model_query = model_query.order_by(*order_expr)
         model_query = model_query.limit(length).offset(start)
         return count, model_query.all()
 
-    _get_model.__name__ = f'get_api'
+    _get_model.__name__ = "get_api"
     return _get_model
 
 
@@ -161,13 +196,15 @@ def redirect_to_back():
     else:
         flask.abort(400)
 
-def is_teacher_to_bool() -> bool:
-    return True if request.args.get('is_teacher', 'false') == 'true' else False
 
-def send_email_async(message, **kwargs):
+def is_teacher_to_bool() -> bool:
+    return request.args.get("is_teacher", "false") == "true"
+
+
+def send_email_async(message):
     @copy_current_request_context
     def send_message(message):
-        current_app.extensions['mail'].send(message)
+        current_app.extensions["mail"].send(message)
 
-    sender = threading.Thread(name='mail_sender', target=send_message, args=(message,))
+    sender = threading.Thread(name="mail_sender", target=send_message, args=(message,))
     sender.start()

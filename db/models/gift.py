@@ -5,7 +5,9 @@ from uploads import gift_images
 
 
 class Gift(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
+    id = db.Column(
+        db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True
+    )
     name = db.Column(db.String(255))
     description = db.Column(db.Text)
     price = db.Column(db.Integer)
@@ -13,29 +15,29 @@ class Gift(db.Model):
     image = db.Column(db.String(1024), default="default.jpeg")
     stock = db.Column(db.Integer, default=0)
 
-    orders = db.relation("Order", back_populates='gift')
+    orders = db.relation("Order", back_populates="gift")
 
     @property
     def image_file(self):
-        return gift_images.url(self.image if self.image else 'default.jpeg')
+        return gift_images.url(self.image if self.image else "default.jpeg")
 
     @property
     def in_stock(self) -> bool:
         if self.stock is None:
             self.stock = 0
             db.session.commit()
-        return True if self.stock > 0 else False
+        return self.stock > 0
 
     @staticmethod
     def __json__() -> dict:
         _json = {
-            'id': fields.Integer(),
-            'name': fields.String(),
-            'description': fields.String(),
-            'stock': fields.Integer(),
-            'price': fields.Integer(),
-            'promo_price': fields.Integer(),
-            'image_file': fields.String(),
+            "id": fields.Integer(),
+            "name": fields.String(),
+            "description": fields.String(),
+            "stock": fields.Integer(),
+            "price": fields.Integer(),
+            "promo_price": fields.Integer(),
+            "image_file": fields.String(),
         }
         return _json
 
@@ -65,8 +67,9 @@ class GiftQuery:
         return Gift.query.count()
 
     @staticmethod
-    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
-            int, list[Gift]):
+    def get_api(
+        start: int = 0, length: int = 10, search: str | None = None, order_expr=None
+    ) -> (int, list[Gift]):
         gift_query = Gift.query
         count = gift_query.count()
         if search:
@@ -78,7 +81,9 @@ class GiftQuery:
         return count, gift_query.all()
 
     @staticmethod
-    def update_gift(gift, name, description, price, image_path, stock, promo_price: int | None) -> Gift:
+    def update_gift(
+        gift, name, description, price, image_path, stock, promo_price: int | None
+    ) -> Gift:
         gift.name = name
         gift.description = description
         gift.price = price

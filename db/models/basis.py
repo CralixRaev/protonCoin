@@ -1,15 +1,15 @@
 from flask_restful import fields
-from sqlalchemy.sql import functions, expression
 
 from db.database import db
-from util import ABCQuery
 
 
 class Basis(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
+    id = db.Column(
+        db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True
+    )
     name = db.Column(db.String(255))
 
-    criteria = db.relation("Criteria", back_populates='basis')
+    criteria = db.relation("Criteria", back_populates="basis")
 
     def __str__(self) -> str:
         return self.name
@@ -17,8 +17,8 @@ class Basis(db.Model):
     @staticmethod
     def __json__() -> dict:
         _json = {
-            'id': fields.Integer(),
-            'name': fields.String(),
+            "id": fields.Integer(),
+            "name": fields.String(),
         }
         return _json
 
@@ -29,12 +29,13 @@ class BasisQuery:
         return Basis.query.count()
 
     @staticmethod
-    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
-            int, list[Basis]):
+    def get_api(
+        start: int = 0, length: int = 10, search: str | None = None, order_expr=None
+    ) -> (int, list[Basis]):
         basis_query = Basis.query
         count = basis_query.count()
         if search:
-            basis_query = basis_query.filter(Basis.name.ilike(f'%{search}%'))
+            basis_query = basis_query.filter(Basis.name.ilike(f"%{search}%"))
             count = basis_query.count()
         if order_expr is not None:
             basis_query = basis_query.order_by(*order_expr)

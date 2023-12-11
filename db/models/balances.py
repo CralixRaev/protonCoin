@@ -7,20 +7,23 @@ from db.database import db
 
 
 class Balance(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True, unique=True,
-                        index=True)
+    id = db.Column(
+        db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True
+    )
+    user_id = db.Column(
+        db.Integer, db.ForeignKey("user.id"), nullable=True, unique=True, index=True
+    )
     amount = db.Column(db.Integer, nullable=False, default=0)
 
-    user = db.relationship('User', back_populates='balance', uselist=False)
+    user = db.relationship("User", back_populates="balance", uselist=False)
 
     @property
     def is_bank(self) -> bool:
-        return False if self.user else True
+        return not self.user
 
     @property
     def holder_name(self) -> str:
-        return 'ПротонБанк' if self.is_bank else self.user.full_name
+        return "ПротонБанк" if self.is_bank else self.user.full_name
 
     def __str__(self) -> str:
         return f"{self.holder_name}: {self.amount if self.user_id else '∞'}"
@@ -30,8 +33,7 @@ class Balance(db.Model):
 
     @staticmethod
     def __json__() -> dict:
-        _json = {'id': fields.Integer(),
-                 'amount': fields.Integer()}
+        _json = {"id": fields.Integer(), "amount": fields.Integer()}
         return _json
 
 
@@ -46,8 +48,10 @@ class BalanceQuery:
 
     @staticmethod
     def ensure_bank_balance():
-        if not Balance.query.filter(Balance.user_id == None).first():
-            current_app.logger.error("Default balance was not present, creating a new one")
+        if not Balance.query.filter(Balance.user_id is None).first():
+            current_app.logger.error(
+                "Default balance was not present, creating a new one"
+            )
             balance = Balance()
             db.session.add(balance)
             db.session.commit()
@@ -64,9 +68,13 @@ class BalanceQuery:
     @staticmethod
     @cache
     def get_bank():
-        return Balance.query.filter(Balance.user_id == None).first()
+        return Balance.query.filter(Balance.user_id is None).first()
 
     @staticmethod
     def top_balances(number: int = 10) -> list[Balance]:
-        return Balance.query.filter(Balance.amount > 0).order_by(Balance.amount.desc()).limit(
-            number).all()
+        return (
+            Balance.query.filter(Balance.amount > 0)
+            .order_by(Balance.amount.desc())
+            .limit(number)
+            .all()
+        )

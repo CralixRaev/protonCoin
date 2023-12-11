@@ -7,6 +7,7 @@ class CriteriaForm(FlaskForm):
     name = StringField("Имя", validators=[DataRequired()])
     basis_id = SelectField("Основание", coerce=int, validators=[DataRequired()])
     cost = IntegerField("Цена", validators=[DataRequired()])
-    is_user_achievable = BooleanField("Возможность заявить достижение на данную критерию",
-                                      validators=[])
-    submit = SubmitField('Создать/Изменить')
+    is_user_achievable = BooleanField(
+        "Возможность заявить достижение на данную критерию", validators=[]
+    )
+    submit = SubmitField("Создать/Изменить")

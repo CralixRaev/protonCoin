@@ -6,22 +6,24 @@ from db.database import db
 
 
 class Group(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
+    id = db.Column(
+        db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True
+    )
     stage = db.Column(db.Integer, nullable=False)
     letter = db.Column(db.String(8), nullable=False)
 
-    users = db.relationship('User', back_populates='group', order_by='User.surname')
+    users = db.relationship("User", back_populates="group", order_by="User.surname")
 
     @property
     def name(self) -> str:
-        return f'{self.stage}{self.letter}'
+        return f"{self.stage}{self.letter}"
 
     @staticmethod
     def __json__() -> dict:
         _json = {
-            'id': fields.Integer(),
-            'stage': fields.Integer(),
-            'letter': fields.String()
+            "id": fields.Integer(),
+            "stage": fields.Integer(),
+            "letter": fields.String(),
         }
         return _json
 
@@ -36,14 +38,17 @@ class GroupQuery:
         return Group.query.all()
 
     @staticmethod
-    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
-            int, list[Group]):
+    def get_api(
+        start: int = 0, length: int = 10, search: str | None = None, order_expr=None
+    ) -> (int, list[Group]):
         groups_query = Group.query
         count = groups_query.count()
         if search:
             groups_query = groups_query.filter(
-                functions.concat(expression.cast(Group.stage, types.Unicode), Group.letter).ilike(
-                    f'%{search}%'))
+                functions.concat(
+                    expression.cast(Group.stage, types.Unicode), Group.letter
+                ).ilike(f"%{search}%")
+            )
             count = groups_query.count()
         if order_expr is not None:
             groups_query = groups_query.order_by(*order_expr)

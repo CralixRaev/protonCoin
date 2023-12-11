@@ -4,13 +4,15 @@ from db.database import db
 
 
 class News(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
+    id = db.Column(
+        db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True
+    )
     title = db.Column(db.String(255))
     description = db.Column(db.Text())
 
     @property
     def detail_url(self) -> str:
-        return url_for('landing.news.detail', news_id=self.id)
+        return url_for("landing.news.detail", news_id=self.id)
 
     def __str__(self) -> str:
         return self.title
@@ -18,9 +20,9 @@ class News(db.Model):
     @staticmethod
     def __json__() -> dict:
         _json = {
-            'id': fields.Integer(),
-            'title': fields.String(),
-            'description': fields.String(),
+            "id": fields.Integer(),
+            "title": fields.String(),
+            "description": fields.String(),
         }
         return _json
 
@@ -31,12 +33,13 @@ class NewsQuery:
         return News.query.count()
 
     @staticmethod
-    def get_api(start: int = 0, length: int = 10, search: str | None = None, order_expr=None) -> (
-            int, list[News]):
+    def get_api(
+        start: int = 0, length: int = 10, search: str | None = None, order_expr=None
+    ) -> (int, list[News]):
         news_query = News.query
         count = news_query.count()
         if search:
-            news_query = news_query.filter(News.title.ilike(f'%{search}%'))
+            news_query = news_query.filter(News.title.ilike(f"%{search}%"))
             count = news_query.count()
         if order_expr is not None:
             news_query = news_query.order_by(*order_expr)

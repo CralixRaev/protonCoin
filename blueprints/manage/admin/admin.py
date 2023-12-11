@@ -12,7 +12,9 @@ from blueprints.manage.admin.transactions.transactions import transactions
 from blueprints.manage.admin.users.users import users
 from util import admin_required
 
-admin = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
+admin = Blueprint(
+    "admin", __name__, template_folder="templates", static_folder="static"
+)
 admin.register_blueprint(users, url_prefix="/users/")
 admin.register_blueprint(groups, url_prefix="/groups/")
 admin.register_blueprint(transactions, url_prefix="/transactions/")
@@ -31,9 +33,7 @@ def before_request():
     pass
 
 
-@admin.route('/')
+@admin.route("/")
 def index():
-    context = {
-        'title': 'Главная страница'
-    }
+    context = {"title": "Главная страница"}
     return render_template("admin/index.html", **context)

@@ -7,6 +7,7 @@ class NonValidatingSelectField(SelectField):
     def pre_validate(self, form):
         pass
 
+
 class TransactionForm(FlaskForm):
     from_balance_id = NonValidatingSelectField("От", validators=[DataRequired()])
     to_balance_id = NonValidatingSelectField("К", validators=[DataRequired()])
