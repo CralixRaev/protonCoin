@@ -1,0 +1,68 @@
+[project]
+version = "0.0.1"
+requires-python = ">=3.12"
+name = "protonCoin"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Anatoly Raev", email = "cralixraev@gmail.com" },
+]
+dependencies = [
+    "flask",
+    "flask-SQLAlchemy",
+    "flask-Migrate",
+    "wtforms[email]",
+    "flask-WTF",
+    "flask-Login",
+    "flask-Mail",
+    "redis[hiredis]",
+    "flask-redis",
+    "Flask-Limiter[redis]",
+    "flask-talisman",
+    "flask-Static-Digest",
+    "flask-Caching",
+    "psycopg2",
+    "nplusone",
+    "intervals",
+    "SQLAlchemy-Utils",
+    "httpx",
+    "httpx_ratelimiter",
+    "colorlog",
+    "mashumaro",
+    "cryptography",
+    "pika",
+    "celery",
+    "marketplace_apis @ git+https://github.com/packify-org/marketplace_apis"
+]
+dependencies = [
+    "flask",
+    "flask-sqlalchemy",
+    "flask_login",
+    "flask_mail",
+    "flask_migrate",
+    "flask-redis",
+    "flask-reuploaded",
+    "marshmallow",
+    "flask_restful",
+    "flask-migrate",
+    "requests",
+    "Pillow",
+    "transliterate"
+]
+
+[project.optional-dependencies]
+dev = ["pre-commit", "pip-tools"]
+
+[tool.black]
+target-versions = ["py312"]
+
+[tool.ruff]
+select = ["E", "F", "RUF", "PERF", "TRY", "PL", "PTH", "ARG", "SIM", "PIE", "C4",
+    "B", "S", "UP", "C90", "A", "T20", "FURB"]
+preview = true
+ignore = ["RUF001", "RUF002", "PLR0913", "RUF003"]
+
+target-version = "py312"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]

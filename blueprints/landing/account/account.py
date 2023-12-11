@@ -4,7 +4,6 @@ import flask
 import sqlalchemy
 from flask import Blueprint, render_template, redirect, url_for, current_app, request
 from flask_login import current_user, login_required
-from rcon import Client
 from werkzeug.datastructures import MultiDict
 from blueprints.landing.account.forms.achievement import AchievementForm
 from blueprints.landing.account.forms.avatar import AvatarForm
