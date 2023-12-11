@@ -40,10 +40,6 @@ app.config['UPLOADS_DEFAULT_DEST'] = os.path.join(os.path.abspath(os.path.dirnam
                                                   'uploads')
 app.config['UPLOADS_AUTOSERVE'] = False
 
-app.config['RCON_IP'] = os.getenv("RCON_IP")
-app.config['RCON_PORT'] = os.getenv("RCON_PORT")
-app.config['RCON_PASSWORD'] = os.getenv("RCON_PASSWORD")
-
 app.config['REDIS_HOST'] = os.getenv("REDIS_HOST")
 app.config['REDIS_PORT'] = os.getenv("REDIS_PORT")
 

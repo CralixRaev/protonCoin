@@ -78,10 +78,6 @@ def index():
             except sqlalchemy.exc.DataError:
                 flask.flash("Никнейм слишком длинный (его длина не должна быть больше 16 символов)", "danger")
                 return redirect(url_for(".index"))
-            with Client(current_app.config['RCON_IP'],
-                        int(current_app.config['RCON_PORT']),
-                        passwd=current_app.config['RCON_PASSWORD']) as client:
-                response = client.run('whitelist', 'add', nickname)
         flask.flash("Данные успешно обновлены", "success")
         return redirect(url_for(".index"))
     context['form_main'] = UserForm(MultiDict(current_user.__dict__.items()))
