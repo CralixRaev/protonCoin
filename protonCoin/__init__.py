@@ -32,7 +32,7 @@ def create_app():
     if app.debug:
         app.config.from_object("protonCoin.debug_config.DebugConfig")
     else:
-        app.config.from_object(Config)
+        app.config.from_object("protonCoin.config.Config")
     _uploads = Blueprint("_uploads", "_uploads")
 
     # require admin for all not-proxied uploads
