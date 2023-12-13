@@ -120,6 +120,8 @@ def create_app():
                 if count == 1:
                     # update its class
                     users[0].group = group
+                    db.session.add(users[0])
+                    db.session.commit()
                 if count == 0:
                     # if no users found - create a new one
                     split_name = user.split()
