@@ -8,7 +8,7 @@ import flask
 from flask import Flask, abort, send_from_directory, Blueprint, render_template, request
 from flask_login import LoginManager
 from flask_mail import Mail
-from flask_migrate import Migrate, Config
+from flask_migrate import Migrate
 from flask_redis import Redis
 from flask_uploads import configure_uploads, UploadSet
 from protonCoin.db.__all_models import *  # noqa: F403
@@ -99,7 +99,7 @@ def create_app():
                 if is_header:
                     is_header = False
                     continue
-                full_class = "".join(paragraph.text.split()[0:2])
+                full_class = " ".join(paragraph.text.split()[0:2])
                 classes.append((full_class, []))
         for table_i, table in enumerate(doc.tables):
             for row in table.rows:
@@ -108,7 +108,7 @@ def create_app():
                         classes[table_i][1].append(column.text)
         for class_name, class_ in classes:
             # create class
-            stage, letter = tuple(class_name)
+            stage, letter = class_name.split()
             group = GroupQuery.get_group_by_stage_letter(stage, letter)
             if not group:
                 group = GroupQuery.create_group(stage, letter)
