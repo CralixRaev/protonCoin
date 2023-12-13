@@ -195,8 +195,13 @@ class UserQuery:
             db.session.rollback()
 
             user.login += "1"
-            db.session.add(user)
-            db.session.commit()
+            try:
+                db.session.add(user)
+                db.session.commit()
+            except sqlalchemy.exc.IntegrityError:
+                user.login = user.login[:-1] + "2"
+                db.session.add(user)
+                db.session.commit()
         return user, password
 
     @staticmethod
