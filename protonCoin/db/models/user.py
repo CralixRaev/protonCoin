@@ -199,6 +199,8 @@ class UserQuery:
                 db.session.add(user)
                 db.session.commit()
             except sqlalchemy.exc.IntegrityError:
+                db.session.rollback()
+
                 user.login = user.login[:-1] + "2"
                 db.session.add(user)
                 db.session.commit()
