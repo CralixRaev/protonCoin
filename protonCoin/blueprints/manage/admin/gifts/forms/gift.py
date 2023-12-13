@@ -27,7 +27,7 @@ class NullableIntegerField(IntegerField):
 
 class GiftForm(FlaskForm):
     name = StringField("Имя", validators=[DataRequired()])
-    description = TextAreaField("Описание", validators=[DataRequired()])
+    description = TextAreaField("Описание")
     price = IntegerField("Цена до акции", validators=[DataRequired()])
     promo_price = NullableIntegerField(
         "Цена до скидки (если указать, эта цена на сайте будет зачеркнутой)"

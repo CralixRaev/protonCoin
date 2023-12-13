@@ -3,6 +3,7 @@ import os
 from typing import Any
 
 import click
+import docx
 import flask
 from flask import Flask, abort, send_from_directory, Blueprint, render_template, request
 from flask_login import LoginManager
@@ -86,6 +87,51 @@ def create_app():
         password = UserQuery.new_password(UserQuery.get_user_by_login(login).id)
 
         click.echo(f"Пароль изменён. Новый пароль: {password}")
+
+    @app.cli.command("update_users_docx")
+    @click.argument("path")
+    def update_users_docx(path):
+        doc = docx.Document(path)
+        classes = []
+        is_header = True
+        for paragraph in doc.paragraphs:
+            if "класс" in paragraph.text:
+                if is_header:
+                    is_header = False
+                    continue
+                full_class = "".join(paragraph.text.split()[0:2])
+                classes.append((full_class, []))
+        for table_i, table in enumerate(doc.tables):
+            for row in table.rows:
+                for i, column in enumerate(row.cells):
+                    if i == 1 and column.text != "ФИО":
+                        classes[table_i][1].append(column.text)
+        for class_name, class_ in classes:
+            # create class
+            stage, letter = tuple(class_name)
+            group = GroupQuery.get_group_by_stage_letter(stage, letter)
+            if not group:
+                group = GroupQuery.create_group(stage, letter)
+            for user in class_:
+                # find out if we have such user already:
+                users, count = UserQuery.search_by_name(user)
+                if count > 1:
+                    print(f"more than one user with this name: {user} ({class_name}")
+                if count == 1:
+                    # update its class
+                    users[0].group = group
+                if count == 0:
+                    # if no users found - create a new one
+                    split_name = user.split()
+                    surname, name, patronymic = (
+                        split_name[0],
+                        split_name[1],
+                        " ".join(split_name[2:]),
+                    )
+                    user_obj = UserQuery.create_user(
+                        name, surname, patronymic, group=group.id
+                    )
+                    print(f"Новый пользователь: {user} ({class_name})")
 
     @app.cli.command("import_folders")
     @click.argument("folder")

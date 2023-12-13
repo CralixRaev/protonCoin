@@ -171,6 +171,7 @@ class UserQuery:
         is_teacher=False,
         group=None,
     ) -> (User, str):
+        # FIXME: RENAME GROUP TO GROUP_ID!!!
         db.session.rollback()
         user = User()
         user.name = name
