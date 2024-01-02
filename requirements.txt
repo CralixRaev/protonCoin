@@ -51,7 +51,7 @@ SQLAlchemy==1.4.44
 transliterate==1.10.2
 urllib3==1.26.14
 validators==0.20.0
-Werkzeug==2.2.3
+Werkzeug==2.3.8
 wheel==0.38.4
 wrapt==1.14.1
 WTForms-Components==0.10.5
